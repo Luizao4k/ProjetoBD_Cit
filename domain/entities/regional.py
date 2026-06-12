@@ -2,13 +2,14 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional
 import unicodedata
-import constantes 
+import domain.constantes as constantes
+
 
 
 
 def _normalizar(texto: str) -> str:
-    """Remove acentos e converte para minúsculas para comparação flexível."""
-    return unicodedata.normalize("NFD", texto).encode("ascii", "ignore").decode().lower().strip()
+    """Remove acentos e converte para maiúsculas para comparação flexível."""
+    return unicodedata.normalize("NFD", texto).encode("ascii", "ignore").decode().upper().strip()
 
 
 # Mapa pré-computado: nome normalizado → nome oficial

@@ -9,11 +9,15 @@ class Escola:
     inep: str
     nomeEscola: str
     regional_id: int
-    desigStarlink: Optional[str] = None
-    webEscola: Optional[str] = None
-    telefone: Optional[str] = None
     diretorResponsavel: str
     emailDiretor: str
+
+    desigStarlink: Optional[str] = None
+    webEscola: bool = False 
+    telefone: Optional[str] = None
+    
+
+
     id: Optional[int] = None
     criado_em: datetime = field(default_factory=datetime.now)
     atualizado_em: datetime = field(default_factory=datetime.now)

@@ -1,3 +1,6 @@
+"""
+Esse arquivo implementa os contratos RegionalRepository definido no domain
+"""
 import sqlite3
 from typing import Optional
 from domain.entities.regional import Regional
@@ -20,7 +23,7 @@ class RegionalRepositorySQLite(RegionalRepository):
     def _row_para_regional(self, row: sqlite3.Row) -> Regional:
         """Converte uma linha do banco em uma entidade Regional."""
         regional = Regional.__new__(Regional)
-        regional.id        = row["id"]
+        regional.regional_id        = row["id"]
         regional.nome      = row["nome"]
         regional.municipio = row["municipio"]
         regional.tipo      = row["tipo"]
@@ -40,12 +43,12 @@ class RegionalRepositorySQLite(RegionalRepository):
             (regional.nome, regional.municipio, regional.tipo),
         )
         self._conn.commit()
-        regional.id = cursor.lastrowid
+        regional.regional_id = cursor.lastrowid
         return regional
 
-    def buscar_por_id(self, id: int) -> Optional[Regional]:
+    def buscar_por_id(self, regional_id: int) -> Optional[Regional]:
         row = self._conn.execute(
-            "SELECT * FROM regional WHERE id = ?", (id,)
+            "SELECT * FROM regional WHERE id = ?", (regional_id,)
         ).fetchone()
         return self._row_para_regional(row) if row else None
 
@@ -69,25 +72,25 @@ class RegionalRepositorySQLite(RegionalRepository):
             SET nome = ?, municipio = ?, tipo = ?
             WHERE id = ?
             """,
-            (regional.nome, regional.municipio, regional.tipo, regional.id),
+            (regional.nome, regional.municipio, regional.tipo, regional.regional_id),
         )
         self._conn.commit()
         return regional
 
-    def deletar(self, id: int) -> bool:
-        if self.tem_escolas_vinculadas(id):
+    def deletar(self, regional_id: int) -> bool:
+        if self.tem_escolas_vinculadas(regional_id):
             raise ValueError(
-                f"Não é possível excluir a regional {id} pois "
+                f"Não é possível excluir a regional {regional_id} pois "
                 "existem escolas vinculadas a ela."
             )
         cursor = self._conn.execute(
-            "DELETE FROM regional WHERE id = ?", (id,)
+            "DELETE FROM regional WHERE id = ?", (regional_id,)
         )
         self._conn.commit()
         return cursor.rowcount > 0
 
-    def tem_escolas_vinculadas(self, id: int) -> bool:
+    def tem_escolas_vinculadas(self, regional_id: int) -> bool:
         row = self._conn.execute(
-            "SELECT COUNT(*) as total FROM escola WHERE regional_id = ?", (id,)
+            "SELECT COUNT(*) as total FROM escola WHERE regional_id = ?", (regional_id,)
         ).fetchone()
         return row["total"] > 0

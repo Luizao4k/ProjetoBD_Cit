@@ -1,3 +1,6 @@
+"""
+Modulo contendo a entidade regional, validações e o comportamento.
+"""
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional
@@ -5,12 +8,9 @@ import unicodedata
 import domain.constantes as constantes
 
 
-
-
 def _normalizar(texto: str) -> str:
     """Remove acentos e converte para maiúsculas para comparação flexível."""
     return unicodedata.normalize("NFD", texto).encode("ascii", "ignore").decode().upper().strip()
-
 
 # Mapa pré-computado: nome normalizado → nome oficial
 # Evita recomputar a cada validação
@@ -18,13 +18,16 @@ _MUNICIPIOS_NORMALIZADOS: dict[str, str] = {
     _normalizar(m): m for m in constantes.MUNICIPIOS_VALIDOS
 }
 
-
 @dataclass
 class Regional:
+    """
+    Representa uma Regional cadastrada no sistema
+    """
+    codigo: str
     nome: str
     municipio: str
     tipo: str
-    id: Optional[int] = None
+    regional_id: Optional[int] = None
     criado_em: datetime = field(default_factory=datetime.now)
 
     def __post_init__(self):
@@ -39,6 +42,7 @@ class Regional:
         self._validar_nome()
         self._validar_municipio()
         self._validar_tipo()
+        self._validar_codigo()
 
     def _validar_nome(self):
         if not self.nome or not self.nome.strip():
@@ -66,12 +70,21 @@ class Regional:
                 f"Tipo inválido: '{self.tipo}'. "
                 f"Use: {', '.join(constantes.TIPOS_VALIDOS)}."
             )
-
+    
+    def _validar_codigo(self):
+        if not self.codigo:
+            raise ValueError("Código obrigatório")
     # ─────────────────────────────────────────
     # Comportamentos da entidade
     # ─────────────────────────────────────────
 
-    def atualizar(self, nome: str = None, municipio: str = None, tipo: str = None) -> None:
+    def atualizar(
+            self,
+            nome: str | None = None,
+            municipio: str | None = None,
+            tipo: str | None = None,
+            codigo: str | None = None
+            ) -> None:
         """Atualiza campos e revalida as regras de negócio."""
         if nome is not None:
             self.nome = nome
@@ -79,6 +92,8 @@ class Regional:
             self.municipio = municipio
         if tipo is not None:
             self.tipo = tipo
+        if codigo is not None:
+            self.codigo = codigo
         self._validar()
 
     def eh_dre(self) -> bool:

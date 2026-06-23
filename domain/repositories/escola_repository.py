@@ -42,14 +42,12 @@ class EscolaRepository(ABC):
         self,
         regional_id: Optional[int] = None,
         tipo_regional: Optional[str] = None,
-        web_escola: Optional[bool] = None,
         busca: Optional[str] = None,
     ) -> list[Escola]:
         """
         Retorna escolas aplicando filtros combinados.
         - regional_id : filtra por regional específica
         - tipo_regional: 'DRE' ou 'NTE'
-        - web_escola  : True/False para filtrar pelo campo booleano
         - busca       : texto livre que busca em nomeEscola e INEP
         """
         raise NotImplementedError

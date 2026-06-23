@@ -7,6 +7,7 @@ class DomainError(Exception):
 
 
 class EntidadeNaoEncontradaError(DomainError):
+    """Erro de Entidade não encontrada"""
     def __init__(self, entidade: str, id_: int) -> None:
         super().__init__(f"{entidade} com id={id_} não encontrada.")
 

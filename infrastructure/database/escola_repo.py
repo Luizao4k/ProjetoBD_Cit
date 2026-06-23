@@ -29,7 +29,6 @@ class EscolaRepositorySQLite(EscolaRepository):
         escola.nome_escola         = row["nome_escola"]
         escola.regional_id        = row["regional_id"]
         escola.designacao_starlink      = row["designacao_starlink"]
-        escola.web_escola          = bool(row["web_escola"])
         escola.telefone           = row["telefone"]
         escola.diretor_responsavel = row["diretor_responsavel"]
         escola.email_diretor       = row["email_diretor"]
@@ -41,7 +40,6 @@ class EscolaRepositorySQLite(EscolaRepository):
         self,
         regional_id: Optional[int],
         tipo_regional: Optional[str],
-        web_escola: Optional[bool],
         busca: Optional[str],
     ) -> tuple[str, list[Any]]:
         """
@@ -58,10 +56,6 @@ class EscolaRepositorySQLite(EscolaRepository):
         if tipo_regional is not None:
             condicoes.append("r.tipo = ?")
             params.append(tipo_regional)
-
-        if web_escola is not None:
-            condicoes.append("e.web_escola = ?")
-            params.append(1 if web_escola else 0)
 
         if busca:
             condicoes.append("(e.nome_escola LIKE ? OR e.inep LIKE ?)")
@@ -80,13 +74,13 @@ class EscolaRepositorySQLite(EscolaRepository):
             """
             INSERT INTO escola (
                 inep, nome_escola, regional_id, designacao_starlink,
-                web_escola, telefone, diretor_responsavel, email_diretor,
+                telefone, diretor_responsavel, email_diretor,
                 criado_em, atualizado_em
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 escola.inep, escola.nome_escola, escola.regional_id,
-                escola.designacao_starlink, int(escola.web_escola),
+                escola.designacao_starlink,
                 escola.telefone, escola.diretor_responsavel, escola.email_diretor,
                 escola.criado_em, escola.atualizado_em,
             ),
@@ -124,11 +118,10 @@ class EscolaRepositorySQLite(EscolaRepository):
         self,
         regional_id: Optional[int] = None,
         tipo_regional: Optional[str] = None,
-        web_escola: Optional[bool] = None,
         busca: Optional[str] = None,
     ) -> list[Escola]:
         where, params = self._construir_filtros(
-            regional_id, tipo_regional, web_escola, busca
+            regional_id, tipo_regional, busca
         )
         rows = self._conn.execute(
             f"""
@@ -148,13 +141,13 @@ class EscolaRepositorySQLite(EscolaRepository):
             """
             UPDATE escola
             SET nome_escola = ?, regional_id = ?, designacao_starlink = ?,
-                web_escola = ?, telefone = ?, diretor_responsavel = ?,
+                telefone = ?, diretor_responsavel = ?,
                 email_diretor = ?, atualizado_em = ?
             WHERE id_escola = ?
             """,
             (
                 escola.nome_escola, escola.regional_id, escola.designacao_starlink,
-                int(escola.web_escola), escola.telefone,
+                escola.telefone,
                 escola.diretor_responsavel, escola.email_diretor,
                 escola.atualizado_em, escola.id_escola,
             ),

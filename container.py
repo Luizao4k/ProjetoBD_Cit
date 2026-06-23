@@ -1,7 +1,7 @@
-from infrastructure.database.connection import get_connection
-from infrastructure.database.regional_repo import RegionalRepositorySQLite
-from infrastructure.database.escola_repo import EscolaRepositorySQLite
-from infrastructure.database.web_escola_repo import WebEscolaRepositorySQLite
+from infra.database.connection import get_connection
+from infra.database.regional_repo import RegionalRepositorySQLite
+from infra.database.escola_repo import EscolaRepositorySQLite
+from infra.database.web_escola_repo import WebEscolaRepositorySQLite
 
 
 class Container:

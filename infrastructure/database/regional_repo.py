@@ -3,7 +3,7 @@ Esse arquivo implementa os contratos RegionalRepository definido no domain
 """
 import sqlite3
 from typing import Optional
-from domain.entities.regional import Regional
+from domain.entities.dre import Dre
 from domain.repositories.regional_repository import RegionalRepository
 
 
@@ -20,9 +20,9 @@ class RegionalRepositorySQLite(RegionalRepository):
     # Helpers privados
     # ─────────────────────────────────────────
 
-    def _row_para_regional(self, row: sqlite3.Row) -> Regional:
+    def _row_para_regional(self, row: sqlite3.Row) -> Dre:
         """Converte uma linha do banco em uma entidade Regional."""
-        regional = Regional.__new__(Regional)
+        regional = Dre.__new__(Dre)
         regional.regional_id        = row["id"]
         regional.nome      = row["nome"]
         regional.municipio = row["municipio"]
@@ -34,7 +34,7 @@ class RegionalRepositorySQLite(RegionalRepository):
     # Implementação do contrato
     # ─────────────────────────────────────────
 
-    def salvar(self, regional: Regional) -> Regional:
+    def salvar(self, regional: Dre) -> Dre:
         cursor = self._conn.execute(
             """
             INSERT INTO regional (nome, municipio, tipo)
@@ -46,26 +46,26 @@ class RegionalRepositorySQLite(RegionalRepository):
         regional.regional_id = cursor.lastrowid
         return regional
 
-    def buscar_por_id(self, regional_id: int) -> Optional[Regional]:
+    def buscar_por_id(self, regional_id: int) -> Optional[Dre]:
         row = self._conn.execute(
             "SELECT * FROM regional WHERE id = ?", (regional_id,)
         ).fetchone()
         return self._row_para_regional(row) if row else None
 
-    def buscar_por_tipo(self, tipo: str) -> list[Regional]:
+    def buscar_por_tipo(self, tipo: str) -> list[Dre]:
         rows = self._conn.execute(
             "SELECT * FROM regional WHERE tipo = ? ORDER BY nome",
             (tipo,),
         ).fetchall()
         return [self._row_para_regional(r) for r in rows]
 
-    def listar_todas(self) -> list[Regional]:
+    def listar_todas(self) -> list[Dre]:
         rows = self._conn.execute(
             "SELECT * FROM regional ORDER BY tipo, nome"
         ).fetchall()
         return [self._row_para_regional(r) for r in rows]
 
-    def atualizar(self, regional: Regional) -> Regional:
+    def atualizar(self, regional: Dre) -> Dre:
         self._conn.execute(
             """
             UPDATE regional

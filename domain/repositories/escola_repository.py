@@ -1,74 +1,75 @@
 """
-Métodos Abstratos da entidade Escola
+Contrato de persistência da entidade Escola.
 """
+
 from abc import ABC, abstractmethod
-from typing import Optional
-from domain.entities.escola import Escola
+
+from domain.entities import Escola
+from domain.value_objects import Inep, Nome
+from shared.types import DreId, EscolaId
 
 
 class EscolaRepository(ABC):
     """
     Contrato que qualquer implementação de repositório
-    de Escola precisa respeitar.
+    de Escola deve respeitar.
     """
 
     @abstractmethod
     def salvar(self, escola: Escola) -> Escola:
-        """Persiste uma nova escola e retorna com o id gerado."""
-        raise NotImplementedError
+        """
+        Persiste uma nova escola e retorna a entidade
+        com o identificador gerado.
+        """
 
     @abstractmethod
-    def buscar_por_id(self, id_escola: int) -> Optional[Escola]:
-        """Retorna a escola pelo id ou None se não encontrar."""
-        raise NotImplementedError
+    def buscar_por_id(self, escola_id: EscolaId) -> Escola | None:
+        """
+        Retorna a escola pelo identificador ou None
+        caso não exista.
+        """
 
     @abstractmethod
-    def buscar_por_inep(self, inep: str) -> Optional[Escola]:
-        """Retorna a escola pelo INEP ou None se não encontrar."""
-        raise NotImplementedError
+    def buscar_por_nome(self, nome: Nome) -> list[Escola]:
+        """
+        Retorna a escola pelo nome ou uma lista vazia
+        caso não exista
+        """
 
     @abstractmethod
-    def buscar_por_regional(self, regional_id: int) -> list[Escola]:
-        """Retorna todas as escolas de uma regional."""
-        raise NotImplementedError
+    def buscar_por_inep(self, inep: Inep) -> Escola | None:
+        """
+        Retorna a escola pelo INEP ou None
+        caso não exista.
+        """
+
+    @abstractmethod
+    def buscar_por_municipio(self, municipio: str) -> list[Escola]:
+        """
+        Retorna todas as escolas de um município.
+        """
+
+    @abstractmethod
+    def buscar_por_dre(self, dre_id: DreId) -> list[Escola]:
+        """
+        Retorna todas as escolas vinculadas à DRE.
+        """
 
     @abstractmethod
     def listar_todas(self) -> list[Escola]:
-        """Retorna todas as escolas cadastradas."""
-        raise NotImplementedError
-
-    @abstractmethod
-    def buscar_com_filtros(
-        self,
-        regional_id: Optional[int] = None,
-        tipo_regional: Optional[str] = None,
-        busca: Optional[str] = None,
-    ) -> list[Escola]:
         """
-        Retorna escolas aplicando filtros combinados.
-        - regional_id : filtra por regional específica
-        - tipo_regional: 'DRE' ou 'NTE'
-        - busca       : texto livre que busca em nomeEscola e INEP
+        Retorna todas as escolas cadastradas.
         """
-        raise NotImplementedError
 
     @abstractmethod
     def atualizar(self, escola: Escola) -> Escola:
-        """Persiste as alterações de uma escola existente."""
-        raise NotImplementedError
+        """
+        Persiste as alterações de uma escola e retorna
+        a entidade atualizada.
+        """
 
     @abstractmethod
-    def deletar(self, id_escola: int) -> bool:
+    def remover(self, escola_id: EscolaId) -> None:
         """
-        Remove a escola pelo id.
-        Retorna True se removeu, False se não encontrou.
+        Remove uma escola pelo identificador.
         """
-        raise NotImplementedError
-
-    @abstractmethod
-    def inep_existe(self, inep: str, ignorar_id: Optional[int] = None) -> bool:
-        """
-        Verifica se um INEP já está cadastrado.
-        ignorar_id é usado na edição para não conflitar com o próprio registro.
-        """
-        raise NotImplementedError

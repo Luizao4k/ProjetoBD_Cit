@@ -1,6 +1,17 @@
-TIPOS_VALIDOS = {"DRE", "NTE"}
+"""
+Constantes de nome de entidade para evitar strings soltas
+"""
+from typing import Final
 
-MUNICIPIOS_VALIDOS = {
+MAX_NOME_LEN:   Final[int] = 255
+
+ENTITY_DRE:     Final[str] = "DRE"
+ENTITY_ESCOLA:  Final[str] = "Escola"
+ENTITY_DIRETOR: Final[str] = "Diretor"
+
+
+
+MUNICIPIOS_VALIDOS: Final[list] = {
     "Abaetetuba", "Abel Figueiredo", "Acará", "Afuá", "Água Azul do Norte",
     "Alenquer", "Almeirim", "Altamira", "Anajás", "Ananindeua", "Anapu",
     "Augusto Corrêa", "Aurora do Pará", "Aveiro", "Bagre", "Baião",

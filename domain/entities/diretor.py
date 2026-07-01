@@ -1,28 +1,38 @@
 """
-Modulo contendo atributos Diretor
+Entidade de domínio: Diretor.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from datetime import datetime
-from typing import Optional
+from dataclasses import dataclass
 
-from shared.types import DiretorId, EscolaId
-from shared.exceptions import RegraDeNegocioVioladaError
+from domain.value_objects import Nome, Telefone, Email
+from shared.types import DiretorId
+from .base import AuditoriaEntidade
 
 @dataclass
-class Diretor:
+class Diretor(AuditoriaEntidade):
     """
-    DIRETOR  (0..* por escola; 1 ativo por vez — regra a ser aplicada no use case)
+    Representa o diretor atual de uma escola.
     """
-    id_diretor: Optional[DiretorId]
-    escola_id:  EscolaId
-    nome:       str
-    telefone:   Optional[str] = None
-    email:      Optional[str] = None
-    criado_em:  datetime      = field(default_factory=datetime.now)
 
-    def __post_init__(self) -> None:
-        if not self.nome.strip():
-            raise RegraDeNegocioVioladaError("Nome do diretor não pode ser vazio.")
+    id: DiretorId | None
+
+    nome: Nome
+    telefone: Telefone | None = None
+    email: Email | None = None
+
+    def alterar_nome(self, nome: Nome) -> None:
+        """Função que altera o nome"""
+        self.nome = nome
+        self._marcar_tempo()
+
+    def alterar_telefone(self, telefone: Telefone | None) -> None:
+        """Função que altera o telefone"""
+        self.telefone = telefone
+        self._marcar_tempo()
+
+    def alterar_email(self, email: Email | None) -> None:
+        """função que altera telefone"""
+        self.email = email
+        self._marcar_tempo()

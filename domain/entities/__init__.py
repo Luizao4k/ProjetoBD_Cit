@@ -7,11 +7,8 @@ Regras:
   - Nenhuma entidade conhece SQLite, HTTP ou qualquer framework.
 """
 
-from domain.entities.cemep import Cemep
 from domain.entities.diretor import Diretor
-from domain.entities.escola_projeto import EscolaProjeto
 from domain.entities.escola import Escola
-from domain.entities.projeto import Projeto
-from domain.entities.regional import Regional
+from domain.entities.dre import Dre
 
-__all__ = ["Cemep", "Diretor", "EscolaProjeto", "Escola", "Projeto", "Regional"]
+__all__ = ["Diretor", "Escola", "Dre"]

@@ -5,8 +5,5 @@ Isso impede passsar um ProjetoID onde se espera um EscolaID
 """
 from typing import NewType
 EscolaId   = NewType("EscolaId",   int)
-RegionalId   = NewType("RegionalId",      int)
+DreId      = NewType("DreId",      int)
 DiretorId  = NewType("DiretorId",  int)
-CemepId    = NewType("CemepId",    int)
-ProjetoId  = NewType("ProjetoId",  int)
-EscolaProjetoId = NewType("EscolaProjetoId", int)

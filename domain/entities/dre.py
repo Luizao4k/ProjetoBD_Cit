@@ -1,8 +1,5 @@
 """
 Entidade de domínio: DRE.
-
-Tipagem forte via:
-  - NewType para id (DreId)
 """
 from __future__ import annotations
 
@@ -14,7 +11,7 @@ from domain.value_objects import  Nome, Telefone
 from .base import AuditoriaEntidade
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Dre(AuditoriaEntidade):
     """
     Diretoria Regional de Ensino.

@@ -4,8 +4,8 @@ Regras de negocio para o nome
 from dataclasses import dataclass
 from unicodedata import normalize
 
-from domain.constantes import MAX_NOME_LEN
 from shared.exceptions import NomeInvalidoError
+from .. import MAX_LEN
 
 
 @dataclass(frozen=True)
@@ -23,9 +23,9 @@ class Nome:
 
         valor = self._remover_acentos(valor).upper()
 
-        if len(valor) > MAX_NOME_LEN:
+        if len(valor) > MAX_LEN:
             raise NomeInvalidoError(
-                f"Nome deve possuir no máximo {MAX_NOME_LEN} caracteres."
+                f"Nome deve possuir no máximo {MAX_LEN} caracteres."
             )
 
         object.__setattr__(self, "valor", valor)

@@ -46,6 +46,7 @@ class EnderecoInvalidoError(DomainError):
 class MunicipioInvalidoError(DomainError):
     """Municipio inválido para o sistema"""
 
+
 class RegraDeNegocioVioladaError(DomainError):
     """Violação de uma regra de negócio explícita do domínio."""
 

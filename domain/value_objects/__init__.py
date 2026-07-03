@@ -8,6 +8,8 @@ from .telefone import Telefone
 from .email import Email
 from .municipio import Municipio
 from .endereco import Endereco
+from .quantidade import Quantidade
+from .comentario import Comentario
 
 __all__ = [
     "Inep", 
@@ -15,5 +17,7 @@ __all__ = [
     "Telefone",
     "Email",
     "Municipio",
-    "Endereco"
+    "Endereco",
+    "Quantidade",
+    "Comentario"
 ]

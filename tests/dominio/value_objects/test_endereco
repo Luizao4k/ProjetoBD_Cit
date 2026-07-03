@@ -1,0 +1,22 @@
+import pytest
+
+from domain.value_objects.endereco import Endereco
+from shared.exceptions import EnderecoInvalidoError
+
+
+def test_endereco_valido():
+    endereco = Endereco("Rua A")
+
+    assert endereco.valor == "Rua A"
+
+
+@pytest.mark.parametrize(
+    "valor",
+    [
+        "",
+        "     ",
+    ],
+)
+def test_endereco_invalido(valor):
+    with pytest.raises(EnderecoInvalidoError):
+        Endereco(valor)

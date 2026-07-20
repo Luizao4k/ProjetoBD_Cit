@@ -1,27 +1,36 @@
 """Exporta todos os pacotes"""
-from .base import DomainError, ValorInvalidoError
+from .base import DomainError, ApplicationError, PersistenciaInconsistenteError
 
-from .entidade import (
+from .application import (
     EntidadeDuplicadaError,
     EntidadeNaoEncontradaError,
+    DiretorNaoEncontradoError,
+    DreNaoEncontradaError,
+    CemepNaoEncontradoError,
+    EscolaNaoPossuiCemepError
 )
 
-from .regra_negocio import RegraDeNegocioVioladaError
-
-from .value_objects import (
+from .domain import (
+    RegraDeNegocioVioladaError,
     NomeInvalidoError,
     EmailInvalidoError,
     EnderecoInvalidoError,
     MunicipioInvalidoError,
     TelefoneInvalidoError,
+    ValorInvalidoError
 )
 
 __all__ = [
     "DomainError",
-    "ValorInvalidoError",
+    "ApplicationError",
+    "PersistenciaInconsistenteError",
+    "EscolaNaoPossuiCemepError",
 
     "EntidadeDuplicadaError",
     "EntidadeNaoEncontradaError",
+    "DiretorNaoEncontradoError",
+    "DreNaoEncontradaError",
+    "CemepNaoEncontradoError",
 
     "RegraDeNegocioVioladaError",
 
@@ -30,4 +39,5 @@ __all__ = [
     "EnderecoInvalidoError",
     "MunicipioInvalidoError",
     "TelefoneInvalidoError",
+    "ValorInvalidoError"
 ]

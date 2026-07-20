@@ -14,18 +14,19 @@ class CriarDreUseCase:
     """
     Cria uma nova DRE a partir dos dados informados.
     """
+
     def __init__(self, repositorio: DreRepository) -> None:
         self._repositorio = repositorio
 
     def executar(self, dados: CriarDreInput) -> DreOutput:
         """
         Valida os dados (via Value Objects), persiste a nova DRE
-        e retorna o DTO de saída ja com o identificador gerado.
+        e retorna o DTO de saída já com o identificador gerado.
         """
         dre = Dre(
-            id = None,
-            nome = Nome(dados.nome),
-            telefone = Telefone(dados.telefone) if dados.telefone else None
+            id=None,
+            nome=Nome(dados.nome),
+            telefone=Telefone(dados.telefone) if dados.telefone else None,
         )
 
         dre_criada = self._repositorio.salvar(dre)

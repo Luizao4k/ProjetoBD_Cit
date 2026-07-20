@@ -10,11 +10,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from domain.entities import Dre
+from domain.entities import Dre
 
 
 @dataclass(frozen=True)
@@ -62,11 +60,8 @@ class DreOutput:
         """
         Constrói o DTO de saída a partir da entidade de domínio.
         """
-        if dre.id is None:
-            raise ValueError("DRE sem id não pode ser convertido em DreOutput")
-
         return cls(
-            id=int(dre.id),
+            id=dre.id,
             nome=dre.nome.valor,
             telefone=dre.telefone.valor if dre.telefone else None,
             criado_em=dre.criado_em,

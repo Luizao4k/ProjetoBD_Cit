@@ -1,0 +1,27 @@
+"""
+Caso de uso: remover um Responsável existente.
+"""
+from __future__ import annotations
+
+from shared.types import ResponsavelId
+
+from domain.repositories import ResponsavelRepository
+
+from .exceptions import ResponsavelNaoEncontradoError
+
+
+class RemoverResponsavelUseCase:
+    """
+    Remove um Responsável existente pelo identificador.
+    """
+
+    def __init__(self, repositorio: ResponsavelRepository) -> None:
+        self._repositorio = repositorio
+
+    def executar(self, responsavel_id: ResponsavelId) -> None:
+        responsavel = self._repositorio.buscar_por_id(responsavel_id)
+
+        if responsavel is None:
+            raise ResponsavelNaoEncontradoError(responsavel_id)
+
+        self._repositorio.remover(responsavel_id)

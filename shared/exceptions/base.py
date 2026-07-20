@@ -10,5 +10,8 @@ class DomainError(Exception):
     """Classe base para erros do domínio."""
 
 
-class ValorInvalidoError(DomainError):
+class ApplicationError(Exception):
     """Classe base para erros de Value Objects."""
+
+class PersistenciaInconsistenteError(RuntimeError):
+    """Lançada quando o repositório retorna uma entidade em estado inválido."""

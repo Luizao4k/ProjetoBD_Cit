@@ -8,7 +8,7 @@ from .listar_diretores import ListarDiretoresUseCase
 from .atualizar_diretor import AtualizarDiretorUseCase
 from .remover_diretor import RemoverDiretorUseCase
 from .dtos import CriarDiretorInput, AtualizarDiretorInput, DiretorOutput
-from .exceptions import DiretorNaoEncontradoError
+
 
 __all__ = [
     "CriarDiretorUseCase",
@@ -20,5 +20,4 @@ __all__ = [
     "CriarDiretorInput",
     "AtualizarDiretorInput",
     "DiretorOutput",
-    "DiretorNaoEncontradoError",
 ]

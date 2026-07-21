@@ -1,6 +1,7 @@
-"""Erros relacionados aos VO"""
-
-from shared.exceptions.base import DomainError
+""" ---------------------------------------------------------------
+# Exceções de domínio (usadas pelos Value Objects em __post_init__)
+# ---------------------------------------------------------------"""
+from . import DomainError
 
 
 class NomeInvalidoError(DomainError):
@@ -24,12 +25,3 @@ class EnderecoInvalidoError(DomainError):
 
 class ValorInvalidoError(DomainError):
     """Valor inválido"""
-
-#-----------------------------------------------#
-#----Erros relacionados a regras de negocios----#
-#-----------------------------------------------#
-
-class RegraDeNegocioVioladaError(DomainError):
-    """
-    Lançada quando uma regra de negócio é violada.
-    """

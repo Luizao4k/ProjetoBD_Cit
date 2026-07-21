@@ -1,18 +1,30 @@
 """
 DTOs (Data Transfer Objects) do caso de uso de Diretor.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
 
-from domain.entities import Diretor
 
-
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class CriarDiretorInput:
     """
     Dados necessários para criar um novo Diretor.
+
+    Attributes:
+        escola_id:
+            Identificador da escola à qual o diretor será vinculado.
+
+        nome:
+            Nome do diretor.
+
+        telefone:
+            Telefone de contato, opcional.
+
+        email:
+            E-mail de contato, opcional.
     """
 
     escola_id: int
@@ -21,15 +33,15 @@ class CriarDiretorInput:
     email: str | None = None
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class AtualizarDiretorInput:
     """
-    Dados para atualizar um Diretor existente.
+    Dados utilizados para atualizar um Diretor existente.
 
-    Atualização parcial: campos None não são alterados. escola_id
-    não aparece aqui — trocar a escola de um diretor não é uma
-    operação suportada pelo domínio (a entidade não possui
-    alterar_escola); isso seria remover o diretor e criar outro.
+    A atualização é parcial. Campos com valor ``None`` indicam que
+    aquele atributo não deverá ser alterado. escola_id não aparece
+    aqui — trocar a escola de um diretor não é uma operação
+    suportada pelo domínio.
     """
 
     id: int
@@ -38,11 +50,10 @@ class AtualizarDiretorInput:
     email: str | None = None
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class DiretorOutput:
     """
-    Representação de saída de um Diretor, já com os valores
-    "desembrulhados" dos Value Objects.
+    Representação de saída de um Diretor.
     """
 
     id: int
@@ -52,27 +63,3 @@ class DiretorOutput:
     email: str | None
     criado_em: datetime
     atualizado_em: datetime
-
-    @classmethod
-    def de_entidade(cls, diretor: Diretor) -> "DiretorOutput":
-        """
-        Constrói o DTO de saída a partir da entidade de domínio.
-
-        Levanta ValueError se o Diretor ainda não tiver sido
-        persistido (id ainda None).
-        """
-        if diretor.id is None:
-            raise ValueError(
-                "Não é possível converter para DiretorOutput um "
-                "Diretor sem id persistido."
-            )
-
-        return cls(
-            id=diretor.id,
-            escola_id=diretor.escola_id,
-            nome=diretor.nome.valor,
-            telefone=diretor.telefone.valor if diretor.telefone else None,
-            email=diretor.email.valor if diretor.email else None,
-            criado_em=diretor.criado_em,
-            atualizado_em=diretor.atualizado_em,
-        )

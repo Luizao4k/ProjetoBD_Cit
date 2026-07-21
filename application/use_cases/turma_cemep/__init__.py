@@ -12,7 +12,7 @@ from .dtos import (
     AtualizarTurmaCemepInput,
     TurmaCemepOutput,
 )
-from .exceptions import TurmaCemepNaoEncontradaError
+
 
 __all__ = [
     "CriarTurmaCemepUseCase",
@@ -24,5 +24,4 @@ __all__ = [
     "CriarTurmaCemepInput",
     "AtualizarTurmaCemepInput",
     "TurmaCemepOutput",
-    "TurmaCemepNaoEncontradaError",
 ]

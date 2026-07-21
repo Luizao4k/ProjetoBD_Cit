@@ -12,7 +12,7 @@ from .dtos import (
     AtualizarResponsavelInput,
     ResponsavelOutput,
 )
-from .exceptions import ResponsavelNaoEncontradoError
+
 
 __all__ = [
     "CriarResponsavelUseCase",
@@ -24,5 +24,4 @@ __all__ = [
     "CriarResponsavelInput",
     "AtualizarResponsavelInput",
     "ResponsavelOutput",
-    "ResponsavelNaoEncontradoError",
 ]

@@ -1,84 +1,78 @@
 """Erros relacionados às entidades."""
-from typing import Final
+# ---------------------------------------------------------------
+# Exceções de aplicação (usadas pelos casos de uso)
+# ---------------------------------------------------------------
 
-from shared.exceptions.base import ApplicationError
+from . import ApplicationError, RegistroNaoEncontradoError, RelacaoNaoEncontradaError
 
 
 
-class EntidadeNaoEncontradaError(ApplicationError):
+class PersistenciaInconsistenteError(ApplicationError):
     """
-    Lançada quando uma entidade não é encontrada.
-    """
+    Levantada quando o repositório retorna uma entidade em estado
+    inconsistente com o que se espera após uma operação de
+    persistência (ex: id ainda None depois de salvar/atualizar).
 
-    def __init__(self, entidade: str, id_: int | str):
-        self.entidade: Final[str] = entidade
-        self.id_: Final[int | str] = id_
-
-        super().__init__(f"{entidade} com id '{id_}' não foi encontrada.")
-
-
-class EntidadeDuplicadaError(ApplicationError):
-    """
-    Lançada quando já existe uma entidade com determinado campo.
+    Indica um bug na implementação concreta do repositório, não
+    um erro de uso da aplicação — por isso não deve ser tratada
+    como "entrada inválida do usuário".
     """
 
-    def __init__(self, entidade: str, campo: str, valor: str):
-        self.entidade: Final[str] = entidade
-        self.campo: Final[str] = campo
-        self.valor: Final[str] = valor
+#--------------------------------------------------------#
 
-        super().__init__(
-            f"Já existe {entidade} com {campo} '{valor}'."
-        )
-
-#---------------------------------------#
-#--Exceções do caso de uso de Diretor.--#
-#---------------------------------------#
+class DreNaoEncontradaError(RegistroNaoEncontradoError):
+    """ registro não encontrado pelo id de DRE"""
+    entidade = "DRE"
 
 
-class DiretorNaoEncontradoError(ApplicationError):
-    """
-    Levantada quando um Diretor não é encontrado pelo
-    identificador informado.
-    """
+class EscolaNaoEncontradaError(RegistroNaoEncontradoError):
+    """ registro não encontrado pelo id de Escola"""
+    entidade = "Escola"
 
-    def __init__(self, diretor_id: int) -> None:
-        super().__init__(f"Diretor com id={diretor_id} não foi encontrado.")
-        self.diretor_id = diretor_id
 
-#---------------------------------------#
-#--   Exceções do caso de uso de DRE. --#
-#---------------------------------------#
+class DiretorNaoEncontradoError(RegistroNaoEncontradoError):
+    """ registro não encontrado pelo id de Diretor"""
+    entidade = "Diretor"
 
-class DreNaoEncontradaError(ApplicationError):
-    """
-    Levantada quando uma DRE não é encontrada pelo identificador
-    informado.
-    """
 
-    def __init__(self, dre_id: int) -> None:
-        super().__init__(f"DRE com id={dre_id} não foi encontrada.")
-        self.dre_id = dre_id
+class CemepNaoEncontradoError(RegistroNaoEncontradoError):
+    """ registro não encontrado pelo id de CEMEP"""
+    entidade = "Cemep"
 
-#---------------------------------------#
-#--  Exceções do caso de uso de CEMEP --#
-#---------------------------------------#
 
-class CemepNaoEncontradoError(ApplicationError):
-    """
-    Levantada quando um Cemep não é encontrado pelo
-    identificador informado.
-    """
+class ChromebookNaoEncontradoError(RegistroNaoEncontradoError):
+    """ registro não encontrado pelo id de Chromebook"""
+    entidade = "Chromebook"
 
-    def __init__(self, cemep_id: int) -> None:
-        super().__init__(f"Cemep com id={cemep_id} não foi encontrado.")
-        self.cemep_id = cemep_id
 
-class EscolaNaoPossuiCemepError(ApplicationError):
-    """
-    Levantada quando um Cemep não é encontrado pela
-    Escola informada.
-    """
-    def __init__(self, escola_id: int) -> None:
-        super().__init__(f"Escola com id={escola_id} não possui Cemep.")
-        self.escola_id = escola_id
+class ResponsavelNaoEncontradoError(RegistroNaoEncontradoError):
+    """ registro não encontrado pelo id de Responsavel"""
+    entidade = "Responsavel"
+
+
+class StarlinkNaoEncontradoError(RegistroNaoEncontradoError):
+    """ registro não encontrado pelo id de starlink"""
+    entidade = "Starlink"
+
+
+class TurmaCemepNaoEncontradaError(RegistroNaoEncontradoError):
+    """ registro não encontrado pelo id de turma cemep"""
+    entidade = "TurmaCemep"
+
+
+#--------------------------------------------------------#
+
+class EscolaNaoPossuiDiretorError(RelacaoNaoEncontradaError):
+    """Relação não encontrada entre entidades"""
+    entidade = "diretor"
+
+
+class EscolaNaoPossuiCemepError(RelacaoNaoEncontradaError):
+    """Relação não encontrada entre entidades"""
+
+    entidade = "Cemep"
+
+
+class EscolaNaoPossuiChromebookError(RelacaoNaoEncontradaError):
+    """Relação não encontrada entre entidades"""
+    entidade = "registro de Chromebook"

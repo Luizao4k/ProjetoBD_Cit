@@ -1,17 +1,25 @@
 """Exporta todos os pacotes"""
-from .base import DomainError, ApplicationError, PersistenciaInconsistenteError
+from .base import (
+    DomainError,
+    ApplicationError,
+    RegistroNaoEncontradoError,
+    RelacaoNaoEncontradaError
+)
 
 from .application import (
-    EntidadeDuplicadaError,
-    EntidadeNaoEncontradaError,
-    DiretorNaoEncontradoError,
+    PersistenciaInconsistenteError,
     DreNaoEncontradaError,
+    EscolaNaoEncontradaError,
+    DiretorNaoEncontradoError,
+    ChromebookNaoEncontradoError,
+    ResponsavelNaoEncontradoError,
+    StarlinkNaoEncontradoError,
+    TurmaCemepNaoEncontradaError,
     CemepNaoEncontradoError,
     EscolaNaoPossuiCemepError
 )
 
 from .domain import (
-    RegraDeNegocioVioladaError,
     NomeInvalidoError,
     EmailInvalidoError,
     EnderecoInvalidoError,
@@ -23,16 +31,19 @@ from .domain import (
 __all__ = [
     "DomainError",
     "ApplicationError",
+    "RelacaoNaoEncontradaError",
+    "RegistroNaoEncontradoError",
+
     "PersistenciaInconsistenteError",
-    "EscolaNaoPossuiCemepError",
-
-    "EntidadeDuplicadaError",
-    "EntidadeNaoEncontradaError",
-    "DiretorNaoEncontradoError",
     "DreNaoEncontradaError",
+    "EscolaNaoEncontradaError",
+    "DiretorNaoEncontradoError",
+    "ChromebookNaoEncontradoError",
+    "ResponsavelNaoEncontradoError",
+    "StarlinkNaoEncontradoError",
+    "TurmaCemepNaoEncontradaError",
     "CemepNaoEncontradoError",
-
-    "RegraDeNegocioVioladaError",
+    "EscolaNaoPossuiCemepError",
 
     "NomeInvalidoError",
     "EmailInvalidoError",

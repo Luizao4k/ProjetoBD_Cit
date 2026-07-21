@@ -8,7 +8,7 @@ from .listar_escolas import ListarEscolasUseCase
 from .atualizar_escola import AtualizarEscolaUseCase
 from .remover_escola import RemoverEscolaUseCase
 from .dtos import CriarEscolaInput, AtualizarEscolaInput, EscolaOutput
-from .exceptions import EscolaNaoEncontradaError
+
 
 __all__ = [
     "CriarEscolaUseCase",
@@ -20,5 +20,4 @@ __all__ = [
     "CriarEscolaInput",
     "AtualizarEscolaInput",
     "EscolaOutput",
-    "EscolaNaoEncontradaError",
 ]

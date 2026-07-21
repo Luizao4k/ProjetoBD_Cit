@@ -12,7 +12,7 @@ from .dtos import (
     AtualizarChromebookInput,
     ChromebookOutput,
 )
-from .exceptions import ChromebookNaoEncontradoError
+
 
 __all__ = [
     "CriarChromebookUseCase",
@@ -24,5 +24,4 @@ __all__ = [
     "CriarChromebookInput",
     "AtualizarChromebookInput",
     "ChromebookOutput",
-    "ChromebookNaoEncontradoError",
 ]

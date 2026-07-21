@@ -8,7 +8,7 @@ from .listar_starlinks import ListarStarlinksUseCase
 from .atualizar_starlink import AtualizarStarlinkUseCase
 from .remover_starlink import RemoverStarlinkUseCase
 from .dtos import CriarStarlinkInput, AtualizarStarlinkInput, StarlinkOutput
-from .exceptions import StarlinkNaoEncontradoError
+
 
 __all__ = [
     "CriarStarlinkUseCase",
@@ -20,5 +20,4 @@ __all__ = [
     "CriarStarlinkInput",
     "AtualizarStarlinkInput",
     "StarlinkOutput",
-    "StarlinkNaoEncontradoError",
 ]

@@ -1,40 +1,49 @@
 """
 DTOs (Data Transfer Objects) do caso de uso de DRE.
 
-Servem para desacoplar quem chama o caso de uso dos Value Objects de
-domínio: a entrada e a saída trabalham só com tipos primitivos
-(str, int, datetime), o que facilita tanto a integração com uma API/UI
-quanto a futura exportação para planilha.
+Os DTOs pertencem à camada de aplicação e são responsáveis apenas
+por transportar dados entre quem invoca o caso de uso (API, CLI,
+interface gráfica, testes etc.) e o próprio caso de uso.
+
+Eles utilizam apenas tipos primitivos e não possuem regras de negócio.
+A conversão entre Entidades e DTOs é responsabilidade do Use Case,
+mantendo o DTO desacoplado do domínio.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import TYPE_CHECKING
-
-from domain.entities import Dre
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class CriarDreInput:
     """
     Dados necessários para criar uma nova DRE.
+
+    Attributes:
+        nome:
+            Nome da DRE.
+
+        telefone:
+            Telefone de contato, opcional.
     """
 
     nome: str
     telefone: str | None = None
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class AtualizarDreInput:
     """
-    Dados para atualizar uma DRE existente.
+    Dados utilizados para atualizar uma DRE existente.
 
-    Atualização parcial: campos deixados como None não são alterados.
-    Não há, hoje, uma forma de limpar explicitamente o telefone
-    (setá-lo como None) através deste DTO — se essa necessidade
-    surgir, será preciso um valor sentinela para diferenciar
-    "não informado" de "definir como vazio".
+    A atualização é parcial. Campos com valor ``None`` indicam que
+    aquele atributo não deverá ser alterado.
+
+    Observação:
+        Atualmente não existe uma forma de limpar explicitamente o
+        telefone (defini-lo como vazio) através deste DTO.
     """
 
     id: int
@@ -42,11 +51,16 @@ class AtualizarDreInput:
     telefone: str | None = None
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class DreOutput:
     """
-    Representação de saída de uma DRE, já com os valores
-    "desembrulhados" dos Value Objects.
+    Representação de saída de uma DRE.
+
+    Este DTO é utilizado para devolver informações ao consumidor
+    do caso de uso (API, interface gráfica, testes etc.).
+
+    Todos os atributos utilizam tipos primitivos para evitar
+    dependência da camada de domínio.
     """
 
     id: int
@@ -54,16 +68,3 @@ class DreOutput:
     telefone: str | None
     criado_em: datetime
     atualizado_em: datetime
-
-    @classmethod
-    def de_entidade(cls, dre: Dre) -> "DreOutput":
-        """
-        Constrói o DTO de saída a partir da entidade de domínio.
-        """
-        return cls(
-            id=dre.id,
-            nome=dre.nome.valor,
-            telefone=dre.telefone.valor if dre.telefone else None,
-            criado_em=dre.criado_em,
-            atualizado_em=dre.atualizado_em,
-        )

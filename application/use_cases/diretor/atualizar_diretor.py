@@ -1,31 +1,53 @@
 """
 Caso de uso: atualizar um Diretor existente.
 """
+
 from __future__ import annotations
 
 from domain.repositories import DiretorRepository
 from domain.value_objects import Email, Nome, Telefone
+from shared.exceptions import (
+    DiretorNaoEncontradoError,
+    PersistenciaInconsistenteError,
+)
+from shared.types import DiretorId
 
 from .dtos import AtualizarDiretorInput, DiretorOutput
-from .exceptions import DiretorNaoEncontradoError
 
 
 class AtualizarDiretorUseCase:
     """
-    Atualiza os dados de um Diretor já existente.
+    Atualiza um Diretor existente.
 
-    Atualização parcial: campos não informados (None) permanecem
-    inalterados.
+    A atualização é parcial: campos com valor ``None`` não são
+    modificados.
     """
 
     def __init__(self, repositorio: DiretorRepository) -> None:
         self._repositorio = repositorio
 
     def executar(self, dados: AtualizarDiretorInput) -> DiretorOutput:
-        diretor = self._repositorio.buscar_por_id(dados.id)
+        """
+        Atualiza um Diretor existente.
+
+        Args:
+            dados:
+                Dados necessários para a atualização.
+
+        Returns:
+            DiretorOutput contendo o estado atualizado do Diretor.
+
+        Raises:
+            DiretorNaoEncontradoError:
+                Caso não exista um Diretor com o id informado.
+        """
+
+        diretor_id = DiretorId(dados.id)
+
+        diretor = self._repositorio.buscar_por_id(diretor_id)
 
         if diretor is None:
-            raise DiretorNaoEncontradoError(dados.id)
+            raise DiretorNaoEncontradoError(diretor_id)
 
         if dados.nome is not None:
             diretor.alterar_nome(Nome(dados.nome))
@@ -38,4 +60,17 @@ class AtualizarDiretorUseCase:
 
         diretor_atualizado = self._repositorio.atualizar(diretor)
 
-        return DiretorOutput.de_entidade(diretor_atualizado)
+        if diretor_atualizado.id is None:
+            raise PersistenciaInconsistenteError(
+                "O repositório retornou um Diretor sem id."
+            )
+
+        return DiretorOutput(
+            id=diretor_atualizado.id,
+            escola_id=diretor_atualizado.escola_id,
+            nome=diretor_atualizado.nome.valor,
+            telefone=diretor_atualizado.telefone.valor if diretor_atualizado.telefone else None,
+            email=diretor_atualizado.email.valor if diretor_atualizado.email else None,
+            criado_em=diretor_atualizado.criado_em,
+            atualizado_em=diretor_atualizado.atualizado_em,
+        )

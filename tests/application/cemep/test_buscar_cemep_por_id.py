@@ -21,6 +21,8 @@ def test_deve_retornar_cemep_por_id(
     assert resultado.escola_id == cemep.escola_id
     assert resultado.comentario == cemep.comentario
 
+
+
 def test_deve_lancar_cemep_nao_encontrado(
     cemep_repository,
 ):

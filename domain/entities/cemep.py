@@ -23,6 +23,13 @@ class Cemep(AuditoriaEntidade):
     # Regras de negócio
     # ------------------------------------------------------------------
     def alterar_comentario(self, comentario: str | None) -> None:
-        """Altera o comentário/observação livre do Cemep."""
+        """
+        Altera o comentário do Cemep.
+        A auditoria é atualizada apenas quando houver
+        alteração efetiva no estado da entidade.
+        """
+        if self.comentario == comentario:
+            return
+
         self.comentario = comentario
         self._marcar_tempo()

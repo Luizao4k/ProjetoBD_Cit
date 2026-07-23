@@ -1,24 +1,57 @@
-"""Erros relacionados às entidades."""
-# ---------------------------------------------------------------
-# Exceções de aplicação (usadas pelos casos de uso)
-# ---------------------------------------------------------------
+"""
+Exceções da camada de aplicação.
 
-from . import ApplicationError, RegistroNaoEncontradoError, RelacaoNaoEncontradaError
+Representam erros de execução dos casos de uso e regras que
+dependem da coordenação entre entidades e repositórios.
+"""
+
+from typing import Any
+
+from . import ApplicationError
+
+class RegistroDuplicadoError(ApplicationError):
+    """Violação de uma regra de unicidade."""
 
 
-
-class PersistenciaInconsistenteError(ApplicationError):
+class RegistroNaoEncontradoError(ApplicationError):
     """
-    Levantada quando o repositório retorna uma entidade em estado
-    inconsistente com o que se espera após uma operação de
-    persistência (ex: id ainda None depois de salvar/atualizar).
-
-    Indica um bug na implementação concreta do repositório, não
-    um erro de uso da aplicação — por isso não deve ser tratada
-    como "entrada inválida do usuário".
+    Classe base para erros de "registro não encontrado pelo id"
+    de qualquer entidade. Cada subclasse só precisa definir o
+    atributo de classe `entidade`.
     """
 
+    entidade: str = "Registro"
+
+    def __init__(self, identificador: Any) -> None:
+        super().__init__(
+            f"{self.entidade} com id={identificador} não foi encontrado(a)."
+        )
+        self.identificador = identificador
+
+class RelacaoNaoEncontradaError(ApplicationError):
+    """
+    Classe base para erros de relação 1:1 ausente (ex: escola sem
+    diretor cadastrado). Cada subclasse só precisa definir o
+    atributo de classe `entidade`.
+    """
+
+    entidade: str = "registro relacionado"
+
+    def __init__(self, identificador: Any) -> None:
+        super().__init__(
+            f"A escola com id={identificador} não possui "
+            f"{self.entidade} cadastrado(a)."
+        )
+        self.escola_id = identificador
 #--------------------------------------------------------#
+#--------------------------------------------------------#
+#--------------------------------------------------------#
+
+class EscolaJaPossuiCemepError(RegistroDuplicadoError):
+    """A escola já possui um CEMEP cadastrado."""
+
+#------------------------------------------------------#
+#------------------------------------------------------#
 
 class DreNaoEncontradaError(RegistroNaoEncontradoError):
     """ registro não encontrado pelo id de DRE"""
@@ -59,8 +92,8 @@ class TurmaCemepNaoEncontradaError(RegistroNaoEncontradoError):
     """ registro não encontrado pelo id de turma cemep"""
     entidade = "TurmaCemep"
 
-
-#--------------------------------------------------------#
+#------------------------------------------------------#
+#------------------------------------------------------#
 
 class EscolaNaoPossuiDiretorError(RelacaoNaoEncontradaError):
     """Relação não encontrada entre entidades"""

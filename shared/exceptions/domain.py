@@ -1,6 +1,10 @@
-""" ---------------------------------------------------------------
-# Exceções de domínio (usadas pelos Value Objects em __post_init__)
-# ---------------------------------------------------------------"""
+"""
+Exceções de domínio.
+
+Representam violações das invariantes do domínio detectadas pelas
+entidades e Value Objects.
+"""
+
 from . import DomainError
 
 
@@ -13,7 +17,7 @@ class TelefoneInvalidoError(DomainError):
 
 
 class EmailInvalidoError(DomainError):
-    """Email inválido."""
+    """E-mail inválido."""
 
 
 class MunicipioInvalidoError(DomainError):
@@ -23,5 +27,14 @@ class MunicipioInvalidoError(DomainError):
 class EnderecoInvalidoError(DomainError):
     """Endereço inválido."""
 
-class ValorInvalidoError(DomainError):
-    """Valor inválido"""
+
+class InepInvalidoError(DomainError):
+    """Código INEP inválido."""
+
+
+class QuantidadeInvalidaError(DomainError):
+    """Quantidade inválida."""
+
+
+class ComentarioInvalidoError(DomainError):
+    """Comentário inválido."""

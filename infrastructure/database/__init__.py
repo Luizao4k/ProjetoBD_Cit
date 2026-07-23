@@ -1,25 +1,15 @@
 """
-Gerenciamento de conexão SQLite e criação do schema.
+Camada de infraestrutura.
 
-Decisões técnicas:
-  - WAL mode  → melhor concorrência de leitura.
-  - Foreign keys ON  → integridade referencial garantida pelo banco.
-  - Row factory = Row  → acesso por nome de coluna.
-  - CHECK constraints refletem as regras do domain/value_objects.
+Contém as implementações concretas dos contratos definidos em
+domain.repositories. A camada de aplicação (use cases) nunca importa
+nada daqui diretamente — é o código de composição (main, testes, API)
+que decide qual implementação injetar em cada Use Case.
 """
-from .conexao import (
-    criar_conexao_db,
-    get_db,
-    close_connection,
-    init_app,
-)
-
-from .schema import inicializar_schema
+from .sqlite.connection import criar_conexao
+from .sqlite.connection import criar_schema
 
 __all__ = [
-    "criar_conexao_db",
-    "get_db",
-    "close_connection",
-    "init_app",
-    "inicializar_schema",
+    "criar_conexao",
+    "criar_schema",
 ]

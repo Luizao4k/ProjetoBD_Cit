@@ -1,54 +1,93 @@
-"""Exporta todos os pacotes"""
+"""
+Exceções utilizadas pela aplicação.
+
+Organizadas por camada:
+- base: exceções base da arquitetura;
+- domain: violações das regras de domínio;
+- application: erros dos casos de uso;
+- infrastructure: erros técnicos da infraestrutura.
+"""
+
 from .base import (
     DomainError,
     ApplicationError,
-    RegistroNaoEncontradoError,
-    RelacaoNaoEncontradaError
-)
-
-from .application import (
-    PersistenciaInconsistenteError,
-    DreNaoEncontradaError,
-    EscolaNaoEncontradaError,
-    DiretorNaoEncontradoError,
-    ChromebookNaoEncontradoError,
-    ResponsavelNaoEncontradoError,
-    StarlinkNaoEncontradoError,
-    TurmaCemepNaoEncontradaError,
-    CemepNaoEncontradoError,
-    EscolaNaoPossuiCemepError
+    InfrastructureError,
 )
 
 from .domain import (
     NomeInvalidoError,
-    EmailInvalidoError,
-    EnderecoInvalidoError,
-    MunicipioInvalidoError,
     TelefoneInvalidoError,
-    ValorInvalidoError
+    EmailInvalidoError,
+    MunicipioInvalidoError,
+    EnderecoInvalidoError,
+    InepInvalidoError,
+    QuantidadeInvalidaError,
+    ComentarioInvalidoError,
+)
+
+from .application import (
+    RegistroDuplicadoError,
+    RegistroNaoEncontradoError,
+    RelacaoNaoEncontradaError,
+    EscolaJaPossuiCemepError,
+    DreNaoEncontradaError,
+    EscolaNaoEncontradaError,
+    DiretorNaoEncontradoError,
+    CemepNaoEncontradoError,
+    ChromebookNaoEncontradoError,
+    ResponsavelNaoEncontradoError,
+    StarlinkNaoEncontradoError,
+    TurmaCemepNaoEncontradaError,
+    EscolaNaoPossuiDiretorError,
+    EscolaNaoPossuiCemepError,
+    EscolaNaoPossuiChromebookError,
+)
+
+from .infrastrucutre import (
+    PersistenciaError,
+    PersistenciaInconsistenteError,
+    ConexaoBancoError,
+    FalhaAoObterIdGeradoError,
+    TransacaoError
 )
 
 __all__ = [
+    # Base
     "DomainError",
     "ApplicationError",
-    "RelacaoNaoEncontradaError",
-    "RegistroNaoEncontradoError",
+    "InfrastructureError",
 
-    "PersistenciaInconsistenteError",
+    # Domain
+    "NomeInvalidoError",
+    "TelefoneInvalidoError",
+    "EmailInvalidoError",
+    "MunicipioInvalidoError",
+    "EnderecoInvalidoError",
+    "InepInvalidoError",
+    "QuantidadeInvalidaError",
+    "ComentarioInvalidoError",
+
+    # Application
+    "RegistroDuplicadoError",
+    "RegistroNaoEncontradoError",
+    "RelacaoNaoEncontradaError",
+    "EscolaJaPossuiCemepError",
     "DreNaoEncontradaError",
     "EscolaNaoEncontradaError",
     "DiretorNaoEncontradoError",
+    "CemepNaoEncontradoError",
     "ChromebookNaoEncontradoError",
     "ResponsavelNaoEncontradoError",
     "StarlinkNaoEncontradoError",
     "TurmaCemepNaoEncontradaError",
-    "CemepNaoEncontradoError",
+    "EscolaNaoPossuiDiretorError",
     "EscolaNaoPossuiCemepError",
+    "EscolaNaoPossuiChromebookError",
 
-    "NomeInvalidoError",
-    "EmailInvalidoError",
-    "EnderecoInvalidoError",
-    "MunicipioInvalidoError",
-    "TelefoneInvalidoError",
-    "ValorInvalidoError"
+    # Infrastructure
+    "PersistenciaError",
+    "PersistenciaInconsistenteError",
+    "ConexaoBancoError",
+    "FalhaAoObterIdGeradoError",
+    "TransacaoError",
 ]

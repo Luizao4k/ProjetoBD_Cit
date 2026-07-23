@@ -34,3 +34,7 @@ class FalhaAoObterIdGeradoError(PersistenciaError):
 
 class TransacaoError(PersistenciaError):
     """Falha durante a execução de uma transação."""
+
+class CemepPossuiResponsaveisError(PersistenciaError):
+    """uma violação de chave estrangeira porque existe
+            Responsavel vinculados ao CEMEP"""

@@ -9,6 +9,11 @@ import sqlite3
 from domain.entities import Cemep
 from domain.repositories import CemepRepository
 from shared.types import CemepId, EscolaId
+from shared.exceptions import (
+    EscolaJaPossuiCemepError,
+    CemepPossuiResponsaveisError,
+    PersistenciaError,
+    )
 
 from .._util import parse_datetime, confirmar_transacao, obter_id_gerado
 
@@ -28,60 +33,118 @@ class SqliteCemepRepository(CemepRepository):
     def __init__(self, conexao: sqlite3.Connection) -> None:
         self._conexao = conexao
 
+#-----------------------------------------------------------------#
+
     def salvar(self, cemep: Cemep) -> Cemep:
-        cursor = self._conexao.execute(
-            """
-            INSERT INTO cemeps (escola_id, comentario, criado_em, atualizado_em)
-            VALUES (?, ?, ?, ?)
-            """,
-            (
-                cemep.escola_id,
-                cemep.comentario,
-                cemep.criado_em.isoformat(),
-                cemep.atualizado_em.isoformat(),
-            ),
-        )
+        try:
+            cursor = self._conexao.execute(
+                """
+                INSERT INTO cemeps (escola_id, comentario, criado_em, atualizado_em)
+                VALUES (?, ?, ?, ?)
+                """,
+                (
+                    cemep.escola_id,
+                    cemep.comentario,
+                    cemep.criado_em.isoformat(),
+                    cemep.atualizado_em.isoformat(),
+                ),
+            )
 
-        confirmar_transacao(self._conexao)
+            confirmar_transacao(self._conexao)
 
-        cemep.id = CemepId(obter_id_gerado(cursor))
-        return cemep
+            cemep.id = CemepId(obter_id_gerado(cursor))
+            return cemep
+
+        except sqlite3.IntegrityError as exc:
+            raise EscolaJaPossuiCemepError() from exc
+
+        except sqlite3.DatabaseError as exc:
+            raise PersistenciaError("Falha ao salvar o CEMEP.") from exc
+
+#-----------------------------------------------------------------#
 
     def buscar_por_id(self, cemep_id: CemepId) -> Cemep | None:
-        linha = self._conexao.execute(
-            "SELECT * FROM cemeps WHERE id = ?", (cemep_id,)
-        ).fetchone()
-        return self._para_entidade(linha) if linha else None
+        try:
+            linha = self._conexao.execute(
+                "SELECT * FROM cemeps WHERE id = ?",
+                (cemep_id,),
+            ).fetchone()
+
+            return self._para_entidade(linha) if linha else None
+
+        except sqlite3.DatabaseError as exc:
+            raise PersistenciaError(
+                "Falha ao buscar o CEMEP."
+            ) from exc
+
+#-----------------------------------------------------------------#
 
     def buscar_por_escola(self, escola_id: EscolaId) -> Cemep | None:
-        linha = self._conexao.execute(
-            "SELECT * FROM cemeps WHERE escola_id = ?", (escola_id,)
-        ).fetchone()
-        return self._para_entidade(linha) if linha else None
+        try:
+            linha = self._conexao.execute(
+                "SELECT * FROM cemeps WHERE escola_id = ?", (escola_id,)
+            ).fetchone()
+            return self._para_entidade(linha) if linha else None
+
+        except sqlite3.DatabaseError as exc:
+            raise PersistenciaError("Falha ao buscar o CEMEP da Escola.") from exc
+
+#-----------------------------------------------------------------#
 
     def listar_todas(self) -> list[Cemep]:
-        linhas = self._conexao.execute("SELECT * FROM cemeps ORDER BY id").fetchall()
-        return [self._para_entidade(linha) for linha in linhas]
+
+        try:
+            linhas = self._conexao.execute("SELECT * FROM cemeps ORDER BY id").fetchall()
+            return [self._para_entidade(linha) for linha in linhas]
+
+        except sqlite3.DatabaseError as exc:
+            raise PersistenciaError("Falha ao listar os CEMEPs.") from exc
+
+#-----------------------------------------------------------------#
 
     def atualizar(self, cemep: Cemep) -> Cemep:
-        self._conexao.execute(
-            """
-            UPDATE cemeps
-               SET comentario = ?, atualizado_em = ?
-             WHERE id = ?
-            """,
-            (
-                cemep.comentario,
-                cemep.atualizado_em.isoformat(),
-                cemep.id,
-            ),
-        )
-        self._conexao.commit()
-        return cemep
+        try:
+            self._conexao.execute(
+                """
+                UPDATE cemeps
+                SET comentario = ?, atualizado_em = ?
+                WHERE id = ?
+                """,
+                (
+                    cemep.comentario,
+                    cemep.atualizado_em.isoformat(),
+                    cemep.id,
+                ),
+            )
+
+            confirmar_transacao(self._conexao)
+
+            return cemep
+
+        except sqlite3.IntegrityError as exc:
+            raise EscolaJaPossuiCemepError() from exc
+
+        except sqlite3.DatabaseError as exc:
+            raise PersistenciaError("Falha ao atualizar o CEMEP.") from exc
+
+#-----------------------------------------------------------------#
 
     def remover(self, cemep_id: CemepId) -> None:
-        self._conexao.execute("DELETE FROM cemeps WHERE id = ?", (cemep_id,))
-        self._conexao.commit()
+        try:
+            self._conexao.execute(
+                "DELETE FROM cemeps WHERE id = ?",
+                (cemep_id,),
+            )
+
+            confirmar_transacao(self._conexao)
+
+        except sqlite3.IntegrityError as exc:
+            raise CemepPossuiResponsaveisError() from exc
+
+        except sqlite3.DatabaseError as exc:
+            raise PersistenciaError("Falha ao remover o CEMEP.") from exc
+
+#-----------------------------------------------------------------#
 
     @staticmethod
     def _para_entidade(linha: sqlite3.Row) -> Cemep:

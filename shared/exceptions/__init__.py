@@ -48,7 +48,8 @@ from .infrastrucutre import (
     PersistenciaInconsistenteError,
     ConexaoBancoError,
     FalhaAoObterIdGeradoError,
-    TransacaoError
+    TransacaoError,
+    CemepPossuiResponsaveisError
 )
 
 __all__ = [
@@ -90,4 +91,5 @@ __all__ = [
     "ConexaoBancoError",
     "FalhaAoObterIdGeradoError",
     "TransacaoError",
+    "CemepPossuiResponsaveisError",
 ]

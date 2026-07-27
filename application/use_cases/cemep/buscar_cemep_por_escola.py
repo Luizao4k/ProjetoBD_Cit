@@ -54,7 +54,7 @@ class BuscarCemepPorEscolaUseCase:
         return CemepOutput(
             id=cemep.id,
             escola_id=cemep.escola_id,
-            comentario=cemep.comentario,
+            comentario=cemep.comentario.valor if cemep.comentario else None,
             criado_em=cemep.criado_em,
             atualizado_em=cemep.atualizado_em,
         )

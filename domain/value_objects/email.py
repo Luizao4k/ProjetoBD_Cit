@@ -35,27 +35,5 @@ class Email:
 
         object.__setattr__(self, "valor", email)
 
-    @classmethod
-    def criar(cls, valor: str | None) -> "Email | None":
-        """
-        Cria um Email válido ou retorna None.
-
-        Retorna:
-            Email: quando válido.
-            None: quando vazio, nulo ou inválido.
-        """
-        if valor is None:
-            return None
-
-        valor = valor.strip()
-
-        if not valor:
-            return None
-
-        try:
-            return cls(valor)
-        except EmailInvalidoError:
-            return None
-
     def __str__(self) -> str:
         return self.valor

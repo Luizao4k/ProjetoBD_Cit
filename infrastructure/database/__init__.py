@@ -7,9 +7,11 @@ nada daqui diretamente — é o código de composição (main, testes, API)
 que decide qual implementação injetar em cada Use Case.
 """
 from .sqlite.connection import criar_conexao
-from .sqlite.connection import criar_schema
+from .sqlite.schema import criar_schema
+from .sqlite.transacao import transacao
 
 __all__ = [
     "criar_conexao",
     "criar_schema",
+    "transacao",
 ]

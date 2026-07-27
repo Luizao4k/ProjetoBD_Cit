@@ -1,0 +1,8 @@
+[tool.pytest.ini_options]
+# Sem isso, "domain", "application", "shared" e "infrastructure" só são
+# importáveis se PYTHONPATH for setado manualmente (foi preciso durante
+# todo o desenvolvimento deste projeto). "." adiciona a raiz do repo ao
+# sys.path automaticamente na coleta de testes — funciona tanto no
+# terminal quanto no Test Explorer do VS Code.
+pythonpath = ["."]
+testpaths = ["tests"]

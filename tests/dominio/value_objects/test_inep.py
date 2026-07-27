@@ -1,7 +1,7 @@
 import pytest
 
 from domain.value_objects.inep import Inep
-from shared.exceptions import ValorInvalidoError
+from shared.exceptions import InepInvalidoError
 
 
 def test_deve_criar_inep_valido():
@@ -21,5 +21,5 @@ def test_deve_criar_inep_valido():
     ],
 )
 def test_inep_invalido(valor):
-    with pytest.raises(ValorInvalidoError):
+    with pytest.raises(InepInvalidoError):
         Inep(valor)

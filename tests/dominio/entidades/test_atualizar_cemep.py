@@ -1,5 +1,6 @@
 from datetime import UTC, datetime, timedelta
 
+from domain.value_objects import Comentario
 from tests.factories import CemepFactory
 
 
@@ -8,9 +9,9 @@ def test_deve_atualizar_timestamp_quando_comentario_for_alterado():
 
     atualizado_original = cemep.atualizado_em
 
-    cemep.alterar_comentario("Novo comentário")
+    cemep.alterar_comentario(Comentario("Novo comentário"))
 
-    assert cemep.comentario == "Novo comentário"
+    assert cemep.comentario.valor == "Novo comentário"
     assert cemep.atualizado_em > atualizado_original
 
 from tests.factories import CemepFactory
@@ -21,7 +22,7 @@ def test_nao_deve_atualizar_timestamp_quando_comentario_for_igual():
 
     atualizado_original = cemep.atualizado_em
 
-    cemep.alterar_comentario("Mesmo comentário")
+    cemep.alterar_comentario(Comentario("Mesmo comentário"))
 
     assert cemep.atualizado_em == atualizado_original
 

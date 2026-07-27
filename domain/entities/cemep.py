@@ -6,6 +6,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from shared.types import EscolaId, CemepId
+from domain.value_objects import Comentario
 from .base import AuditoriaEntidade
 
 
@@ -17,12 +18,12 @@ class Cemep(AuditoriaEntidade):
     id: CemepId | None
 
     escola_id: EscolaId
-    comentario: str | None = None
+    comentario: Comentario | None = None
 
     # ------------------------------------------------------------------
     # Regras de negócio
     # ------------------------------------------------------------------
-    def alterar_comentario(self, comentario: str | None) -> None:
+    def alterar_comentario(self, comentario: Comentario | None) -> None:
         """
         Altera o comentário do Cemep.
         A auditoria é atualizada apenas quando houver

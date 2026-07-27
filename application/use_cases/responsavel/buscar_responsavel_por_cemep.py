@@ -1,29 +1,39 @@
 """
-Caso de uso: listar todos os Responsáveis cadastrados.
+Caso de uso: listar os Responsáveis de um Cemep (relação 1:N).
 """
 
 from __future__ import annotations
 
 from domain.repositories import ResponsavelRepository
 from shared.exceptions import PersistenciaInconsistenteError
+from shared.types import CemepId
 
 from .dtos import ResponsavelOutput
 
 
-class ListarResponsaveisUseCase:
+class BuscarResponsavelPorCemepUseCase:
     """
-    Lista todos os Responsáveis cadastrados.
+    Retorna todos os Responsáveis vinculados a um Cemep.
+
+    Como se trata de uma relação 1:N, uma lista vazia é um
+    resultado legítimo (o Cemep ainda não tem responsáveis
+    cadastrados) — não há exceção equivalente à das relações 1:1.
     """
 
     def __init__(self, repositorio: ResponsavelRepository) -> None:
         self._repositorio = repositorio
 
-    def executar(self) -> list[ResponsavelOutput]:
+    def executar(self, cemep_id: int) -> list[ResponsavelOutput]:
         """
-        Lista todos os Responsáveis cadastrados.
+        Lista os Responsáveis de um Cemep.
+
+        Args:
+            cemep_id:
+                Identificador do Cemep.
 
         Returns:
-            Lista de DTOs representando os Responsáveis cadastrados.
+            Lista de DTOs representando os Responsáveis do Cemep.
+            Pode ser vazia.
 
         Raises:
             PersistenciaInconsistenteError:
@@ -31,7 +41,9 @@ class ListarResponsaveisUseCase:
                 em estado inconsistente.
         """
 
-        responsaveis = self._repositorio.listar_todas()
+        id_cemep = CemepId(cemep_id)
+
+        responsaveis = self._repositorio.buscar_por_cemep(id_cemep)
 
         resultado: list[ResponsavelOutput] = []
 

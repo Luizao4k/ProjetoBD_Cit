@@ -2,7 +2,7 @@ import pytest
 
 from typing import cast
 from domain.value_objects.quantidade import Quantidade
-from shared.exceptions import ValorInvalidoError
+from shared.exceptions import QuantidadeInvalidaError
 
 
 def test_quantidade_valida():
@@ -20,10 +20,10 @@ def test_quantidade_valida():
     ],
 )
 def test_quantidade_nao_pode_ser_menor_ou_igual_zero(valor):
-    with pytest.raises(ValorInvalidoError):
+    with pytest.raises(QuantidadeInvalidaError):
         Quantidade(valor)
 
 
 def test_quantidade_deve_ser_inteiro():
-    with pytest.raises(ValorInvalidoError):
+    with pytest.raises(QuantidadeInvalidaError):
         Quantidade(cast(int, 10.5)) 

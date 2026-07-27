@@ -5,6 +5,7 @@ Contrato de persistência da entidade DRE.
 from abc import ABC, abstractmethod
 
 from domain.entities import Dre
+from domain.value_objects import Nome
 from shared.types import DreId
 
 
@@ -26,6 +27,16 @@ class DreRepository(ABC):
         """
         Retorna a DRE pelo identificador ou None
         caso não exista.
+        """
+
+    @abstractmethod
+    def buscar_por_nome(self, nome: Nome) -> list[Dre]:
+        """
+        Retorna as DREs cujo nome corresponde exatamente ao informado.
+        Lista porque nome não é único no schema — mais de uma DRE pode
+        ter o mesmo nome (ex: uma reestruturação administrativa).
+        Usado principalmente por importadores em lote, que recebem o
+        nome da DRE em texto e precisam resolver o id correspondente.
         """
 
     @abstractmethod

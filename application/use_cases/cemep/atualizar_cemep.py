@@ -5,6 +5,7 @@ Caso de uso: atualizar um Cemep existente.
 from __future__ import annotations
 
 from domain.repositories import CemepRepository
+from domain.value_objects import Comentario
 from shared.exceptions import CemepNaoEncontradoError, PersistenciaInconsistenteError
 from shared.types import CemepId
 
@@ -64,7 +65,7 @@ class AtualizarCemepUseCase:
 
         # Atualiza apenas os campos informados.
         if dados.comentario is not None:
-            cemep.alterar_comentario(dados.comentario)
+            cemep.alterar_comentario(Comentario(dados.comentario))
 
         # Persiste as alterações.
         cemep_atualizado = self._repositorio.atualizar(cemep)
@@ -77,7 +78,7 @@ class AtualizarCemepUseCase:
         return CemepOutput(
             id=cemep_atualizado.id,
             escola_id=cemep_atualizado.escola_id,
-            comentario=cemep_atualizado.comentario,
+            comentario=cemep_atualizado.comentario.valor if cemep_atualizado.comentario else None,
             criado_em=cemep_atualizado.criado_em,
             atualizado_em=cemep_atualizado.atualizado_em,
         )

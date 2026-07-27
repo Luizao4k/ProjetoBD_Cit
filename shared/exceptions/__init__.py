@@ -30,6 +30,9 @@ from .application import (
     RegistroNaoEncontradoError,
     RelacaoNaoEncontradaError,
     EscolaJaPossuiCemepError,
+    EscolaJaPossuiDiretorError,
+    EscolaJaPossuiChromebookError,
+    InepJaCadastradoError,
     DreNaoEncontradaError,
     EscolaNaoEncontradaError,
     DiretorNaoEncontradoError,
@@ -43,13 +46,19 @@ from .application import (
     EscolaNaoPossuiChromebookError,
 )
 
-from .infrastrucutre import (
+from .infrastructure import (
     PersistenciaError,
     PersistenciaInconsistenteError,
     ConexaoBancoError,
     FalhaAoObterIdGeradoError,
     TransacaoError,
-    CemepPossuiResponsaveisError
+    CemepPossuiResponsaveisError,
+    DrePossuiEscolasError,
+    ResponsavelPossuiTurmasError,
+    EscolaPossuiDiretorError,
+    EscolaPossuiCemepError,
+    EscolaPossuiChromebookError,
+    EscolaPossuiStarlinksError,
 )
 
 __all__ = [
@@ -73,6 +82,9 @@ __all__ = [
     "RegistroNaoEncontradoError",
     "RelacaoNaoEncontradaError",
     "EscolaJaPossuiCemepError",
+    "EscolaJaPossuiDiretorError",
+    "EscolaJaPossuiChromebookError",
+    "InepJaCadastradoError",
     "DreNaoEncontradaError",
     "EscolaNaoEncontradaError",
     "DiretorNaoEncontradoError",
@@ -92,4 +104,10 @@ __all__ = [
     "FalhaAoObterIdGeradoError",
     "TransacaoError",
     "CemepPossuiResponsaveisError",
+    "DrePossuiEscolasError",
+    "ResponsavelPossuiTurmasError",
+    "EscolaPossuiDiretorError",
+    "EscolaPossuiCemepError",
+    "EscolaPossuiChromebookError",
+    "EscolaPossuiStarlinksError",
 ]

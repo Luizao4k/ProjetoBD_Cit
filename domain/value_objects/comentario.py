@@ -4,7 +4,7 @@ Value Object para representar um comentário.
 
 from dataclasses import dataclass
 
-from shared.exceptions import ValorInvalidoError
+from shared.exceptions import ComentarioInvalidoError
 from .. import MAX_LEN
 
 
@@ -19,12 +19,12 @@ class Comentario:
         valor = self.valor.strip()
 
         if not valor:
-            raise ValorInvalidoError(
+            raise ComentarioInvalidoError(
                 "O comentário não pode ser vazio."
             )
 
         if len(valor) > MAX_LEN:
-            raise ValorInvalidoError(
+            raise ComentarioInvalidoError(
                 f"O comentário deve ter no máximo {MAX_LEN} caracteres."
             )
 

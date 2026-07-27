@@ -10,7 +10,18 @@ from typing import Any
 from . import ApplicationError
 
 class RegistroDuplicadoError(ApplicationError):
-    """Violação de uma regra de unicidade."""
+    """
+    Classe base para violação de regra de unicidade.
+
+    Levantada sem argumento (`raise EscolaJaPossuiCemepError()`, como
+    já é feito nos repositórios), usa a docstring da própria subclasse
+    como mensagem — por isso cada subclasse documenta a regra violada
+    numa frase. Ainda aceita uma mensagem explícita se algum dia for
+    preciso.
+    """
+
+    def __init__(self, mensagem: str | None = None) -> None:
+        super().__init__(mensagem or self.__doc__ or "Violação de unicidade.")
 
 
 class RegistroNaoEncontradoError(ApplicationError):
@@ -49,6 +60,18 @@ class RelacaoNaoEncontradaError(ApplicationError):
 
 class EscolaJaPossuiCemepError(RegistroDuplicadoError):
     """A escola já possui um CEMEP cadastrado."""
+
+
+class EscolaJaPossuiDiretorError(RegistroDuplicadoError):
+    """A escola já possui um Diretor cadastrado."""
+
+
+class EscolaJaPossuiChromebookError(RegistroDuplicadoError):
+    """A escola já possui um registro de Chromebook cadastrado."""
+
+
+class InepJaCadastradoError(RegistroDuplicadoError):
+    """Já existe uma Escola cadastrada com esse código INEP."""
 
 #------------------------------------------------------#
 #------------------------------------------------------#

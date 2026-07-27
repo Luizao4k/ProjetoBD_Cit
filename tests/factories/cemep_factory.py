@@ -1,5 +1,6 @@
 """Factory para cemep"""
 from domain.entities import Cemep
+from domain.value_objects import Comentario
 from shared.types import CemepId, EscolaId
 from tests.factories.base_factory import BaseFactory
 
@@ -18,5 +19,5 @@ class CemepFactory(BaseFactory):
         return Cemep(
             id=CemepId(id) if id is not None else None,
             escola_id=EscolaId(escola_id),
-            comentario=comentario,
+            comentario=Comentario(comentario) if comentario else None,
         )

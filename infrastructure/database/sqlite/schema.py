@@ -13,6 +13,10 @@
 # ainda não tem uma exceção de domínio própria para esse caso (ver
 # observações da revisão), então por enquanto ela sobe sem tradução.
 
+import sqlite3
+
+from shared.exceptions import PersistenciaError
+
 SCHEMA = """
 
 PRAGMA foreign_keys = ON;
@@ -93,3 +97,15 @@ CREATE INDEX IF NOT EXISTS ix_responsaveis_cemep_id ON responsaveis(cemep_id);
 CREATE INDEX IF NOT EXISTS ix_turmas_cemep_responsavel_id ON turmas_cemep(responsavel_id);
 CREATE INDEX IF NOT EXISTS ix_starlinks_escola_id ON starlinks(escola_id);
 """
+
+def criar_schema(conexao: sqlite3.Connection) -> None:
+    """Cria Schema do BD"""
+    try:
+        conexao.executescript(SCHEMA)
+        conexao.commit()
+
+    except sqlite3.Error as exc:
+        conexao.rollback()
+        raise PersistenciaError(
+            "Falha ao criar o schema."
+        ) from exc

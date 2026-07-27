@@ -10,8 +10,12 @@ from domain.entities import Starlink
 from domain.repositories import StarlinkRepository
 from domain.value_objects import Nome
 from shared.types import EscolaId, StarlinkId
+from shared.exceptions import (
+    EscolaNaoEncontradaError,
+    PersistenciaError,
+)
 
-from .._util import parse_datetime, obter_lastrowid
+from .._util import parse_datetime, confirmar_transacao, obter_id_gerado
 
 
 class SqliteStarlinkRepository(StarlinkRepository):
@@ -19,67 +23,118 @@ class SqliteStarlinkRepository(StarlinkRepository):
     Persiste designações de Starlink numa tabela SQLite.
 
     Diferente de Diretor/Cemep/Chromebook, escola_id NÃO é UNIQUE aqui
-    — uma escola pode ter mais de uma designação (relação 1:N).
+    — uma escola pode ter mais de uma designação (relação 1:N), então
+    não há cenário de "duplicidade" ao salvar, só a possibilidade do
+    escola_id informado não existir (FOREIGN KEY).
+
+    Nada referencia starlinks.id como chave estrangeira, então
+    `remover` não tem cenário de violação de integridade a tratar.
     """
 
     def __init__(self, conexao: sqlite3.Connection) -> None:
         self._conexao = conexao
 
+#-----------------------------------------------------------------#
+
     def salvar(self, starlink: Starlink) -> Starlink:
-        cursor = self._conexao.execute(
-            """
-            INSERT INTO starlinks (escola_id, designacao, criado_em, atualizado_em)
-            VALUES (?, ?, ?, ?)
-            """,
-            (
-                starlink.escola_id,
-                starlink.designacao.valor,
-                starlink.criado_em.isoformat(),
-                starlink.atualizado_em.isoformat(),
-            ),
-        )
-        self._conexao.commit()
-        starlink.id = StarlinkId(obter_lastrowid(cursor))
-        return starlink
+        try:
+            cursor = self._conexao.execute(
+                """
+                INSERT INTO starlinks (escola_id, designacao, criado_em, atualizado_em)
+                VALUES (?, ?, ?, ?)
+                """,
+                (
+                    starlink.escola_id,
+                    starlink.designacao.valor,
+                    starlink.criado_em.isoformat(),
+                    starlink.atualizado_em.isoformat(),
+                ),
+            )
+
+            confirmar_transacao(self._conexao)
+
+            starlink.id = StarlinkId(obter_id_gerado(cursor))
+            return starlink
+
+        except sqlite3.IntegrityError as exc:
+            raise EscolaNaoEncontradaError(starlink.escola_id) from exc
+
+        except sqlite3.DatabaseError as exc:
+            raise PersistenciaError("Falha ao salvar o Starlink.") from exc
+
+#-----------------------------------------------------------------#
 
     def buscar_por_id(self, starlink_id: StarlinkId) -> Starlink | None:
-        linha = self._conexao.execute(
-            "SELECT * FROM starlinks WHERE id = ?", (starlink_id,)
-        ).fetchone()
-        return self._para_entidade(linha) if linha else None
+        try:
+            linha = self._conexao.execute(
+                "SELECT * FROM starlinks WHERE id = ?", (starlink_id,)
+            ).fetchone()
+
+            return self._para_entidade(linha) if linha else None
+
+        except sqlite3.DatabaseError as exc:
+            raise PersistenciaError("Falha ao buscar o Starlink.") from exc
+
+#-----------------------------------------------------------------#
 
     def buscar_por_escola(self, escola_id: EscolaId) -> list[Starlink]:
-        linhas = self._conexao.execute(
-            "SELECT * FROM starlinks WHERE escola_id = ? ORDER BY id",
-            (escola_id,),
-        ).fetchall()
-        return [self._para_entidade(linha) for linha in linhas]
+        try:
+            linhas = self._conexao.execute(
+                "SELECT * FROM starlinks WHERE escola_id = ? ORDER BY id",
+                (escola_id,),
+            ).fetchall()
+            return [self._para_entidade(linha) for linha in linhas]
+
+        except sqlite3.DatabaseError as exc:
+            raise PersistenciaError("Falha ao buscar os Starlinks da Escola.") from exc
+
+#-----------------------------------------------------------------#
 
     def listar_todas(self) -> list[Starlink]:
-        linhas = self._conexao.execute(
-            "SELECT * FROM starlinks ORDER BY id"
-        ).fetchall()
-        return [self._para_entidade(linha) for linha in linhas]
+        try:
+            linhas = self._conexao.execute(
+                "SELECT * FROM starlinks ORDER BY id"
+            ).fetchall()
+            return [self._para_entidade(linha) for linha in linhas]
+
+        except sqlite3.DatabaseError as exc:
+            raise PersistenciaError("Falha ao listar os Starlinks.") from exc
+
+#-----------------------------------------------------------------#
 
     def atualizar(self, starlink: Starlink) -> Starlink:
-        self._conexao.execute(
-            """
-            UPDATE starlinks
-               SET designacao = ?, atualizado_em = ?
-             WHERE id = ?
-            """,
-            (
-                starlink.designacao.valor,
-                starlink.atualizado_em.isoformat(),
-                starlink.id,
-            ),
-        )
-        self._conexao.commit()
-        return starlink
+        try:
+            self._conexao.execute(
+                """
+                UPDATE starlinks
+                   SET designacao = ?, atualizado_em = ?
+                 WHERE id = ?
+                """,
+                (
+                    starlink.designacao.valor,
+                    starlink.atualizado_em.isoformat(),
+                    starlink.id,
+                ),
+            )
+
+            confirmar_transacao(self._conexao)
+
+            return starlink
+
+        except sqlite3.DatabaseError as exc:
+            raise PersistenciaError("Falha ao atualizar o Starlink.") from exc
+
+#-----------------------------------------------------------------#
 
     def remover(self, starlink_id: StarlinkId) -> None:
-        self._conexao.execute("DELETE FROM starlinks WHERE id = ?", (starlink_id,))
-        self._conexao.commit()
+        try:
+            self._conexao.execute("DELETE FROM starlinks WHERE id = ?", (starlink_id,))
+            confirmar_transacao(self._conexao)
+
+        except sqlite3.DatabaseError as exc:
+            raise PersistenciaError("Falha ao remover o Starlink.") from exc
+
+#-----------------------------------------------------------------#
 
     @staticmethod
     def _para_entidade(linha: sqlite3.Row) -> Starlink:

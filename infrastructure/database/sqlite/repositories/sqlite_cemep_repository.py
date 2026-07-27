@@ -8,14 +8,22 @@ import sqlite3
 
 from domain.entities import Cemep
 from domain.repositories import CemepRepository
+from domain.value_objects import Comentario
 from shared.types import CemepId, EscolaId
 from shared.exceptions import (
     EscolaJaPossuiCemepError,
+    EscolaNaoEncontradaError,
     CemepPossuiResponsaveisError,
     PersistenciaError,
     )
 
-from .._util import parse_datetime, confirmar_transacao, obter_id_gerado
+from .._util import (
+    parse_datetime,
+    confirmar_transacao,
+    obter_id_gerado,
+    eh_violacao_unique,
+    eh_violacao_foreign_key,
+)
 
 
 class SqliteCemepRepository(CemepRepository):
@@ -25,9 +33,9 @@ class SqliteCemepRepository(CemepRepository):
     escola_id é UNIQUE no schema (relação 1:1) — tentar salvar um
     segundo Cemep para a mesma escola levanta sqlite3.IntegrityError.
 
-    comentario é gravado como TEXT livre, sem validação (o domínio
-    também não valida hoje — ver Comentario VO, ainda não conectado
-    à entidade Cemep).
+    comentario é validado pelo Value Object Comentario antes de
+    chegar aqui (não vazio, até MAX_LEN caracteres); a coluna no
+    banco continua um TEXT livre, só guarda o .valor já validado.
     """
 
     def __init__(self, conexao: sqlite3.Connection) -> None:
@@ -44,7 +52,7 @@ class SqliteCemepRepository(CemepRepository):
                 """,
                 (
                     cemep.escola_id,
-                    cemep.comentario,
+                    cemep.comentario.valor if cemep.comentario else None,
                     cemep.criado_em.isoformat(),
                     cemep.atualizado_em.isoformat(),
                 ),
@@ -56,7 +64,11 @@ class SqliteCemepRepository(CemepRepository):
             return cemep
 
         except sqlite3.IntegrityError as exc:
-            raise EscolaJaPossuiCemepError() from exc
+            if eh_violacao_unique(exc):
+                raise EscolaJaPossuiCemepError() from exc
+            if eh_violacao_foreign_key(exc):
+                raise EscolaNaoEncontradaError(cemep.escola_id) from exc
+            raise PersistenciaError("Falha de integridade ao salvar o CEMEP.") from exc
 
         except sqlite3.DatabaseError as exc:
             raise PersistenciaError("Falha ao salvar o CEMEP.") from exc
@@ -111,7 +123,7 @@ class SqliteCemepRepository(CemepRepository):
                 WHERE id = ?
                 """,
                 (
-                    cemep.comentario,
+                    cemep.comentario.valor if cemep.comentario else None,
                     cemep.atualizado_em.isoformat(),
                     cemep.id,
                 ),
@@ -122,7 +134,11 @@ class SqliteCemepRepository(CemepRepository):
             return cemep
 
         except sqlite3.IntegrityError as exc:
-            raise EscolaJaPossuiCemepError() from exc
+            if eh_violacao_unique(exc):
+                raise EscolaJaPossuiCemepError() from exc
+            if eh_violacao_foreign_key(exc):
+                raise EscolaNaoEncontradaError(cemep.escola_id) from exc
+            raise PersistenciaError("Falha de integridade ao atualizar o CEMEP.") from exc
 
         except sqlite3.DatabaseError as exc:
             raise PersistenciaError("Falha ao atualizar o CEMEP.") from exc
@@ -151,7 +167,7 @@ class SqliteCemepRepository(CemepRepository):
         return Cemep(
             id=CemepId(linha["id"]),
             escola_id=EscolaId(linha["escola_id"]),
-            comentario=linha["comentario"],
+            comentario=Comentario(linha["comentario"]) if linha["comentario"] else None,
             criado_em=parse_datetime(linha["criado_em"]),
             atualizado_em=parse_datetime(linha["atualizado_em"]),
         )

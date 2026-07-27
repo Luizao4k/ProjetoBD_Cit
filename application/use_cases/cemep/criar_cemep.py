@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from domain.entities import Cemep
 from domain.repositories import CemepRepository
+from domain.value_objects import Comentario
 from shared.exceptions import PersistenciaInconsistenteError
 from shared.types import EscolaId
 
@@ -51,7 +52,7 @@ class CriarCemepUseCase:
         cemep = Cemep(
             id=None,
             escola_id=EscolaId(dados.escola_id),
-            comentario=dados.comentario,
+            comentario=Comentario(dados.comentario) if dados.comentario else None,
         )
 
         # Persiste a entidade.
@@ -68,7 +69,7 @@ class CriarCemepUseCase:
         return CemepOutput(
             id=cemep_criado.id,
             escola_id=cemep_criado.escola_id,
-            comentario=cemep_criado.comentario,
+            comentario=cemep_criado.comentario.valor if cemep_criado.comentario else None,
             criado_em=cemep_criado.criado_em,
             atualizado_em=cemep_criado.atualizado_em,
         )

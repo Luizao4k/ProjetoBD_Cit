@@ -1,7 +1,7 @@
 import pytest
 
 from domain.value_objects.comentario import Comentario
-from shared.exceptions import ValorInvalidoError
+from shared.exceptions import ComentarioInvalidoError
 
 
 def test_comentario_valido():
@@ -18,5 +18,5 @@ def test_comentario_valido():
     ],
 )
 def test_comentario_vazio(valor):
-    with pytest.raises(ValorInvalidoError):
+    with pytest.raises(ComentarioInvalidoError):
         Comentario(valor)

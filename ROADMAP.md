@@ -10,14 +10,17 @@ produção.
 
 # Status Geral
 
-| Etapa       | Status |
-|-------------|--------|
-| Domínio        | ✅ | 
-| Casos de Uso   | ✅ |
+| Etapa | Status |
+|--------|--------|
+| Domínio | ✅ |
+| Aplicação | ✅ |
 | Infraestrutura | 🟡 |
-| API REST       | ⬜ |
-| Autenticação   | ⬜ |
-| Deploy         | ⬜ |
+| Importação Inicial | ⬜ |
+| API REST | ⬜ |
+| Segurança | ⬜ |
+| Banco de Produção | ⬜ |
+| Qualidade | ⬜ |
+| Deploy | ⬜ |
 
 ---
 
@@ -59,7 +62,7 @@ Objetivo: modelar corretamente as regras de negócio.
 
 Objetivo: implementar os casos de uso.
 
-## Casos de uso
+## Casos de Uso
 
 - [x] CRUD de DRE
 - [x] CRUD de Escola
@@ -90,42 +93,83 @@ Objetivo: conectar a aplicação ao banco de dados.
 ## Banco
 
 - [x] SQLite
-- [x] Connection
+- [x] Connection Factory
 - [x] Schema separado
 
 ## Repositórios SQLite
 
+- [x] DRE
+- [x] Escola
+- [x] Diretor
+- [x] CEMEP
+- [x] Chromebook
+- [x] Responsável
+- [x] Turma
+- [x] Starlink
+
+## Container
+
+- [x] Base Module
+- [x] DRE Module
+- [x] Escola Module
+- [x] Diretor Module
+- [x] CEMEP Module
+- [x] Chromebook Module
+- [x] Responsável Module
+- [x] Turma Module
+- [x] Starlink Module
+
+## Infraestrutura
+
+- [x] Tradução de exceções SQLite
+- [x] Padronização dos repositórios
+- [x] Padronização do ciclo de conexão
+
+## Testes
+
+- [x] Testes dos repositórios
+- [x] Testes de integração
+
+---
+
+# Fase 4 — Importação Inicial
+
+## Leitura
+
+- [ ] Leitor CSV/Excel
+- [ ] Normalização dos dados
+- [ ] Conversão para DTOs
+
+## Importadores
+
 - [ ] DRE
 - [ ] Escola
 - [ ] Diretor
-- [x] CEMEP *(em andamento como referência)*
+- [ ] CEMEP
 - [ ] Chromebook
 - [ ] Responsável
 - [ ] Turma
 - [ ] Starlink
 
-## Tratamento de erros
+## Orquestração
 
-- [ ] Traduzir exceções SQLite
-- [ ] Padronizar todos os repositórios
-- [ ] Refatorar usando Context Manager
-
-## Testes
-
-- [ ] Testes dos repositórios
-- [ ] Testes de integração
+- [ ] Ordem correta de importação
+- [ ] Registro de erros
+- [ ] Relatório final
+- [ ] Reimportação das linhas com erro
 
 ---
 
-# Fase 4 — API REST
+# Fase 5 — API REST
 
 Objetivo: disponibilizar os casos de uso via HTTP.
 
-## Flask
+## Estrutura
 
-- [ ] Estrutura inicial
+- [ ] Flask
 - [ ] Blueprints
 - [ ] Configurações
+- [ ] Injeção de dependências
 
 ## Controllers
 
@@ -138,13 +182,16 @@ Objetivo: disponibilizar os casos de uso via HTTP.
 - [ ] Turma
 - [ ] Starlink
 
-## Endpoints
+## API
 
 - [ ] CRUD completo
+- [ ] Tratamento global de exceções
+- [ ] Serialização dos DTOs
+- [ ] Documentação OpenAPI
 
 ---
 
-# Fase 5 — Segurança
+# Fase 6 — Segurança
 
 Objetivo: controlar acesso ao sistema.
 
@@ -155,7 +202,7 @@ Objetivo: controlar acesso ao sistema.
 
 ---
 
-# Fase 6 — Banco de Produção
+# Fase 7 — Banco de Produção
 
 - [ ] PostgreSQL
 - [ ] Configuração por ambiente
@@ -163,7 +210,7 @@ Objetivo: controlar acesso ao sistema.
 
 ---
 
-# Fase 7 — Qualidade
+# Fase 8 — Qualidade
 
 ## Testes
 
@@ -182,7 +229,7 @@ Objetivo: controlar acesso ao sistema.
 
 ---
 
-# Fase 8 — Deploy
+# Fase 9 — Deploy
 
 - [ ] Docker
 - [ ] Docker Compose
@@ -193,13 +240,16 @@ Objetivo: controlar acesso ao sistema.
 
 # Melhorias Arquiteturais
 
-Essas tarefas não adicionam funcionalidades, mas melhoram a arquitetura.
+Estas melhorias podem ser implementadas conforme a necessidade do projeto.
 
-- [ ] Context Manager para tratamento de erros
-- [ ] BaseRepository
+- [ ] Context Manager para transações
+- [ ] Refatoração dos repositórios
 - [ ] Unit of Work
+- [ ] BaseRepository
 - [ ] Repository Factory
-- [ ] Configuração para múltiplos bancos de dados
+- [ ] Suporte a múltiplos bancos
+- [ ] Background Jobs
+- [ ] Eventos de domínio
 
 ---
 
@@ -209,16 +259,22 @@ Essas tarefas não adicionam funcionalidades, mas melhoram a arquitetura.
 - [ ] Pesquisa avançada
 - [ ] Paginação
 - [ ] Exportação para Excel
-- [ ] Importação de planilhas
+- [ ] Importação via interface Web
 - [ ] Logs de auditoria
 
 ---
 
-# Próximo objetivo
+# Próximo Objetivo
 
-Finalizar a camada de infraestrutura.
+Concluir a camada de infraestrutura.
 
-- [ ] Implementar todos os repositórios SQLite
-- [ ] Padronizar tratamento de exceções
-- [ ] Criar testes dos repositórios
-- [ ] Refatorar utilizando Context Manager
+## Infraestrutura
+
+- [ ] Implementar Context Manager
+- [ ] Refatorar todos os repositórios
+- [ ] Padronizar gerenciamento das transações
+- [ ] Executar todos os testes
+
+## Próxima etapa
+
+Iniciar a Importação Inicial utilizando os casos de uso existentes.

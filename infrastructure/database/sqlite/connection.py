@@ -10,12 +10,8 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 
-from shared.exceptions import (
-    ConexaoBancoError,
-    PersistenciaError,
-)
+from shared.exceptions import ConexaoBancoError
 
-from .schema import SCHEMA
 
 
 def criar_conexao(
@@ -39,13 +35,3 @@ def criar_conexao(
         ) from exc
 
 
-def criar_schema(conexao: sqlite3.Connection) -> None:
-    try:
-        conexao.executescript(SCHEMA)
-        conexao.commit()
-
-    except sqlite3.Error as exc:
-        conexao.rollback()
-        raise PersistenciaError(
-            "Falha ao criar o schema."
-        ) from exc

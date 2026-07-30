@@ -1,9 +1,37 @@
+# ==========================
+# Backend (Python)
+# ==========================
+backend/.venv/
+backend/venv/
+backend/.env
+
 __pycache__/
-*.pyc
+*.py[cod]
+
 .mypy_cache/
 .pytest_cache/
+
+# ==========================
+# Banco de Dados
+# ==========================
 *.db
 *.db-wal
 *.db-shm
-.venv/
-venv/
+
+# ==========================
+# Frontend (Node)
+# ==========================
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# ==========================
+# IDEs
+# ==========================
+.vscode/
+.idea/
+
+# ==========================
+# Logs
+# ==========================
+*.log

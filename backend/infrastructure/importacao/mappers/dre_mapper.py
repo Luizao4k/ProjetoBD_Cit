@@ -5,8 +5,8 @@ nenhuma chave estrangeira pra resolver.
 
 from __future__ import annotations
 
-from application.use_cases.dre import CriarDreInput
-from ..conversores import para_texto_opcional
+from backend.application.use_cases.dre import CriarDreInput
+from backend.infrastructure.importacao.conversores import para_texto_opcional
 
 
 class DreMapper:

@@ -8,7 +8,7 @@ composição concreta.
 
 import pytest
 
-from infrastructure.importacao import (
+from backend.infrastructure.importacao import (
     ArquivoInvalidoError,
     ImportadorPipeline,
     ProgressTrackerSilencioso,
@@ -54,12 +54,27 @@ class UseCaseFalha3:
         return dado
 
 
-def _pipeline(linhas, problemas_validacao=None):
+class GerenciadorDeTransacaoFalso:
+    """Dublê que só registra quando confirmar()/desfazer() foram
+    chamados, na ordem em que aconteceram."""
+
+    def __init__(self):
+        self.chamadas = []
+
+    def confirmar(self):
+        self.chamadas.append("confirmar")
+
+    def desfazer(self):
+        self.chamadas.append("desfazer")
+
+
+def _pipeline(linhas, problemas_validacao=None, gerenciador_transacao=None):
     return ImportadorPipeline(
         reader=ReaderFalso(linhas, problemas_validacao),
         mapper=MapperDobraValor(),
         use_case=UseCaseFalha3(),
         progress_tracker=ProgressTrackerSilencioso(),
+        gerenciador_transacao=gerenciador_transacao,
     )
 
 
@@ -140,3 +155,35 @@ def test_exportar_falhas_csv_nao_cria_arquivo_se_nao_houver_falhas(tmp_path):
     resultado.exportar_falhas_csv(caminho)
 
     assert not caminho.exists()
+
+
+def test_gerenciador_transacao_confirma_a_cada_linha_bem_sucedida():
+    gerenciador = GerenciadorDeTransacaoFalso()
+    linhas = [{"valor": "1"}, {"valor": "2"}]
+
+    _pipeline(linhas, gerenciador_transacao=gerenciador).executar()
+
+    assert gerenciador.chamadas == ["confirmar", "confirmar"]
+
+
+def test_gerenciador_transacao_desfaz_so_a_linha_que_falhou():
+    gerenciador = GerenciadorDeTransacaoFalso()
+    linhas = [{"valor": "1"}, {"valor": "3"}, {"valor": "5"}]
+
+    resultado = _pipeline(linhas, gerenciador_transacao=gerenciador).executar()
+
+    assert gerenciador.chamadas == ["confirmar", "desfazer", "confirmar"]
+    assert len(resultado.sucessos) == 2
+    assert len(resultado.erros) == 1
+
+
+def test_sem_gerenciador_transacao_pipeline_funciona_normalmente():
+    """O parâmetro é opcional -- todo o comportamento anterior (sem
+    ele) continua exatamente igual, é o que os outros testes deste
+    arquivo já provam ao não passar gerenciador_transacao nenhum."""
+    linhas = [{"valor": "1"}, {"valor": "3"}]
+
+    resultado = _pipeline(linhas, gerenciador_transacao=None).executar()
+
+    assert len(resultado.sucessos) == 1
+    assert len(resultado.erros) == 1

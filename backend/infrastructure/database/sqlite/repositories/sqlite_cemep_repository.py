@@ -19,7 +19,6 @@ from shared.exceptions import (
 
 from .._util import (
     parse_datetime,
-    confirmar_transacao,
     obter_id_gerado,
     eh_violacao_unique,
     eh_violacao_foreign_key,
@@ -58,7 +57,10 @@ class SqliteCemepRepository(CemepRepository):
                 ),
             )
 
-            confirmar_transacao(self._conexao)
+            # Não comita mais aqui: quem decide quando confirmar
+            # (por linha, por requisição, ...) é o chamador -- ver
+            # infrastructure/container/container.py:finalizar() e
+            # importacao/pipeline.py.
 
             cemep.id = CemepId(obter_id_gerado(cursor))
             return cemep
@@ -129,7 +131,10 @@ class SqliteCemepRepository(CemepRepository):
                 ),
             )
 
-            confirmar_transacao(self._conexao)
+            # Não comita mais aqui: quem decide quando confirmar
+            # (por linha, por requisição, ...) é o chamador -- ver
+            # infrastructure/container/container.py:finalizar() e
+            # importacao/pipeline.py.
 
             return cemep
 
@@ -152,7 +157,10 @@ class SqliteCemepRepository(CemepRepository):
                 (cemep_id,),
             )
 
-            confirmar_transacao(self._conexao)
+            # Não comita mais aqui: quem decide quando confirmar
+            # (por linha, por requisição, ...) é o chamador -- ver
+            # infrastructure/container/container.py:finalizar() e
+            # importacao/pipeline.py.
 
         except sqlite3.IntegrityError as exc:
             raise CemepPossuiResponsaveisError() from exc

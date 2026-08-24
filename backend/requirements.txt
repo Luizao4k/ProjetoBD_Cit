@@ -1,4 +1,14 @@
 # Dependências de desenvolvimento.
-# O sistema em si usa apenas a stdlib (sqlite3, dataclasses, enum, typing).
+# O núcleo (domain/application/infrastructure) usa apenas a stdlib
+# (sqlite3, dataclasses, enum, typing) — Flask é usado só pela Fase 5
+# (API REST), em interface/; openpyxl só pelo ExcelReader, em
+# importacao/readers/.
 mypy>=1.10
 pytest>=8.0
+flask>=3.0
+openpyxl>=3.1
+# pyyaml: só usado pelos testes para validar interface/openapi.yaml
+# (tests/test_interface/test_documentacao.py) — a API em si serve o
+# .yaml cru, sem depender de um parser Python (ver interface/
+# documentacao.py).
+pyyaml>=6.0

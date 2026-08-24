@@ -15,7 +15,7 @@ from shared.exceptions import (
     PersistenciaError,
 )
 
-from .._util import parse_datetime, confirmar_transacao, obter_id_gerado
+from .._util import parse_datetime, obter_id_gerado
 
 
 class SqliteStarlinkRepository(StarlinkRepository):
@@ -51,7 +51,10 @@ class SqliteStarlinkRepository(StarlinkRepository):
                 ),
             )
 
-            confirmar_transacao(self._conexao)
+            # Não comita mais aqui: quem decide quando confirmar
+            # (por linha, por requisição, ...) é o chamador -- ver
+            # infrastructure/container/container.py:finalizar() e
+            # importacao/pipeline.py.
 
             starlink.id = StarlinkId(obter_id_gerado(cursor))
             return starlink
@@ -117,7 +120,10 @@ class SqliteStarlinkRepository(StarlinkRepository):
                 ),
             )
 
-            confirmar_transacao(self._conexao)
+            # Não comita mais aqui: quem decide quando confirmar
+            # (por linha, por requisição, ...) é o chamador -- ver
+            # infrastructure/container/container.py:finalizar() e
+            # importacao/pipeline.py.
 
             return starlink
 
@@ -129,7 +135,10 @@ class SqliteStarlinkRepository(StarlinkRepository):
     def remover(self, starlink_id: StarlinkId) -> None:
         try:
             self._conexao.execute("DELETE FROM starlinks WHERE id = ?", (starlink_id,))
-            confirmar_transacao(self._conexao)
+            # Não comita mais aqui: quem decide quando confirmar
+            # (por linha, por requisição, ...) é o chamador -- ver
+            # infrastructure/container/container.py:finalizar() e
+            # importacao/pipeline.py.
 
         except sqlite3.DatabaseError as exc:
             raise PersistenciaError("Falha ao remover o Starlink.") from exc

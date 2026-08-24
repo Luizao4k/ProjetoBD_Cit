@@ -1,11 +1,14 @@
 """
-Importa Turmas de CEMEP em lote a partir de um CSV, usando o
+Importa Turmas de CEMEP em lote a partir de um CSV ou Excel (.xlsx/.xlsm), usando o
 ImportadorPipeline genérico (ver importacao/pipeline.py).
 
 Uso (a partir da raiz do projeto):
     python -m scripts.importar_turmas_cemep caminho/para/turmas.csv [caminho/do/banco.db]
 
-Colunas esperadas no CSV:
+O formato é escolhido automaticamente pela extensão do
+arquivo (ver importacao.readers.criar_reader).
+
+Colunas esperadas:
     nome_turma, responsavel_id (ambas obrigatórias)
 
 Diferente dos demais importadores, aqui só é aceito responsavel_id
@@ -24,17 +27,21 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from infrastructure.database import criar_conexao, criar_schema
+from infrastructure.database import (
+    GerenciadorDeTransacaoSqlite,
+    criar_conexao,
+    criar_schema,
+)
 from infrastructure.database.sqlite.repositories import SqliteTurmaCemepRepository
 from application.use_cases.turma_cemep import CriarTurmaCemepUseCase
 
-from infrastructure.importacao import ArquivoInvalidoError, ImportadorPipeline, ResultadoImportacao
-from infrastructure.importacao.readers import CsvReader
-from infrastructure.importacao.mappers import TurmaCemepMapper
+from backend.infrastructure.importacao import ArquivoInvalidoError, ImportadorPipeline, ResultadoImportacao
+from backend.infrastructure.importacao.readers import criar_reader
+from backend.infrastructure.importacao.mappers import TurmaCemepMapper
 
 
 def importar_turmas_cemep(
-    caminho_csv: str | Path, caminho_banco: str = "escolas.db"
+    caminho_arquivo: str | Path, caminho_banco: str = "escolas.db"
 ) -> ResultadoImportacao:
     conexao = criar_conexao(caminho_banco)
     criar_schema(conexao)
@@ -42,18 +49,19 @@ def importar_turmas_cemep(
     repo_turma = SqliteTurmaCemepRepository(conexao)
 
     pipeline = ImportadorPipeline(
-        reader=CsvReader(
-            caminho_csv, colunas_obrigatorias=TurmaCemepMapper.COLUNAS_OBRIGATORIAS
+        reader=criar_reader(
+            caminho_arquivo, colunas_obrigatorias=TurmaCemepMapper.COLUNAS_OBRIGATORIAS
         ),
         mapper=TurmaCemepMapper(),
         use_case=CriarTurmaCemepUseCase(repo_turma),
+        gerenciador_transacao=GerenciadorDeTransacaoSqlite(conexao),
     )
 
     resultado = pipeline.executar()
 
     if resultado.erros:
-        caminho_falhas = Path(caminho_csv).with_name(
-            f"{Path(caminho_csv).stem}_falhas.csv"
+        caminho_falhas = Path(caminho_arquivo).with_name(
+            f"{Path(caminho_arquivo).stem}_falhas.csv"
         )
         resultado.exportar_falhas_csv(caminho_falhas)
         print(f"Falhas gravadas em: {caminho_falhas}")

@@ -6,9 +6,9 @@ escola a que pertence).
 
 from __future__ import annotations
 
-from domain.repositories import CemepRepository, EscolaRepository
-from application.use_cases.responsavel import CriarResponsavelInput
-from ..resolvedores import resolver_cemep_id
+from backend.domain.repositories import CemepRepository, EscolaRepository
+from backend.application.use_cases.responsavel import CriarResponsavelInput
+from backend.infrastructure.importacao.resolvedores import resolver_cemep_id
 
 
 class ResponsavelMapper:

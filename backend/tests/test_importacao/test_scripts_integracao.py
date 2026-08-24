@@ -28,6 +28,17 @@ def _escrever_csv(caminho, cabecalho, linhas):
             escritor.writerow(linha)
 
 
+def _escrever_xlsx(caminho, cabecalho, linhas):
+    from openpyxl import Workbook
+
+    workbook = Workbook()
+    planilha = workbook.active
+    planilha.append(cabecalho)
+    for linha in linhas:
+        planilha.append([linha.get(coluna, "") for coluna in cabecalho])
+    workbook.save(caminho)
+
+
 def _contar(caminho_banco, tabela):
     conexao = criar_conexao(caminho_banco)
     total = conexao.execute(f"SELECT COUNT(*) FROM {tabela}").fetchone()[0]
@@ -56,6 +67,33 @@ def test_importar_dres_fim_a_fim(tmp_path):
     assert len(resultado.erros) == 1
     assert resultado.erros[0].tipo_erro == "NomeInvalidoError"
     assert (tmp_path / "dres_falhas.csv").exists()
+    assert _contar(banco, "dres") == 2
+
+
+def test_importar_dres_fim_a_fim_via_excel(tmp_path):
+    """
+    Mesmo cenário do teste acima, mas a partir de um .xlsx real —
+    prova que scripts.importar_dres funciona idêntico para os dois
+    formatos, sem nenhuma mudança de código além de qual arquivo é
+    passado (a escolha do Reader é automática, por extensão).
+    """
+    banco = str(tmp_path / "teste.db")
+    xlsx_path = tmp_path / "dres.xlsx"
+    _escrever_xlsx(
+        xlsx_path,
+        ["nome", "telefone"],
+        [
+            {"nome": "dre belém", "telefone": "91999998888"},
+            {"nome": "dre marabá", "telefone": ""},
+            {"nome": "   ", "telefone": ""},  # nome vazio -> falha
+        ],
+    )
+
+    resultado = importar_dres(xlsx_path, banco)
+
+    assert len(resultado.sucessos) == 2
+    assert len(resultado.erros) == 1
+    assert resultado.erros[0].tipo_erro == "NomeInvalidoError"
     assert _contar(banco, "dres") == 2
 
 

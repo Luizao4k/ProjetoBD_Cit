@@ -91,3 +91,22 @@ class UseCase(Protocol[TEntrada_contra, TSaida_co]):
     """
 
     def executar(self, dados: TEntrada_contra) -> TSaida_co: ...
+
+
+@runtime_checkable
+class GerenciadorDeTransacao(Protocol):
+    """
+    Abstrai a decisão de confirmar/desfazer uma escrita.
+
+    Desde que os repositórios pararam de comitar sozinhos a cada
+    escrita (ver infrastructure/database/sqlite/_util.py), alguém
+    precisa decidir quando uma linha bem-sucedida se torna permanente.
+    Sem este Protocol, o Pipeline precisaria importar sqlite3
+    diretamente pra chamar commit/rollback — quebrando a mesma
+    independência de infraestrutura que Reader/Mapper/UseCase já têm.
+    Opcional: um Pipeline sem gerenciador (o padrão) simplesmente não
+    confirma nada sozinho, como sempre foi nos testes com dublês.
+    """
+
+    def confirmar(self) -> None: ...
+    def desfazer(self) -> None: ...

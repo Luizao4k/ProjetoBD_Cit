@@ -1,32 +1,13 @@
-<<<<<<< HEAD
 # 🏫 ProjetoBD CIT
 
 Sistema para gerenciamento das informações da **Coordenação de Inovação e Tecnologia (CIT)** sobre as escolas do Estado do Pará.
 
 O projeto está sendo desenvolvido como estudo de **Python**, **Domain-Driven Design (DDD)**, **Clean Architecture** e boas práticas de engenharia de software, evoluindo gradualmente até uma aplicação pronta para produção.
-=======
-# 🏫 CITBD
-
-Sistema para gerenciamento das informações da **Coordenação de Inovação e Tecnologia (CIT)** das escolas da rede estadual do Pará.
-
-O objetivo do projeto é centralizar informações sobre escolas, equipamentos, conectividade e projetos, reduzindo a dependência de planilhas e oferecendo uma base organizada para consulta e gerenciamento dos dados.
-
-Além da aplicação em si, o projeto também serve como estudo prático de **Domain-Driven Design (DDD)**, **Clean Architecture** e boas práticas de engenharia de software.
-
----
-
-# 📌 Status do Projeto
-
-🚧 Em desenvolvimento
-
-Atualmente o projeto está sendo desenvolvido de forma incremental, priorizando uma arquitetura desacoplada e de fácil evolução.
->>>>>>> 963e2a3 (Reorganiza projeto em backend, frontend e docs)
 
 ---
 
 # 🎯 Objetivos
 
-<<<<<<< HEAD
 Este projeto tem como foco o aprendizado de:
 
 - Python
@@ -59,18 +40,11 @@ O sistema gerencia informações relacionadas às escolas da rede pública do Es
 - Starlink
 
 As regras de negócio são modeladas utilizando princípios de DDD, mantendo a camada de domínio totalmente independente das demais.
-=======
-* Centralizar informações das escolas da rede estadual do Pará.
-* Facilitar a gestão dos recursos administrados pela Coordenação de Inovação e Tecnologia.
-* Servir como projeto de estudo em Arquitetura de Software.
-* Aplicar conceitos modernos de desenvolvimento Full Stack.
->>>>>>> 963e2a3 (Reorganiza projeto em backend, frontend e docs)
 
 ---
 
 # 🏛 Arquitetura
 
-<<<<<<< HEAD
 O projeto segue a arquitetura em camadas inspirada na Clean Architecture.
 
 ```
@@ -140,53 +114,11 @@ Exemplos:
 - Repositórios
 - Connection Factory
 - Container de dependências
-=======
-O sistema é composto por duas aplicações independentes que se comunicam exclusivamente por meio de uma API REST.
-
-```text
-                Usuário
-                   │
-                   ▼
-        Frontend (React + TypeScript)
-                   │
-             HTTP / JSON
-                   │
-                   ▼
-        Backend (FastAPI + Python)
-                   │
-        ┌──────────┴──────────┐
-        ▼                     ▼
- Presentation           Application
-                               │
-                               ▼
-                            Domain
-                               ▲
-                               │
-                      Infrastructure
-```
-
-Essa separação permite que frontend e backend evoluam de forma independente, mantendo baixo acoplamento e alta coesão.
-
----
-
-# 📁 Estrutura do Projeto
-
-```text
-citbd/
-│
-├── backend/
-├── frontend/
-├── docs/
-├── .gitignore
-└── README.md
-```
->>>>>>> 963e2a3 (Reorganiza projeto em backend, frontend e docs)
 
 ---
 
 # 🛠 Tecnologias
 
-<<<<<<< HEAD
 - Python 3.14+
 - SQLite
 - Pytest
@@ -230,31 +162,11 @@ Todos os casos de uso utilizam DTOs para entrada e saída.
 - Repositórios SQLite
 - Container de dependências
 - Testes de integração
-=======
-## Backend
-
-* Python
-* FastAPI
-* SQLite
-* Pytest
-* Ruff
-* MyPy
-
-## Frontend
-
-* React
-* TypeScript
-* Vite
-* React Router
-* Tailwind CSS
-* Axios
->>>>>>> 963e2a3 (Reorganiza projeto em backend, frontend e docs)
 
 ---
 
 # 🚀 Como executar
 
-<<<<<<< HEAD
 Clone o projeto
 
 ```bash
@@ -297,39 +209,10 @@ Execute os testes
 
 ```bash
 pytest
-=======
-## Backend
-
-```bash
-cd backend
-
-python -m venv .venv
-
-# Windows
-.venv\Scripts\activate
-
-# Linux
-source .venv/bin/activate
-
-pip install -r requirements.txt
-
-uvicorn main:app --reload
-```
-
-## Frontend
-
-```bash
-cd frontend
-
-npm install
-
-npm run dev
->>>>>>> 963e2a3 (Reorganiza projeto em backend, frontend e docs)
 ```
 
 ---
 
-<<<<<<< HEAD
 # 📈 Roadmap
 
 O progresso do desenvolvimento pode ser acompanhado em:
@@ -354,48 +237,3 @@ Este projeto é utilizado como laboratório para praticar conceitos como:
 # 📄 Licença
 
 Projeto desenvolvido por Luiz Paulo para fins de estudo.
-=======
-# 📚 Documentação
-
-A documentação do projeto está organizada na pasta `docs/`.
-
-Principais documentos:
-
-```text
-docs/
-├── arquitetura/
-├── dominio/
-├── api/
-├── banco/
-├── importacao-csv/
-└── roadmap.md
-```
-
-Documentações específicas também podem ser encontradas em:
-
-```text
-backend/README.md
-frontend/README.md
-```
-
----
-
-# 📋 Funcionalidades
-
-Entre as funcionalidades previstas para o sistema estão:
-
-* Cadastro de escolas
-* Cadastro de DREs
-* Cadastro de diretores
-* Gerenciamento de projetos
-* Controle de equipamentos
-* Gerenciamento de conectividade
-* Importação de dados via CSV
-* Consulta e atualização de informações
-
----
-
-# 👨‍💻 Autor
-
-Desenvolvido por **Luiz Paulo** como projeto de estudo em *Engenharia de Software*, com foco em *Domain-Driven Design (DDD)*, *Clean Architecture* e desenvolvimento *Full Stack*.
->>>>>>> 963e2a3 (Reorganiza projeto em backend, frontend e docs)

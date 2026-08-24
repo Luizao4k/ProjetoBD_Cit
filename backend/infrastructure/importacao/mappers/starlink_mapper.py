@@ -5,9 +5,9 @@ ou escola_inep.
 
 from __future__ import annotations
 
-from domain.repositories import EscolaRepository
-from application.use_cases.starlink import CriarStarlinkInput
-from ..resolvedores import resolver_escola_id
+from backend.domain.repositories import EscolaRepository
+from backend.application.use_cases.starlink import CriarStarlinkInput
+from backend.infrastructure.importacao.resolvedores import resolver_escola_id
 
 
 class StarlinkMapper:

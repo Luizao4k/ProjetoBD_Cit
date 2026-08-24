@@ -12,6 +12,7 @@ import sqlite3
 
 from infrastructure.database.sqlite.connection import criar_conexao
 from infrastructure.database.sqlite.schema import criar_schema
+from infrastructure.database.sqlite._util import confirmar_transacao
 
 
 from .cemep_modulo import CemepModulo
@@ -60,3 +61,33 @@ class Container(
         """
         self._conexao: sqlite3.Connection = criar_conexao(caminho_banco)
         criar_schema(self._conexao)
+
+    def finalizar(self, sucesso: bool) -> None:
+        """
+        Encerra o ciclo de vida deste Container: confirma ou desfaz a
+        transação pendente e fecha a conexão.
+
+        Existe para quem gerencia um Container por fora com um ciclo
+        de vida próprio (ex: a API REST, um Container por requisição
+        HTTP). Os scripts de importação (Fase 4) não usam Container —
+        eles montam os repositórios diretamente e controlam sua
+        própria transação por linha via
+        infrastructure.database.sqlite.gerenciador_transacao.
+
+        Desde que os repositórios pararam de comitar sozinhos a cada
+        escrita (ver infrastructure/database/sqlite/_util.py), este
+        método é o único ponto em que uma escrita feita através de um
+        Container realmente se torna permanente.
+
+        Args:
+            sucesso:
+                True confirma (commit) as alterações pendentes; False
+                desfaz (rollback). Passar False é o comportamento
+                correto quando a requisição terminou por uma exceção.
+        """
+        if sucesso:
+            confirmar_transacao(self._conexao)
+        else:
+            self._conexao.rollback()
+
+        self._conexao.close()

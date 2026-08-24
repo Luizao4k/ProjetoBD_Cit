@@ -1,11 +1,14 @@
 """
-Importa registros de Chromebook em lote a partir de um CSV, usando o
+Importa registros de Chromebook em lote a partir de um CSV ou Excel (.xlsx/.xlsm), usando o
 ImportadorPipeline genérico (ver importacao/pipeline.py).
 
 Uso (a partir da raiz do projeto):
     python -m scripts.importar_chromebooks caminho/para/chromebooks.csv [caminho/do/banco.db]
 
-Colunas esperadas no CSV:
+O formato é escolhido automaticamente pela extensão do
+arquivo (ver importacao.readers.criar_reader).
+
+Colunas esperadas:
     kit_aluno, kit_professor (opcionais; se vierem, precisam ser
     números inteiros positivos)
     escola_id OU escola_inep (pelo menos uma)
@@ -22,20 +25,24 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from infrastructure.database import criar_conexao, criar_schema
+from infrastructure.database import (
+    GerenciadorDeTransacaoSqlite,
+    criar_conexao,
+    criar_schema,
+)
 from infrastructure.database.sqlite.repositories import (
     SqliteChromebookRepository,
     SqliteEscolaRepository,
 )
 from application.use_cases.chromebook import CriarChromebookUseCase
 
-from infrastructure.importacao import ArquivoInvalidoError, ImportadorPipeline, ResultadoImportacao
-from infrastructure.importacao.readers import CsvReader
-from infrastructure.importacao.mappers import ChromebookMapper
+from backend.infrastructure.importacao import ArquivoInvalidoError, ImportadorPipeline, ResultadoImportacao
+from backend.infrastructure.importacao.readers import criar_reader
+from backend.infrastructure.importacao.mappers import ChromebookMapper
 
 
 def importar_chromebooks(
-    caminho_csv: str | Path, caminho_banco: str = "escolas.db"
+    caminho_arquivo: str | Path, caminho_banco: str = "escolas.db"
 ) -> ResultadoImportacao:
     conexao = criar_conexao(caminho_banco)
     criar_schema(conexao)
@@ -44,18 +51,19 @@ def importar_chromebooks(
     repo_chromebook = SqliteChromebookRepository(conexao)
 
     pipeline = ImportadorPipeline(
-        reader=CsvReader(
-            caminho_csv, colunas_obrigatorias=ChromebookMapper.COLUNAS_OBRIGATORIAS
+        reader=criar_reader(
+            caminho_arquivo, colunas_obrigatorias=ChromebookMapper.COLUNAS_OBRIGATORIAS
         ),
         mapper=ChromebookMapper(repo_escola),
         use_case=CriarChromebookUseCase(repo_chromebook),
+        gerenciador_transacao=GerenciadorDeTransacaoSqlite(conexao),
     )
 
     resultado = pipeline.executar()
 
     if resultado.erros:
-        caminho_falhas = Path(caminho_csv).with_name(
-            f"{Path(caminho_csv).stem}_falhas.csv"
+        caminho_falhas = Path(caminho_arquivo).with_name(
+            f"{Path(caminho_arquivo).stem}_falhas.csv"
         )
         resultado.exportar_falhas_csv(caminho_falhas)
         print(f"Falhas gravadas em: {caminho_falhas}")

@@ -5,7 +5,7 @@ Pipeline e de qualquer entidade de domínio.
 
 import inspect
 
-from infrastructure.importacao.readers import CsvReader
+from backend.infrastructure.importacao.readers import CsvReader
 
 
 def _escrever_csv(caminho, cabecalho, linhas):

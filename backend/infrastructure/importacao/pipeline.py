@@ -19,11 +19,22 @@ from __future__ import annotations
 
 from typing import Generic, TypeVar
 
-from .log_alteracao import LogAlteracao
-from .progresso import ProgressTracker, ProgressTrackerConsole
-from .protocolos import Mapper, Reader, UseCase
-from .erro import ErroImportacao
-from .resultado import ResultadoImportacao
+from backend.infrastructure.importacao.log_alteracao import LogAlteracao
+
+from backend.infrastructure.importacao.progresso import (
+    ProgressTracker,
+    ProgressTrackerConsole
+    )
+
+from backend.infrastructure.importacao.protocolos import (
+    GerenciadorDeTransacao,
+    Mapper,
+    Reader,
+    UseCase
+    )
+
+from backend.infrastructure.importacao.erro import ErroImportacao
+from backend.infrastructure.importacao.resultado import ResultadoImportacao
 
 # TypeVars próprios da classe concreta (invariantes, o padrão): os
 # TEntrada_co/TEntrada_contra/TSaida_co de protocolos.py existem só
@@ -80,12 +91,14 @@ class ImportadorPipeline(Generic[TEntrada, TSaida]):
         use_case: UseCase[TEntrada, TSaida],
         progress_tracker: ProgressTracker | None = None,
         log_alteracao: LogAlteracao | None = None,
+        gerenciador_transacao: GerenciadorDeTransacao | None = None,
     ) -> None:
         self._reader = reader
         self._mapper = mapper
         self._use_case = use_case
         self._progress = progress_tracker or ProgressTrackerConsole()
         self.log_alteracao = log_alteracao
+        self._gerenciador_transacao = gerenciador_transacao
 
     def executar(self) -> ResultadoImportacao[TSaida]:
         problemas = self._reader.validar()
@@ -102,6 +115,14 @@ class ImportadorPipeline(Generic[TEntrada, TSaida]):
             try:
                 dto = self._mapper.mapear(linha)
                 saida = self._use_case.executar(dto)
+
+                # Confirma ANTES de registrar sucesso: se o commit em
+                # si falhar (ex: TransacaoError), a linha não é uma
+                # sucesso de verdade — cai no except abaixo, como
+                # qualquer outra falha.
+                if self._gerenciador_transacao is not None:
+                    self._gerenciador_transacao.confirmar()
+
                 resultado.registrar_sucesso(saida)
 
             except Exception as excecao:
@@ -111,6 +132,9 @@ class ImportadorPipeline(Generic[TEntrada, TSaida]):
                 # resolvida -> ValueError do próprio Mapper) NUNCA pode
                 # derrubar as linhas seguintes. O erro não é engolido:
                 # vira um ErroImportacao rastreável no resultado final.
+                if self._gerenciador_transacao is not None:
+                    self._gerenciador_transacao.desfazer()
+
                 erro = ErroImportacao.a_partir_de(
                     numero_linha=processados,
                     dados_originais=linha,

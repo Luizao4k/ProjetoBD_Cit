@@ -7,7 +7,7 @@ from __future__ import annotations
 import sys
 from typing import Protocol, runtime_checkable
 
-from .resultado import ResultadoImportacao
+from backend.infrastructure.importacao.resultado import ResultadoImportacao
 
 
 @runtime_checkable

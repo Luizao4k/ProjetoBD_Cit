@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Generic, TypeVar
 
-from .erro import ErroImportacao
+from backend.infrastructure.importacao.erro import ErroImportacao
 
 TSaida = TypeVar("TSaida")
 

@@ -18,7 +18,6 @@ from shared.exceptions import (
 
 from .._util import (
     parse_datetime,
-    confirmar_transacao,
     obter_id_gerado,
     eh_violacao_unique,
     eh_violacao_foreign_key,
@@ -60,7 +59,10 @@ class SqliteDiretorRepository(DiretorRepository):
                 ),
             )
 
-            confirmar_transacao(self._conexao)
+            # Não comita mais aqui: quem decide quando confirmar
+            # (por linha, por requisição, ...) é o chamador -- ver
+            # infrastructure/container/container.py:finalizar() e
+            # importacao/pipeline.py.
 
             diretor.id = DiretorId(obter_id_gerado(cursor))
             return diretor
@@ -132,7 +134,10 @@ class SqliteDiretorRepository(DiretorRepository):
                 ),
             )
 
-            confirmar_transacao(self._conexao)
+            # Não comita mais aqui: quem decide quando confirmar
+            # (por linha, por requisição, ...) é o chamador -- ver
+            # infrastructure/container/container.py:finalizar() e
+            # importacao/pipeline.py.
 
             return diretor
 
@@ -144,7 +149,10 @@ class SqliteDiretorRepository(DiretorRepository):
     def remover(self, diretor_id: DiretorId) -> None:
         try:
             self._conexao.execute("DELETE FROM diretores WHERE id = ?", (diretor_id,))
-            confirmar_transacao(self._conexao)
+            # Não comita mais aqui: quem decide quando confirmar
+            # (por linha, por requisição, ...) é o chamador -- ver
+            # infrastructure/container/container.py:finalizar() e
+            # importacao/pipeline.py.
 
         except sqlite3.DatabaseError as exc:
             raise PersistenciaError("Falha ao remover o Diretor.") from exc

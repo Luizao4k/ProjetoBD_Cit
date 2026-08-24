@@ -6,22 +6,22 @@ Escola, Diretor, CEMEP, Chromebook, Responsável, Turma CEMEP e
 Starlink.
 
 O algoritmo de importação — ler, mapear, executar, capturar erro,
-reporta progresso, agrega resultado — **existe uma única vez**, em
+reportar progresso, agregar resultado — **existe uma única vez**, em
 `importacao/pipeline.py`. Cada entidade fornece apenas três peças:
 um `Reader`, um `Mapper` e um `UseCase` já existente na camada de
-aplicação. Nada de regra de negócio — isso continua
+aplicação. Nada de regra de negócio mora aqui — isso continua
 exclusivamente nos Value Objects e nos Use Cases.
 
 Todo código citado abaixo é real, está no repositório e passa em
 191 testes automatizados (49 deles cobrindo especificamente este
-módulo).
+módulo). Este documento explica o que já existe, não uma proposta.
 
 ---
 
 ## 1. Estrutura completa de pastas
 
 ```
-importacao/                        # infraestrutura de importação
+importacao/                        # pacote novo — infraestrutura de importação
 ├── __init__.py                    # exports públicos do pacote
 ├── protocolos.py                  # Protocols: Reader, Mapper, UseCase
 ├── pipeline.py                    # ImportadorPipeline + ArquivoInvalidoError

@@ -23,7 +23,6 @@ from shared.exceptions import (
 
 from .._util import (
     parse_datetime,
-    confirmar_transacao,
     obter_id_gerado,
     eh_violacao_unique,
     eh_violacao_foreign_key,
@@ -71,7 +70,10 @@ class SqliteEscolaRepository(EscolaRepository):
                 ),
             )
 
-            confirmar_transacao(self._conexao)
+            # Não comita mais aqui: quem decide quando confirmar
+            # (por linha, por requisição, ...) é o chamador -- ver
+            # infrastructure/container/container.py:finalizar() e
+            # importacao/pipeline.py.
 
             escola.id = EscolaId(obter_id_gerado(cursor))
             return escola
@@ -176,7 +178,10 @@ class SqliteEscolaRepository(EscolaRepository):
                 ),
             )
 
-            confirmar_transacao(self._conexao)
+            # Não comita mais aqui: quem decide quando confirmar
+            # (por linha, por requisição, ...) é o chamador -- ver
+            # infrastructure/container/container.py:finalizar() e
+            # importacao/pipeline.py.
 
             return escola
 
@@ -188,7 +193,10 @@ class SqliteEscolaRepository(EscolaRepository):
     def remover(self, escola_id: EscolaId) -> None:
         try:
             self._conexao.execute("DELETE FROM escolas WHERE id = ?", (escola_id,))
-            confirmar_transacao(self._conexao)
+            # Não comita mais aqui: quem decide quando confirmar
+            # (por linha, por requisição, ...) é o chamador -- ver
+            # infrastructure/container/container.py:finalizar() e
+            # importacao/pipeline.py.
 
         except sqlite3.IntegrityError as exc:
             raise self._identificar_bloqueio(escola_id) from exc

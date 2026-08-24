@@ -9,9 +9,11 @@ que decide qual implementação injetar em cada Use Case.
 from .sqlite.connection import criar_conexao
 from .sqlite.schema import criar_schema
 from .sqlite.transacao import transacao
+from .sqlite.gerenciador_transacao import GerenciadorDeTransacaoSqlite
 
 __all__ = [
     "criar_conexao",
     "criar_schema",
     "transacao",
+    "GerenciadorDeTransacaoSqlite",
 ]

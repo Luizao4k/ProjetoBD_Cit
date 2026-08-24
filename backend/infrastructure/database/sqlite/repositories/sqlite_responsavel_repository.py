@@ -16,7 +16,7 @@ from shared.exceptions import (
     PersistenciaError,
 )
 
-from .._util import parse_datetime, confirmar_transacao, obter_id_gerado
+from .._util import parse_datetime, obter_id_gerado
 
 
 class SqliteResponsavelRepository(ResponsavelRepository):
@@ -49,7 +49,10 @@ class SqliteResponsavelRepository(ResponsavelRepository):
                 ),
             )
 
-            confirmar_transacao(self._conexao)
+            # Não comita mais aqui: quem decide quando confirmar
+            # (por linha, por requisição, ...) é o chamador -- ver
+            # infrastructure/container/container.py:finalizar() e
+            # importacao/pipeline.py.
 
             responsavel.id = ResponsavelId(obter_id_gerado(cursor))
             return responsavel
@@ -115,7 +118,10 @@ class SqliteResponsavelRepository(ResponsavelRepository):
                 ),
             )
 
-            confirmar_transacao(self._conexao)
+            # Não comita mais aqui: quem decide quando confirmar
+            # (por linha, por requisição, ...) é o chamador -- ver
+            # infrastructure/container/container.py:finalizar() e
+            # importacao/pipeline.py.
 
             return responsavel
 
@@ -129,7 +135,10 @@ class SqliteResponsavelRepository(ResponsavelRepository):
             self._conexao.execute(
                 "DELETE FROM responsaveis WHERE id = ?", (responsavel_id,)
             )
-            confirmar_transacao(self._conexao)
+            # Não comita mais aqui: quem decide quando confirmar
+            # (por linha, por requisição, ...) é o chamador -- ver
+            # infrastructure/container/container.py:finalizar() e
+            # importacao/pipeline.py.
 
         except sqlite3.IntegrityError as exc:
             raise ResponsavelPossuiTurmasError() from exc

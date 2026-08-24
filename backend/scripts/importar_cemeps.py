@@ -1,11 +1,14 @@
 """
-Importa CEMEPs em lote a partir de um CSV, usando o
+Importa CEMEPs em lote a partir de um CSV ou Excel (.xlsx/.xlsm), usando o
 ImportadorPipeline genérico (ver importacao/pipeline.py).
 
 Uso (a partir da raiz do projeto):
     python -m scripts.importar_cemeps caminho/para/cemeps.csv [caminho/do/banco.db]
 
-Colunas esperadas no CSV:
+O formato é escolhido automaticamente pela extensão do
+arquivo (ver importacao.readers.criar_reader).
+
+Colunas esperadas:
     comentario (opcional)
     escola_id OU escola_inep (pelo menos uma)
 
@@ -22,20 +25,24 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from infrastructure.database import criar_conexao, criar_schema
+from infrastructure.database import (
+    GerenciadorDeTransacaoSqlite,
+    criar_conexao,
+    criar_schema,
+)
 from infrastructure.database.sqlite.repositories import (
     SqliteCemepRepository,
     SqliteEscolaRepository,
 )
 from application.use_cases.cemep import CriarCemepUseCase
 
-from infrastructure.importacao import ArquivoInvalidoError, ImportadorPipeline, ResultadoImportacao
-from infrastructure.importacao.readers import CsvReader
-from infrastructure.importacao.mappers import CemepMapper
+from backend.infrastructure.importacao import ArquivoInvalidoError, ImportadorPipeline, ResultadoImportacao
+from backend.infrastructure.importacao.readers import criar_reader
+from backend.infrastructure.importacao.mappers import CemepMapper
 
 
 def importar_cemeps(
-    caminho_csv: str | Path, caminho_banco: str = "escolas.db"
+    caminho_arquivo: str | Path, caminho_banco: str = "escolas.db"
 ) -> ResultadoImportacao:
     conexao = criar_conexao(caminho_banco)
     criar_schema(conexao)
@@ -44,18 +51,19 @@ def importar_cemeps(
     repo_cemep = SqliteCemepRepository(conexao)
 
     pipeline = ImportadorPipeline(
-        reader=CsvReader(
-            caminho_csv, colunas_obrigatorias=CemepMapper.COLUNAS_OBRIGATORIAS
+        reader=criar_reader(
+            caminho_arquivo, colunas_obrigatorias=CemepMapper.COLUNAS_OBRIGATORIAS
         ),
         mapper=CemepMapper(repo_escola),
         use_case=CriarCemepUseCase(repo_cemep),
+        gerenciador_transacao=GerenciadorDeTransacaoSqlite(conexao),
     )
 
     resultado = pipeline.executar()
 
     if resultado.erros:
-        caminho_falhas = Path(caminho_csv).with_name(
-            f"{Path(caminho_csv).stem}_falhas.csv"
+        caminho_falhas = Path(caminho_arquivo).with_name(
+            f"{Path(caminho_arquivo).stem}_falhas.csv"
         )
         resultado.exportar_falhas_csv(caminho_falhas)
         print(f"Falhas gravadas em: {caminho_falhas}")

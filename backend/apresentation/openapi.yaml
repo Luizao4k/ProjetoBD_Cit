@@ -1,0 +1,1057 @@
+openapi: 3.0.3
+
+info:
+  title: API de Gestão Escolar — CIT Pará
+  description: >
+    API REST para gestão de DREs, Escolas, Diretores, CEMEPs,
+    Chromebooks, Responsáveis, Turmas CEMEP e Starlinks das escolas
+    do Pará. CRUD completo para as 8 entidades do domínio.
+
+
+    Cada requisição usa sua própria conexão/transação com o banco
+    (ver interface/app.py) — uma falha no meio de uma requisição
+    desfaz qualquer escrita pendente daquela requisição.
+  version: "1.0.0"
+
+servers:
+  - url: http://localhost:5000
+    description: Servidor de desenvolvimento (python main.py)
+
+tags:
+  - name: DRE
+  - name: Escola
+  - name: Diretor
+  - name: CEMEP
+  - name: Chromebook
+  - name: Starlink
+  - name: Responsável
+  - name: Turma CEMEP
+
+paths:
+  # ---------------------------------------------------------------
+  # DRE
+  # ---------------------------------------------------------------
+  /dres:
+    post:
+      tags: [DRE]
+      summary: Cria uma nova DRE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CriarDreInput"
+      responses:
+        "201":
+          description: DRE criada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DreOutput"
+        "400":
+          $ref: "#/components/responses/RequisicaoInvalida"
+    get:
+      tags: [DRE]
+      summary: Lista todas as DREs
+      responses:
+        "200":
+          description: Lista de DREs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DreOutput"
+
+  /dres/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [DRE]
+      summary: Busca uma DRE pelo id
+      responses:
+        "200":
+          description: DRE encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DreOutput"
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+    put:
+      tags: [DRE]
+      summary: Atualiza uma DRE (parcial — campos omitidos não mudam)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtualizarDreInput"
+      responses:
+        "200":
+          description: DRE atualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DreOutput"
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+    delete:
+      tags: [DRE]
+      summary: Remove uma DRE
+      responses:
+        "204":
+          description: DRE removida
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+        "409":
+          description: A DRE ainda tem Escolas vinculadas (DrePossuiEscolasError)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
+  # ---------------------------------------------------------------
+  # Escola
+  # ---------------------------------------------------------------
+  /escolas:
+    post:
+      tags: [Escola]
+      summary: Cria uma nova Escola
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CriarEscolaInput"
+      responses:
+        "201":
+          description: Escola criada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EscolaOutput"
+        "400":
+          $ref: "#/components/responses/RequisicaoInvalida"
+        "404":
+          description: dre_id informado não existe (DreNaoEncontradaError)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+        "409":
+          description: inep já cadastrado (InepJaCadastradoError)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+    get:
+      tags: [Escola]
+      summary: Lista todas as Escolas
+      responses:
+        "200":
+          description: Lista de Escolas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EscolaOutput"
+
+  /escolas/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Escola]
+      summary: Busca uma Escola pelo id
+      responses:
+        "200":
+          description: Escola encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EscolaOutput"
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+    put:
+      tags: [Escola]
+      summary: >-
+        Atualiza uma Escola (parcial — só nome e endereco são
+        alteráveis; inep, tipo, municipio e dre_id são imutáveis)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtualizarEscolaInput"
+      responses:
+        "200":
+          description: Escola atualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EscolaOutput"
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+    delete:
+      tags: [Escola]
+      summary: Remove uma Escola
+      responses:
+        "204":
+          description: Escola removida
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+        "409":
+          description: >-
+            A Escola ainda tem Diretor, CEMEP, Chromebook ou
+            Starlink(s) vinculados (EscolaPossui*Error)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
+  # ---------------------------------------------------------------
+  # Diretor
+  # ---------------------------------------------------------------
+  /diretores:
+    post:
+      tags: [Diretor]
+      summary: Cria um novo Diretor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CriarDiretorInput"
+      responses:
+        "201":
+          description: Diretor criado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiretorOutput"
+        "400":
+          $ref: "#/components/responses/RequisicaoInvalida"
+        "404":
+          description: escola_id informado não existe (EscolaNaoEncontradaError)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+        "409":
+          description: A Escola já possui um Diretor (EscolaJaPossuiDiretorError)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+    get:
+      tags: [Diretor]
+      summary: Lista todos os Diretores
+      responses:
+        "200":
+          description: Lista de Diretores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DiretorOutput"
+
+  /diretores/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Diretor]
+      summary: Busca um Diretor pelo id
+      responses:
+        "200":
+          description: Diretor encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiretorOutput"
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+    put:
+      tags: [Diretor]
+      summary: Atualiza um Diretor (parcial — escola_id não é alterável)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtualizarDiretorInput"
+      responses:
+        "200":
+          description: Diretor atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiretorOutput"
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+    delete:
+      tags: [Diretor]
+      summary: Remove um Diretor
+      responses:
+        "204":
+          description: Diretor removido
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+
+  # ---------------------------------------------------------------
+  # CEMEP
+  # ---------------------------------------------------------------
+  /cemeps:
+    post:
+      tags: [CEMEP]
+      summary: Cria um novo CEMEP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CriarCemepInput"
+      responses:
+        "201":
+          description: CEMEP criado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CemepOutput"
+        "400":
+          $ref: "#/components/responses/RequisicaoInvalida"
+        "404":
+          description: escola_id informado não existe (EscolaNaoEncontradaError)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+        "409":
+          description: A Escola já possui um CEMEP (EscolaJaPossuiCemepError)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+    get:
+      tags: [CEMEP]
+      summary: Lista todos os CEMEPs
+      responses:
+        "200":
+          description: Lista de CEMEPs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CemepOutput"
+
+  /cemeps/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [CEMEP]
+      summary: Busca um CEMEP pelo id
+      responses:
+        "200":
+          description: CEMEP encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CemepOutput"
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+    put:
+      tags: [CEMEP]
+      summary: Atualiza um CEMEP (parcial)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtualizarCemepInput"
+      responses:
+        "200":
+          description: CEMEP atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CemepOutput"
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+    delete:
+      tags: [CEMEP]
+      summary: Remove um CEMEP
+      responses:
+        "204":
+          description: CEMEP removido
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+        "409":
+          description: O CEMEP ainda tem Responsáveis vinculados (CemepPossuiResponsaveisError)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
+  # ---------------------------------------------------------------
+  # Chromebook
+  # ---------------------------------------------------------------
+  /chromebooks:
+    post:
+      tags: [Chromebook]
+      summary: Cria um novo registro de Chromebook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CriarChromebookInput"
+      responses:
+        "201":
+          description: Registro de Chromebook criado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChromebookOutput"
+        "400":
+          $ref: "#/components/responses/RequisicaoInvalida"
+        "404":
+          description: escola_id informado não existe (EscolaNaoEncontradaError)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+        "409":
+          description: A Escola já possui um registro de Chromebook (EscolaJaPossuiChromebookError)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+    get:
+      tags: [Chromebook]
+      summary: Lista todos os registros de Chromebook
+      responses:
+        "200":
+          description: Lista de registros de Chromebook
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ChromebookOutput"
+
+  /chromebooks/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Chromebook]
+      summary: Busca um registro de Chromebook pelo id
+      responses:
+        "200":
+          description: Registro encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChromebookOutput"
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+    put:
+      tags: [Chromebook]
+      summary: Atualiza um registro de Chromebook (parcial)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtualizarChromebookInput"
+      responses:
+        "200":
+          description: Registro atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChromebookOutput"
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+    delete:
+      tags: [Chromebook]
+      summary: Remove um registro de Chromebook
+      responses:
+        "204":
+          description: Registro removido
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+
+  # ---------------------------------------------------------------
+  # Starlink
+  # ---------------------------------------------------------------
+  /starlinks:
+    post:
+      tags: [Starlink]
+      summary: Cria uma nova designação de Starlink
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CriarStarlinkInput"
+      responses:
+        "201":
+          description: Starlink criado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StarlinkOutput"
+        "400":
+          $ref: "#/components/responses/RequisicaoInvalida"
+        "404":
+          description: escola_id informado não existe (EscolaNaoEncontradaError)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+      description: >-
+        Diferente de Diretor/CEMEP/Chromebook, uma Escola pode ter
+        vários Starlinks — não há conflito 409 de duplicidade aqui.
+    get:
+      tags: [Starlink]
+      summary: Lista todos os Starlinks
+      responses:
+        "200":
+          description: Lista de Starlinks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StarlinkOutput"
+
+  /starlinks/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Starlink]
+      summary: Busca um Starlink pelo id
+      responses:
+        "200":
+          description: Starlink encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StarlinkOutput"
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+    put:
+      tags: [Starlink]
+      summary: Atualiza um Starlink (parcial)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtualizarStarlinkInput"
+      responses:
+        "200":
+          description: Starlink atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StarlinkOutput"
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+    delete:
+      tags: [Starlink]
+      summary: Remove um Starlink
+      responses:
+        "204":
+          description: Starlink removido
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+
+  # ---------------------------------------------------------------
+  # Responsável
+  # ---------------------------------------------------------------
+  /responsaveis:
+    post:
+      tags: [Responsável]
+      summary: Cria um novo Responsável
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CriarResponsavelInput"
+      responses:
+        "201":
+          description: Responsável criado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponsavelOutput"
+        "400":
+          $ref: "#/components/responses/RequisicaoInvalida"
+        "404":
+          description: cemep_id informado não existe (CemepNaoEncontradoError)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+      description: Um CEMEP pode ter vários Responsáveis — sem conflito de duplicidade.
+    get:
+      tags: [Responsável]
+      summary: Lista todos os Responsáveis
+      responses:
+        "200":
+          description: Lista de Responsáveis
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ResponsavelOutput"
+
+  /responsaveis/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Responsável]
+      summary: Busca um Responsável pelo id
+      responses:
+        "200":
+          description: Responsável encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponsavelOutput"
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+    put:
+      tags: [Responsável]
+      summary: Atualiza um Responsável (parcial)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtualizarResponsavelInput"
+      responses:
+        "200":
+          description: Responsável atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponsavelOutput"
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+    delete:
+      tags: [Responsável]
+      summary: Remove um Responsável
+      responses:
+        "204":
+          description: Responsável removido
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+        "409":
+          description: O Responsável ainda tem Turmas vinculadas (ResponsavelPossuiTurmasError)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
+  # ---------------------------------------------------------------
+  # Turma CEMEP
+  # ---------------------------------------------------------------
+  /turmas-cemep:
+    post:
+      tags: [Turma CEMEP]
+      summary: Cria uma nova Turma CEMEP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CriarTurmaCemepInput"
+      responses:
+        "201":
+          description: Turma criada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TurmaCemepOutput"
+        "400":
+          $ref: "#/components/responses/RequisicaoInvalida"
+        "404":
+          description: responsavel_id informado não existe (ResponsavelNaoEncontradoError)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+      description: Um Responsável pode ter várias Turmas — sem conflito de duplicidade.
+    get:
+      tags: [Turma CEMEP]
+      summary: Lista todas as Turmas CEMEP
+      responses:
+        "200":
+          description: Lista de Turmas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TurmaCemepOutput"
+
+  /turmas-cemep/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Turma CEMEP]
+      summary: Busca uma Turma CEMEP pelo id
+      responses:
+        "200":
+          description: Turma encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TurmaCemepOutput"
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+    put:
+      tags: [Turma CEMEP]
+      summary: Atualiza uma Turma CEMEP (parcial)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtualizarTurmaCemepInput"
+      responses:
+        "200":
+          description: Turma atualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TurmaCemepOutput"
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+    delete:
+      tags: [Turma CEMEP]
+      summary: Remove uma Turma CEMEP
+      responses:
+        "204":
+          description: Turma removida
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Identificador numérico do registro
+
+  responses:
+    RequisicaoInvalida:
+      description: >-
+        Requisição malformada (campo obrigatório ausente) ou dado
+        inválido (regra de Value Object violada — ex: nome vazio,
+        e-mail com formato errado, INEP fora do padrão)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Erro"
+    NaoEncontrado:
+      description: Nenhum registro com esse id
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Erro"
+
+  schemas:
+    Erro:
+      type: object
+      description: Formato uniforme de erro em toda a API (ver interface/erros.py)
+      properties:
+        erro:
+          type: string
+          description: Nome da classe da exceção que originou o erro
+          example: DreNaoEncontradaError
+        mensagem:
+          type: string
+          description: Mensagem legível explicando o que houve
+      required: [erro, mensagem]
+
+    # --- DRE ---
+    CriarDreInput:
+      type: object
+      required: [nome]
+      properties:
+        nome:
+          type: string
+        telefone:
+          type: string
+          nullable: true
+    AtualizarDreInput:
+      type: object
+      properties:
+        nome:
+          type: string
+          nullable: true
+        telefone:
+          type: string
+          nullable: true
+    DreOutput:
+      allOf:
+        - $ref: "#/components/schemas/_Auditoria"
+        - type: object
+          properties:
+            nome:
+              type: string
+            telefone:
+              type: string
+              nullable: true
+
+    # --- Escola ---
+    CriarEscolaInput:
+      type: object
+      required: [inep, nome, tipo, municipio, dre_id]
+      properties:
+        inep:
+          type: string
+          description: Exatamente 8 dígitos numéricos
+          example: "12345678"
+        nome:
+          type: string
+        tipo:
+          type: string
+          enum: [ESTADUAL, MUNICIPAL]
+        municipio:
+          type: string
+          description: Precisa ser um dos 144 municípios do Pará
+        dre_id:
+          type: integer
+        endereco:
+          type: string
+          nullable: true
+    AtualizarEscolaInput:
+      type: object
+      description: inep, tipo, municipio e dre_id são imutáveis — não aparecem aqui.
+      properties:
+        nome:
+          type: string
+          nullable: true
+        endereco:
+          type: string
+          nullable: true
+    EscolaOutput:
+      allOf:
+        - $ref: "#/components/schemas/_Auditoria"
+        - type: object
+          properties:
+            inep:
+              type: string
+            nome:
+              type: string
+            tipo:
+              type: string
+              enum: [ESTADUAL, MUNICIPAL]
+            municipio:
+              type: string
+            dre_id:
+              type: integer
+            endereco:
+              type: string
+              nullable: true
+
+    # --- Diretor ---
+    CriarDiretorInput:
+      type: object
+      required: [escola_id, nome]
+      properties:
+        escola_id:
+          type: integer
+        nome:
+          type: string
+        telefone:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+    AtualizarDiretorInput:
+      type: object
+      description: escola_id não é alterável — trocar a escola de um diretor não é suportado pelo domínio.
+      properties:
+        nome:
+          type: string
+          nullable: true
+        telefone:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+    DiretorOutput:
+      allOf:
+        - $ref: "#/components/schemas/_Auditoria"
+        - type: object
+          properties:
+            escola_id:
+              type: integer
+            nome:
+              type: string
+            telefone:
+              type: string
+              nullable: true
+            email:
+              type: string
+              nullable: true
+
+    # --- CEMEP ---
+    CriarCemepInput:
+      type: object
+      required: [escola_id]
+      properties:
+        escola_id:
+          type: integer
+        comentario:
+          type: string
+          nullable: true
+    AtualizarCemepInput:
+      type: object
+      properties:
+        comentario:
+          type: string
+          nullable: true
+    CemepOutput:
+      allOf:
+        - $ref: "#/components/schemas/_Auditoria"
+        - type: object
+          properties:
+            escola_id:
+              type: integer
+            comentario:
+              type: string
+              nullable: true
+
+    # --- Chromebook ---
+    CriarChromebookInput:
+      type: object
+      required: [escola_id]
+      properties:
+        escola_id:
+          type: integer
+        kit_aluno:
+          type: integer
+          nullable: true
+          description: Precisa ser positivo se informado
+        kit_professor:
+          type: integer
+          nullable: true
+          description: Precisa ser positivo se informado
+    AtualizarChromebookInput:
+      type: object
+      properties:
+        kit_aluno:
+          type: integer
+          nullable: true
+        kit_professor:
+          type: integer
+          nullable: true
+    ChromebookOutput:
+      allOf:
+        - $ref: "#/components/schemas/_Auditoria"
+        - type: object
+          properties:
+            escola_id:
+              type: integer
+            kit_aluno:
+              type: integer
+              nullable: true
+            kit_professor:
+              type: integer
+              nullable: true
+
+    # --- Starlink ---
+    CriarStarlinkInput:
+      type: object
+      required: [escola_id, designacao]
+      properties:
+        escola_id:
+          type: integer
+        designacao:
+          type: string
+    AtualizarStarlinkInput:
+      type: object
+      properties:
+        designacao:
+          type: string
+          nullable: true
+    StarlinkOutput:
+      allOf:
+        - $ref: "#/components/schemas/_Auditoria"
+        - type: object
+          properties:
+            escola_id:
+              type: integer
+            designacao:
+              type: string
+
+    # --- Responsável ---
+    CriarResponsavelInput:
+      type: object
+      required: [cemep_id, nome]
+      properties:
+        cemep_id:
+          type: integer
+        nome:
+          type: string
+    AtualizarResponsavelInput:
+      type: object
+      properties:
+        nome:
+          type: string
+          nullable: true
+    ResponsavelOutput:
+      allOf:
+        - $ref: "#/components/schemas/_Auditoria"
+        - type: object
+          properties:
+            cemep_id:
+              type: integer
+            nome:
+              type: string
+
+    # --- Turma CEMEP ---
+    CriarTurmaCemepInput:
+      type: object
+      required: [responsavel_id, nome_turma]
+      properties:
+        responsavel_id:
+          type: integer
+        nome_turma:
+          type: string
+    AtualizarTurmaCemepInput:
+      type: object
+      properties:
+        nome_turma:
+          type: string
+          nullable: true
+    TurmaCemepOutput:
+      allOf:
+        - $ref: "#/components/schemas/_Auditoria"
+        - type: object
+          properties:
+            responsavel_id:
+              type: integer
+            nome_turma:
+              type: string
+
+    # --- compartilhado ---
+    _Auditoria:
+      type: object
+      description: Campos presentes em todo Output DTO (AuditoriaEntidade, ver domain/entities/base.py)
+      properties:
+        id:
+          type: integer
+        criado_em:
+          type: string
+          format: date-time
+        atualizado_em:
+          type: string
+          format: date-time

@@ -35,9 +35,9 @@ from infrastructure.database import (
 from infrastructure.database.sqlite.repositories import SqliteTurmaCemepRepository
 from application.use_cases.turma_cemep import CriarTurmaCemepUseCase
 
-from backend.infrastructure.importacao import ArquivoInvalidoError, ImportadorPipeline, ResultadoImportacao
-from backend.infrastructure.importacao.readers import criar_reader
-from backend.infrastructure.importacao.mappers import TurmaCemepMapper
+from infrastructure.importacao import ArquivoInvalidoError, ImportadorPipeline, ResultadoImportacao
+from infrastructure.importacao.readers import criar_reader
+from infrastructure.importacao.mappers import TurmaCemepMapper
 
 
 def importar_turmas_cemep(

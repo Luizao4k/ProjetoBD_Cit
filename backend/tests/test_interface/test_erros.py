@@ -13,7 +13,7 @@ from __future__ import annotations
 import pytest
 from flask import Flask
 
-from interface.erros import registrar_tratadores_de_erro
+from apresentation.erros import registrar_tratadores_de_erro
 from shared.exceptions import (
     ComentarioInvalidoError,
     DreNaoEncontradaError,

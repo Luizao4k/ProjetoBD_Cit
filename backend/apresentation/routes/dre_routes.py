@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from flask import Blueprint
 
-from interface.controllers import dre_controller
+from apresentation.controllers import dre_controller
 
 dre_bp = Blueprint("dre", __name__, url_prefix="/dres")
 

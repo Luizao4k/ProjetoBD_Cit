@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 
 from dataclasses import dataclass
-from shared.exceptions import TelefoneInvalidoError
+from backend.shared.exceptions import TelefoneInvalidoError
 
 
 

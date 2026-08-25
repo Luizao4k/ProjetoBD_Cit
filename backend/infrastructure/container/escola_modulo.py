@@ -2,7 +2,7 @@
 Composição das dependências relacionadas à entidade Escola.
 """
 
-from application.use_cases.escola import (
+from backend.application.use_cases.escola import (
     AtualizarEscolaUseCase,
     BuscarEscolaPorIdUseCase,
     BuscarEscolasPorDreUseCase,
@@ -11,7 +11,7 @@ from application.use_cases.escola import (
     RemoverEscolaUseCase,
 )
 
-from infrastructure.database.sqlite.repositories import SqliteEscolaRepository
+from backend.infrastructure.database.sqlite.repositories import SqliteEscolaRepository
 from .base_modulo import BaseModulo
 
 

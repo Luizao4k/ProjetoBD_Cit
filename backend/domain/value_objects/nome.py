@@ -4,7 +4,7 @@ Regras de negocio para o nome
 from dataclasses import dataclass
 from unicodedata import normalize
 
-from shared.exceptions import NomeInvalidoError
+from backend.shared.exceptions import NomeInvalidoError
 from .. import MAX_LEN
 
 

@@ -36,9 +36,9 @@ from infrastructure.database.sqlite.repositories import (
 )
 from application.use_cases.cemep import CriarCemepUseCase
 
-from backend.infrastructure.importacao import ArquivoInvalidoError, ImportadorPipeline, ResultadoImportacao
-from backend.infrastructure.importacao.readers import criar_reader
-from backend.infrastructure.importacao.mappers import CemepMapper
+from infrastructure.importacao import ArquivoInvalidoError, ImportadorPipeline, ResultadoImportacao
+from infrastructure.importacao.readers import criar_reader
+from infrastructure.importacao.mappers import CemepMapper
 
 
 def importar_cemeps(

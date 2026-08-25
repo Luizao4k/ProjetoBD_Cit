@@ -10,7 +10,7 @@ from application.use_cases.turma_cemep import (
     AtualizarTurmaCemepInput,
     CriarTurmaCemepInput,
 )
-from interface.serializacao import dto_para_dict
+from apresentation.serializacao import dto_para_dict
 
 _CAMPOS_OBRIGATORIOS = ("responsavel_id", "nome_turma")
 

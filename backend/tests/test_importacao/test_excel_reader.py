@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from openpyxl import Workbook
 
-from backend.infrastructure.importacao.readers import ExcelReader
+from infrastructure.importacao.readers import ExcelReader
 
 
 def _escrever_xlsx(caminho, cabecalho, linhas, aba=None):

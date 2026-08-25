@@ -10,9 +10,9 @@ from __future__ import annotations
 
 import sqlite3
 
-from infrastructure.database.sqlite.connection import criar_conexao
-from infrastructure.database.sqlite.schema import criar_schema
-from infrastructure.database.sqlite._util import confirmar_transacao
+from backend.infrastructure.database.sqlite.connection import criar_conexao
+from backend.infrastructure.database.sqlite.schema import criar_schema
+from backend.infrastructure.database.sqlite._util import confirmar_transacao
 
 
 from .cemep_modulo import CemepModulo

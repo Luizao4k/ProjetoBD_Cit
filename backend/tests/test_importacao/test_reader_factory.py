@@ -4,7 +4,7 @@ Testes de importacao.readers.factory.criar_reader.
 
 from __future__ import annotations
 
-from backend.infrastructure.importacao.readers import CsvReader, ExcelReader, criar_reader
+from infrastructure.importacao.readers import CsvReader, ExcelReader, criar_reader
 
 
 def test_xlsx_devolve_excel_reader():

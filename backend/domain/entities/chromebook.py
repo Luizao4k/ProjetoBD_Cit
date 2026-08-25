@@ -6,8 +6,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from domain.value_objects import Quantidade
-from shared.types import EscolaId, ChromebooksId
+from backend.domain.value_objects import Quantidade
+from backend.shared.types import EscolaId, ChromebooksId
 from .base import AuditoriaEntidade
 
 @dataclass(kw_only=True)

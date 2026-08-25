@@ -34,9 +34,9 @@ from infrastructure.database import (
 from infrastructure.database.sqlite.repositories import SqliteDreRepository
 from application.use_cases.dre import CriarDreUseCase
 
-from backend.infrastructure.importacao import ArquivoInvalidoError, ImportadorPipeline, ResultadoImportacao
-from backend.infrastructure.importacao.readers import criar_reader
-from backend.infrastructure.importacao.mappers import DreMapper
+from infrastructure.importacao import ArquivoInvalidoError, ImportadorPipeline, ResultadoImportacao
+from infrastructure.importacao.readers import criar_reader
+from infrastructure.importacao.mappers import DreMapper
 
 
 def importar_dres(

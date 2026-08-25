@@ -43,7 +43,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
-from backend.infrastructure.importacao import ArquivoInvalidoError, ResultadoImportacao
+from infrastructure.importacao import ArquivoInvalidoError, ResultadoImportacao
 from scripts.importar_dres import importar_dres
 from scripts.importar_escolas import importar_escolas
 from scripts.importar_diretores import importar_diretores

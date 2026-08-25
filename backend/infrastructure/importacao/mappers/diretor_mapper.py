@@ -5,10 +5,10 @@ ou escola_inep.
 
 from __future__ import annotations
 
-from backend.domain.repositories import EscolaRepository
-from backend.application.use_cases.diretor import CriarDiretorInput
-from backend.infrastructure.importacao.conversores import para_texto_opcional
-from backend.infrastructure.importacao.resolvedores import resolver_escola_id
+from domain.repositories import EscolaRepository
+from application.use_cases.diretor import CriarDiretorInput
+from infrastructure.importacao.conversores import para_texto_opcional
+from infrastructure.importacao.resolvedores import resolver_escola_id
 
 
 class DiretorMapper:

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from flask import Blueprint
 
-from interface.controllers import escola_controller
+from apresentation.controllers import escola_controller
 
 escola_bp = Blueprint("escola", __name__, url_prefix="/escolas")
 

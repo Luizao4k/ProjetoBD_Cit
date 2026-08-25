@@ -1,8 +1,6 @@
 import pytest
 
-from time import sleep
-
-from domain.entities import Responsavel, escola
+from domain.entities import Responsavel
 from domain.value_objects import Nome
 from shared.types import ResponsavelId, CemepId
 

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from flask import Blueprint
 
-from interface.controllers import chromebook_controller
+from apresentation.controllers import chromebook_controller
 
 chromebook_bp = Blueprint("chromebook", __name__, url_prefix="/chromebooks")
 

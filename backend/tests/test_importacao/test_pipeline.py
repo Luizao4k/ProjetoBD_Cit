@@ -8,7 +8,7 @@ composição concreta.
 
 import pytest
 
-from backend.infrastructure.importacao import (
+from infrastructure.importacao import (
     ArquivoInvalidoError,
     ImportadorPipeline,
     ProgressTrackerSilencioso,

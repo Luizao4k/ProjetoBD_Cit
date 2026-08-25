@@ -10,7 +10,7 @@ import pytest
 
 from domain.entities import Dre
 from domain.value_objects import Nome
-from backend.infrastructure.importacao.mappers import (
+from infrastructure.importacao.mappers import (
     CemepMapper,
     ChromebookMapper,
     DiretorMapper,

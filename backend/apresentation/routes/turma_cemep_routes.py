@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from flask import Blueprint
 
-from interface.controllers import turma_cemep_controller
+from apresentation.controllers import turma_cemep_controller
 
 turma_cemep_bp = Blueprint("turma_cemep", __name__, url_prefix="/turmas-cemep")
 

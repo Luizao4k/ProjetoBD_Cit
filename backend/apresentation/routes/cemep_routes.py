@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from flask import Blueprint
 
-from interface.controllers import cemep_controller
+from apresentation.controllers import cemep_controller
 
 cemep_bp = Blueprint("cemep", __name__, url_prefix="/cemeps")
 

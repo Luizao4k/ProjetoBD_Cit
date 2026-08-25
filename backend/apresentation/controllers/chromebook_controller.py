@@ -10,7 +10,7 @@ from application.use_cases.chromebook import (
     AtualizarChromebookInput,
     CriarChromebookInput,
 )
-from interface.serializacao import dto_para_dict
+from apresentation.serializacao import dto_para_dict
 
 
 def criar_chromebook():

@@ -4,7 +4,7 @@ Regras de negócio para município.
 
 from dataclasses import dataclass
 
-from shared.exceptions import MunicipioInvalidoError
+from backend.shared.exceptions import MunicipioInvalidoError
 from .. import MUNICIPIOS_VALIDOS
 
 # Mapa "chave em minúsculo" -> grafia oficial, construído uma única vez

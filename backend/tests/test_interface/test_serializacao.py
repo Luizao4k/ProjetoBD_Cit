@@ -7,7 +7,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 
-from interface.serializacao import dto_para_dict
+from apresentation.serializacao import dto_para_dict
 
 
 @dataclass

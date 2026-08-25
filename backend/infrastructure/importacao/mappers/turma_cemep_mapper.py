@@ -4,7 +4,7 @@ Mapper de Turma CEMEP.
 
 from __future__ import annotations
 
-from backend.application.use_cases.turma_cemep import CriarTurmaCemepInput
+from application.use_cases.turma_cemep import CriarTurmaCemepInput
 
 
 class TurmaCemepMapper:

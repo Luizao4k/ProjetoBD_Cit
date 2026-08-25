@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from flask import Blueprint
 
-from interface.controllers import diretor_controller
+from apresentation.controllers import diretor_controller
 
 diretor_bp = Blueprint("diretor", __name__, url_prefix="/diretores")
 

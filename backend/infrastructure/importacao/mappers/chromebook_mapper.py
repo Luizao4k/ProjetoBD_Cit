@@ -5,10 +5,10 @@ ou escola_inep, e converte kit_aluno/kit_professor pra int.
 
 from __future__ import annotations
 
-from backend.domain.repositories import EscolaRepository
-from backend.application.use_cases.chromebook import CriarChromebookInput
-from backend.infrastructure.importacao.conversores import para_inteiro_opcional
-from backend.infrastructure.importacao.resolvedores import resolver_escola_id
+from domain.repositories import EscolaRepository
+from application.use_cases.chromebook import CriarChromebookInput
+from infrastructure.importacao.conversores import para_inteiro_opcional
+from infrastructure.importacao.resolvedores import resolver_escola_id
 
 
 class ChromebookMapper:

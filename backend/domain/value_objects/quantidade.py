@@ -4,7 +4,7 @@ Value Object para representar uma quantidade.
 
 from dataclasses import dataclass
 
-from shared.exceptions import QuantidadeInvalidaError
+from backend.shared.exceptions import QuantidadeInvalidaError
 
 
 
@@ -16,7 +16,7 @@ class Quantidade:
     valor: int
 
     def __post_init__(self) -> None:
-        if not isinstance(self.valor, int):
+        if type(self.valor) is not int:
             raise QuantidadeInvalidaError(
                 "A quantidade deve ser um número inteiro."
             )

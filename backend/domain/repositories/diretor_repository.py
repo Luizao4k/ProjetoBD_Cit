@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from domain.entities import Diretor
-from shared.types import DiretorId, EscolaId
+from backend.domain.entities import Diretor
+from backend.shared.types import DiretorId, EscolaId
 
 
 class DiretorRepository(ABC):

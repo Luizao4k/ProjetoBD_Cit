@@ -5,10 +5,10 @@ dre_nome, buscando entre as DREs já cadastradas no banco.
 
 from __future__ import annotations
 
-from backend.domain.repositories import DreRepository
-from backend.domain.value_objects import Nome
-from backend.application.use_cases.escola import CriarEscolaInput
-from backend.infrastructure.importacao.conversores import para_texto_opcional
+from domain.repositories import DreRepository
+from domain.value_objects import Nome
+from application.use_cases.escola import CriarEscolaInput
+from infrastructure.importacao.conversores import para_texto_opcional
 
 
 class EscolaMapper:

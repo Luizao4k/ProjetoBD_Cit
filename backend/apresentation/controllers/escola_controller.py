@@ -7,7 +7,7 @@ from __future__ import annotations
 from flask import g, jsonify, request
 
 from application.use_cases.escola import AtualizarEscolaInput, CriarEscolaInput
-from interface.serializacao import dto_para_dict
+from apresentation.serializacao import dto_para_dict
 
 _CAMPOS_OBRIGATORIOS = ("inep", "nome", "tipo", "municipio", "dre_id")
 

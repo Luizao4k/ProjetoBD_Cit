@@ -1,7 +1,5 @@
 import pytest
 
-from time import sleep
-
 from domain.entities import TurmaCemep
 from domain.value_objects import Nome
 from shared.types import ResponsavelId, TurmaCemepId

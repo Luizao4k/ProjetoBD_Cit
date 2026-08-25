@@ -4,9 +4,9 @@ Contrato de persistência da entidade DRE.
 
 from abc import ABC, abstractmethod
 
-from domain.entities import Dre
-from domain.value_objects import Nome
-from shared.types import DreId
+from backend.domain.entities import Dre
+from backend.domain.value_objects import Nome
+from backend.shared.types import DreId
 
 
 class DreRepository(ABC):

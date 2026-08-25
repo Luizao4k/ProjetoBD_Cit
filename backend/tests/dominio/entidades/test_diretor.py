@@ -1,7 +1,5 @@
 import pytest
 
-from time import sleep
-
 from domain.entities import Diretor
 from domain.value_objects import Nome, Email, Telefone
 from shared.types import DiretorId, EscolaId

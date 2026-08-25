@@ -1,4 +1,0 @@
-# Dependências de desenvolvimento.
-# O sistema em si usa apenas a stdlib (sqlite3, dataclasses, enum, typing).
-mypy>=1.10
-pytest>=8.0

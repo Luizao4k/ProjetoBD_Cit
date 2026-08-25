@@ -10,7 +10,7 @@ from application.use_cases.responsavel import (
     AtualizarResponsavelInput,
     CriarResponsavelInput,
 )
-from interface.serializacao import dto_para_dict
+from apresentation.serializacao import dto_para_dict
 
 _CAMPOS_OBRIGATORIOS = ("cemep_id", "nome")
 

@@ -11,16 +11,16 @@ Ver scripts/importar_*.py para a composição concreta de cada
 entidade.
 """
 
-from backend.infrastructure.importacao.pipeline import ArquivoInvalidoError, ImportadorPipeline
-from backend.infrastructure.importacao.resultado import ResultadoImportacao
-from backend.infrastructure.importacao.erro import ErroImportacao
-from backend.infrastructure.importacao.protocolos import GerenciadorDeTransacao
-from backend.infrastructure.importacao.progresso import (
+from infrastructure.importacao.pipeline import ArquivoInvalidoError, ImportadorPipeline
+from infrastructure.importacao.resultado import ResultadoImportacao
+from infrastructure.importacao.erro import ErroImportacao
+from infrastructure.importacao.protocolos import GerenciadorDeTransacao
+from infrastructure.importacao.progresso import (
     ProgressTracker,
     ProgressTrackerConsole,
     ProgressTrackerSilencioso,
 )
-from backend.infrastructure.importacao.log_alteracao import LogAlteracao, MudancaCampo, RegistroAlteracao
+from infrastructure.importacao.log_alteracao import LogAlteracao, MudancaCampo, RegistroAlteracao
 
 __all__ = [
     "ImportadorPipeline",

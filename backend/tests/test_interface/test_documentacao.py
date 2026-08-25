@@ -42,7 +42,7 @@ def test_rota_de_documentacao_nao_abre_container(client, monkeypatch):
     """/docs e /openapi.yaml não deveriam tocar no banco -- prova
     isso fazendo Container explodir se for chamado, e confirmando que
     a rota funciona mesmo assim."""
-    import interface.app as modulo_app
+    import apresentation.app as modulo_app
 
     def _container_que_nao_deveria_ser_chamado(*args, **kwargs):
         raise AssertionError("Container não deveria ser criado para /docs")

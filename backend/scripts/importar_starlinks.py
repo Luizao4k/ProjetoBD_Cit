@@ -35,9 +35,9 @@ from infrastructure.database.sqlite.repositories import (
 )
 from application.use_cases.starlink import CriarStarlinkUseCase
 
-from backend.infrastructure.importacao import ArquivoInvalidoError, ImportadorPipeline, ResultadoImportacao
-from backend.infrastructure.importacao.readers import criar_reader
-from backend.infrastructure.importacao.mappers import StarlinkMapper
+from infrastructure.importacao import ArquivoInvalidoError, ImportadorPipeline, ResultadoImportacao
+from infrastructure.importacao.readers import criar_reader
+from infrastructure.importacao.mappers import StarlinkMapper
 
 
 def importar_starlinks(

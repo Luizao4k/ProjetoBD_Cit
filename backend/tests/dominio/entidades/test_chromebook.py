@@ -1,7 +1,5 @@
 import pytest
 
-from time import sleep
-
 from domain.entities import Chromebook
 from domain.value_objects import Quantidade
 from shared.types import ChromebooksId, EscolaId

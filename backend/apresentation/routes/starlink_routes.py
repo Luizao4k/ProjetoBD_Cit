@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from flask import Blueprint
 
-from interface.controllers import starlink_controller
+from apresentation.controllers import starlink_controller
 
 starlink_bp = Blueprint("starlink", __name__, url_prefix="/starlinks")
 

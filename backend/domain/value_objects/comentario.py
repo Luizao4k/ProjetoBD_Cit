@@ -4,7 +4,7 @@ Value Object para representar um comentário.
 
 from dataclasses import dataclass
 
-from shared.exceptions import ComentarioInvalidoError
+from backend.shared.exceptions import ComentarioInvalidoError
 from .. import MAX_LEN
 
 

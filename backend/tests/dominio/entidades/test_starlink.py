@@ -1,7 +1,5 @@
 import pytest
 
-from time import sleep
-
 from domain.entities import Starlink
 from domain.value_objects import Nome
 from shared.types import StarlinkId, EscolaId

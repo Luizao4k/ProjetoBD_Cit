@@ -8,9 +8,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from backend.infrastructure.importacao.protocolos import Reader
-from backend.infrastructure.importacao.readers.csv_reader import CsvReader
-from backend.infrastructure.importacao.readers.excel_reader import ExcelReader
+from infrastructure.importacao.protocolos import Reader
+from infrastructure.importacao.readers.csv_reader import CsvReader
+from infrastructure.importacao.readers.excel_reader import ExcelReader
 
 _EXTENSOES_EXCEL = {".xlsx", ".xlsm"}
 

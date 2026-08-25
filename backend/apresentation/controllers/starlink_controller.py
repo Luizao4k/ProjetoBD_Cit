@@ -7,7 +7,7 @@ from __future__ import annotations
 from flask import g, jsonify, request
 
 from application.use_cases.starlink import AtualizarStarlinkInput, CriarStarlinkInput
-from interface.serializacao import dto_para_dict
+from apresentation.serializacao import dto_para_dict
 
 _CAMPOS_OBRIGATORIOS = ("escola_id", "designacao")
 

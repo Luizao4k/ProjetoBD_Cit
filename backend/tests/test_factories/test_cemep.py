@@ -13,6 +13,7 @@ def test_deve_criar_cemep_valido():
     assert cemep.escola_id == EscolaId(1)
     assert cemep.comentario.valor == "Comentário teste"
 
+
 def test_deve_permitir_sobrescrever_campos():
     cemep = CemepFactory.criar(
         id=25,
@@ -23,8 +24,6 @@ def test_deve_permitir_sobrescrever_campos():
     assert cemep.id == CemepId(25)
     assert cemep.escola_id == EscolaId(99)
     assert cemep.comentario.valor == "Novo comentário"
-
-from tests.factories.cemep_factory import CemepFactory
 
 
 def test_deve_criar_cemep_sem_id():

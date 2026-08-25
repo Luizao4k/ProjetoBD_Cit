@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from flask import Blueprint
 
-from interface.controllers import responsavel_controller
+from apresentation.controllers import responsavel_controller
 
 responsavel_bp = Blueprint("responsavel", __name__, url_prefix="/responsaveis")
 

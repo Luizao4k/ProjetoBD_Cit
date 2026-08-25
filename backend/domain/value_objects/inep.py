@@ -3,7 +3,7 @@ Value Object que representa o código INEP de uma escola.
 """
 from dataclasses import dataclass
 
-from shared.exceptions import InepInvalidoError
+from backend.shared.exceptions import InepInvalidoError
 
 
 @dataclass(frozen=True)

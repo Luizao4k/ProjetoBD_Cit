@@ -5,7 +5,7 @@ Regras de negócio para endereço de e-mail.
 from dataclasses import dataclass
 import re
 
-from shared.exceptions import EmailInvalidoError
+from backend.shared.exceptions import EmailInvalidoError
 
 
 @dataclass(frozen=True)

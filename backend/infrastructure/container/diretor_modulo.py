@@ -2,7 +2,7 @@
 Composição das dependências relacionadas à entidade Diretor.
 """
 
-from application.use_cases.diretor import (
+from backend.application.use_cases.diretor import (
     AtualizarDiretorUseCase,
     BuscarDiretorPorEscolaUseCase,
     BuscarDiretorPorIdUseCase,
@@ -11,7 +11,7 @@ from application.use_cases.diretor import (
     RemoverDiretorUseCase,
 )
 
-from infrastructure.database.sqlite.repositories import SqliteDiretorRepository
+from backend.infrastructure.database.sqlite.repositories import SqliteDiretorRepository
 
 from .base_modulo import BaseModulo
 

@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import pytest
 
-from interface.app import criar_app
+from apresentation.app import criar_app
 
 
 @pytest.fixture

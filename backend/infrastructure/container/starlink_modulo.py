@@ -2,7 +2,7 @@
 Composição das dependências relacionadas à entidade Starlink.
 """
 
-from backend.application.use_cases.starlink import (
+from application.use_cases.starlink import (
     CriarStarlinkUseCase,
     BuscarStarlinkPorIdUseCase,
     BuscarStarlinksPorEscolaUseCase,
@@ -11,7 +11,7 @@ from backend.application.use_cases.starlink import (
     RemoverStarlinkUseCase,
 )
 
-from backend.infrastructure.database.sqlite.repositories import SqliteStarlinkRepository
+from infrastructure.database.sqlite.repositories import SqliteStarlinkRepository
 
 from .base_modulo import BaseModulo
 

@@ -4,7 +4,7 @@ Regras de negócio para endereço de Enderecço
 
 from dataclasses import dataclass
 
-from backend.shared.exceptions import EnderecoInvalidoError
+from shared.exceptions import EnderecoInvalidoError
 
 @dataclass(frozen=True)
 class Endereco:

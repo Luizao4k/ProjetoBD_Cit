@@ -6,8 +6,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from backend.shared.types import DreId
-from backend.domain.value_objects import  Nome, Telefone
+from shared.types import DreId
+from domain.value_objects import  Nome, Telefone
 from .base import AuditoriaEntidade
 
 

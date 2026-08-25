@@ -2,7 +2,7 @@
 Composição das dependências relacionadas à entidade Turma CEMEP.
 """
 
-from backend.application.use_cases.turma_cemep import (
+from application.use_cases.turma_cemep import (
     AtualizarTurmaCemepUseCase,
     BuscarTurmaCemepPorIdUseCase,
     BuscarTurmasPorResponsavelUseCase,
@@ -11,7 +11,7 @@ from backend.application.use_cases.turma_cemep import (
     RemoverTurmaCemepUseCase,
 )
 
-from backend.infrastructure.database.sqlite.repositories import SqliteTurmaCemepRepository
+from infrastructure.database.sqlite.repositories import SqliteTurmaCemepRepository
 
 from .base_modulo import BaseModulo
 

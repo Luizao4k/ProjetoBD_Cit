@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from backend.domain.entities import TurmaCemep
-from backend.shared.types import ResponsavelId, TurmaCemepId
+from domain.entities import TurmaCemep
+from shared.types import ResponsavelId, TurmaCemepId
 
 
 class TurmaCemepRepository(ABC):

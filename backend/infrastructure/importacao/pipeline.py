@@ -19,22 +19,22 @@ from __future__ import annotations
 
 from typing import Generic, TypeVar
 
-from backend.infrastructure.importacao.log_alteracao import LogAlteracao
+from infrastructure.importacao.log_alteracao import LogAlteracao
 
-from backend.infrastructure.importacao.progresso import (
+from infrastructure.importacao.progresso import (
     ProgressTracker,
     ProgressTrackerConsole
     )
 
-from backend.infrastructure.importacao.protocolos import (
+from infrastructure.importacao.protocolos import (
     GerenciadorDeTransacao,
     Mapper,
     Reader,
     UseCase
     )
 
-from backend.infrastructure.importacao.erro import ErroImportacao
-from backend.infrastructure.importacao.resultado import ResultadoImportacao
+from infrastructure.importacao.erro import ErroImportacao
+from infrastructure.importacao.resultado import ResultadoImportacao
 
 # TypeVars próprios da classe concreta (invariantes, o padrão): os
 # TEntrada_co/TEntrada_contra/TSaida_co de protocolos.py existem só

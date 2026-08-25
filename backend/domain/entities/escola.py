@@ -6,9 +6,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from backend.shared.types import EscolaId, DreId
-from backend.domain.value_objects import Inep, Nome, Municipio, Endereco
-from backend.domain.enums import TipoEscola
+from shared.types import EscolaId, DreId
+from domain.value_objects import Inep, Nome, Municipio, Endereco
+from domain.enums import TipoEscola
 from .base import AuditoriaEntidade
 
 

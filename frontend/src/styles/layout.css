@@ -1,40 +1,50 @@
-* {
-  box-sizing: border-box;
+/* =========================================================
+   APP LAYOUT
+   ========================================================= */
+
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  background: var(--color-background);
 }
 
-html,
-body,
-#root {
-  margin: 0;
-  min-height: 100%;
+.app-layout__main {
+  min-width: 0;
+  width: 100%;
+  min-height: 100vh;
+  margin-left: 260px;
+
+  display: flex;
+  flex-direction: column;
 }
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  background: #f5f6f8;
-  color: #1f2937;
+.app-layout__content {
+  flex: 1;
+  width: 100%;
+  padding: 32px;
 }
+
 
 /* =========================================================
    HEADER
    ========================================================= */
 
 .header {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+
   height: 64px;
+  flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  padding: 0 24px;
+  padding: 0 32px;
 
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
-
-  position: sticky;
-  top: 0;
-
-  z-index: 900;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .header__left {
@@ -43,19 +53,17 @@ body {
   gap: 16px;
 }
 
-.header__left h1 {
-  margin: 0;
-
-  font-size: 20px;
+.header__title {
+  font-size: 18px;
   font-weight: 600;
+  color: var(--color-text);
 }
 
 .header__menu {
-  display: none;
-
   width: 40px;
   height: 40px;
 
+  display: none;
   align-items: center;
   justify-content: center;
 
@@ -63,37 +71,21 @@ body {
   border-radius: 8px;
 
   background: transparent;
+  color: var(--color-text-secondary);
 
-  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .header__menu:hover {
-  background: #f3f4f6;
+  background: var(--color-hover);
+  color: var(--color-text);
 }
 
 .header__user {
   font-size: 14px;
-  color: #4b5563;
-}
-
-/* =========================================================
-   APP LAYOUT
-   ========================================================= */
-
-.app-layout {
-  min-height: 100vh;
-  display: flex;
-  background: #f5f7fa;
-}
-
-.app-layout__main {
-  width: 100%;
-  min-height: 100vh;
-
-  margin-left: 260px;
-
-  display: flex;
-  flex-direction: column;
+  color: var(--color-text-secondary);
 }
 
 
@@ -111,39 +103,40 @@ body {
   display: flex;
   flex-direction: column;
 
-  background: #ffffff;
-  border-right: 1px solid #e5e7eb;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
 
   z-index: 1000;
 
   overflow-y: auto;
-
-  transition: transform 0.25s ease;
 }
 
-/* Logo / nome do sistema */
+
+/* =========================================================
+   SIDEBAR - BRAND
+   ========================================================= */
 
 .sidebar__brand {
   height: 64px;
+  flex-shrink: 0;
 
   display: flex;
   align-items: center;
 
-  padding: 0 20px;
+  padding: 0 24px;
 
-  border-bottom: 1px solid #e5e7eb;
-
-  flex-shrink: 0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .sidebar__brand strong {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
-  color: #111827;
+  color: var(--color-text);
 }
 
+
 /* =========================================================
-   NAVEGAÇÃO
+   SIDEBAR - NAV
    ========================================================= */
 
 .sidebar__nav {
@@ -152,21 +145,20 @@ body {
   display: flex;
   flex-direction: column;
 
-  gap: 24px;
+  gap: 28px;
 
-  padding: 20px 12px;
+  padding: 24px 12px;
 }
 
 .sidebar__group {
   display: flex;
   flex-direction: column;
-
   gap: 6px;
 }
 
 .sidebar__group-label {
-  padding: 0 10px;
-  margin-bottom: 4px;
+  padding: 0 12px;
+  margin-bottom: 6px;
 
   font-size: 11px;
   font-weight: 600;
@@ -174,18 +166,18 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.08em;
 
-  color: #9ca3af;
+  color: var(--color-text-muted);
 }
 
 .sidebar__items {
   display: flex;
   flex-direction: column;
-
   gap: 3px;
 }
 
+
 /* =========================================================
-   ITEM
+   SIDEBAR - ITEM
    ========================================================= */
 
 .sidebar__item {
@@ -200,8 +192,7 @@ body {
 
   border-radius: 8px;
 
-  color: #4b5563;
-  text-decoration: none;
+  color: var(--color-text-secondary);
 
   font-size: 14px;
   font-weight: 500;
@@ -212,42 +203,45 @@ body {
 }
 
 .sidebar__item:hover {
-  background: #f3f4f6;
-  color: #111827;
+  background: var(--color-hover);
+  color: var(--color-text);
 }
 
 .sidebar__item--active {
-  background: #eef2ff;
-  color: #4338ca;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
 }
 
 .sidebar__item--active:hover {
-  background: #eef2ff;
-  color: #4338ca;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
 }
+
 
 /* =========================================================
-   ÁREA PRINCIPAL
+   SIDEBAR - ICON
    ========================================================= */
 
-.app-layout__main {
-  min-width: 0;
-  min-height: 100vh;
-
-  width: 100%;
-
-  margin-left: 260px;
-
-  display: flex;
-  flex-direction: column;
+.sidebar__item svg {
+  flex-shrink: 0;
 }
 
-.app-layout__content {
-  flex: 1;
 
-  width: 100%;
+/* =========================================================
+   OVERLAY
+   ========================================================= */
 
-  padding: 24px;
+.sidebar-overlay {
+  display: none;
+
+  position: fixed;
+  inset: 0;
+
+  border: none;
+
+  background: rgba(17, 24, 39, 0.35);
+
+  z-index: 950;
 }
 
 
@@ -256,16 +250,20 @@ body {
    ========================================================= */
 
 @media (max-width: 1024px) {
-  .sidebar {
-    width: 220px;
-  }
-
   .app-layout__main {
     margin-left: 220px;
   }
 
+  .sidebar {
+    width: 220px;
+  }
+
   .app-layout__content {
-    padding: 20px;
+    padding: 24px;
+  }
+
+  .header {
+    padding: 0 24px;
   }
 }
 
@@ -275,52 +273,36 @@ body {
    ========================================================= */
 
 @media (max-width: 768px) {
-  .sidebar {
-    width: 72px;
-  }
-
-  .sidebar__brand {
-    justify-content: center;
-    padding: 0 10px;
-  }
-
-  .sidebar__brand strong {
-    font-size: 0;
-  }
-
-  /*
-   * Depois podemos substituir isso pelo
-   * logo/ícone real do sistema.
-   */
-
-
-  .sidebar__nav {
-    padding: 16px 8px;
-  }
-
-  .sidebar__group-label {
-    display: none;
-  }
-
-  .sidebar__item {
-    justify-content: center;
-
-    padding: 0;
-
-    width: 56px;
-    min-height: 44px;
-  }
-
-  .sidebar__item span {
-    display: none;
-  }
-
   .app-layout__main {
-    margin-left: 72px;
+    margin-left: 0;
   }
 
   .app-layout__content {
-    padding: 16px;
+    padding: 20px 16px;
+  }
+
+  .header {
+    padding: 0 16px;
+  }
+
+  .header__menu {
+    display: flex;
+  }
+
+  .sidebar {
+    width: 260px;
+
+    transform: translateX(-100%);
+
+    transition: transform 0.25s ease;
+  }
+
+  .sidebar--open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: block;
   }
 }
 
@@ -330,19 +312,15 @@ body {
    ========================================================= */
 
 @media (max-width: 480px) {
-  .sidebar {
-    width: 60px;
-  }
-
-  .sidebar__item {
-    width: 44px;
-  }
-
-  .app-layout__main {
-    margin-left: 60px;
-  }
-
   .app-layout__content {
-    padding: 12px;
+    padding: 16px 12px;
+  }
+
+  .header {
+    height: 60px;
+  }
+
+  .sidebar {
+    width: 240px;
   }
 }

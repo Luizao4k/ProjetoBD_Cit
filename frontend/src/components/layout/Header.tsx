@@ -17,7 +17,6 @@ export function Header({ onMenuClick }: HeaderProps) {
           <Menu size={24} />
         </button>
 
-        <h1>Início</h1>
       </div>
 
       <div className="header__user">

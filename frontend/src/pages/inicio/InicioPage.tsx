@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import {
   Activity,
   Building2,
@@ -7,9 +9,39 @@ import {
 
 import { StatCard } from "../../components/dashboard/StatCard";
 import { DashboardSection } from "../../components/dashboard/DashboardSection";
-
+import { listarDres, type Dre } from "../../services/api";
 
 export function InicioPage() {
+  const [dres, setDres] = useState<Dre[]>([]);
+  const [carregandoDres, setCarregandoDres] = useState(true);
+  const [erroDres, setErroDres] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function carregarDres() {
+      try {
+        setCarregandoDres(true);
+        setErroDres(null);
+
+        const dados = await listarDres();
+
+        setDres(dados);
+      } catch (error) {
+        console.error("Erro ao carregar DREs:", error);
+
+        setErroDres("Não foi possível carregar as DREs.");
+      } finally {
+        setCarregandoDres(false);
+      }
+    }
+
+    carregarDres();
+  }, []);
+
+  const totalDres = carregandoDres
+    ? "—"
+    : erroDres
+      ? "!"
+      : dres.length;
   return (
     <div className="dashboard">
       <header className="dashboard__header">

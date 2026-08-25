@@ -6,8 +6,8 @@ from __future__ import annotations
 
 from flask import g, jsonify, request
 
-from backend.application.use_cases.cemep import AtualizarCemepInput, CriarCemepInput
-from backend.apresentation.serializacao import dto_para_dict
+from application.use_cases.cemep import AtualizarCemepInput, CriarCemepInput
+from apresentation.serializacao import dto_para_dict
 
 
 def criar_cemep():

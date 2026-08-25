@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from backend.domain.entities import Responsavel
-from backend.shared.types import CemepId, ResponsavelId
+from domain.entities import Responsavel
+from shared.types import CemepId, ResponsavelId
 
 
 class ResponsavelRepository(ABC):

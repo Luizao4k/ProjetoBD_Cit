@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from backend.domain.entities import Chromebook
-from backend.shared.types import ChromebooksId, EscolaId
+from domain.entities import Chromebook
+from shared.types import ChromebooksId, EscolaId
 
 
 class ChromebookRepository(ABC):

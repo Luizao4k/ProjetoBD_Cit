@@ -10,8 +10,8 @@ EscolaMapper porque só tem um consumidor.
 
 from __future__ import annotations
 
-from backend.domain.repositories import CemepRepository, EscolaRepository
-from backend.domain.value_objects import Inep
+from domain.repositories import CemepRepository, EscolaRepository
+from domain.value_objects import Inep
 
 
 def resolver_escola_id(linha: dict[str, str], repo_escola: EscolaRepository) -> int:

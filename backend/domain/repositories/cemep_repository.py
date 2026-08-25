@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from backend.domain.entities import Cemep
-from backend.shared.types import CemepId, EscolaId
+from domain.entities import Cemep
+from shared.types import CemepId, EscolaId
 
 
 class CemepRepository(ABC):

@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from backend.domain.entities import Starlink
-from backend.shared.types import EscolaId, StarlinkId
+from domain.entities import Starlink
+from shared.types import EscolaId, StarlinkId
 
 
 class StarlinkRepository(ABC):

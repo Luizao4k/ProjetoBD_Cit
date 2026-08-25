@@ -2,7 +2,7 @@
 Composição das dependências relacionadas à entidade Responsável.
 """
 
-from backend.application.use_cases.responsavel import (
+from application.use_cases.responsavel import (
     AtualizarResponsavelUseCase,
     BuscarResponsavelPorCemepUseCase,
     BuscarResponsavelPorIdUseCase,
@@ -11,7 +11,7 @@ from backend.application.use_cases.responsavel import (
     RemoverResponsavelUseCase,
 )
 
-from backend.infrastructure.database.sqlite.repositories import SqliteResponsavelRepository
+from infrastructure.database.sqlite.repositories import SqliteResponsavelRepository
 
 from .base_modulo import BaseModulo
 

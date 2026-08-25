@@ -15,27 +15,31 @@ correria esse risco aqui. Por isso: uma conexão por requisição.
 """
 
 from __future__ import annotations
-
+from flask_cors import CORS
 from typing import cast
 
 from flask import Flask, g, request
 from flask.json.provider import DefaultJSONProvider
 
-from backend.infrastructure.container.container import Container
-from backend.apresentation.documentacao import documentacao_bp
-from backend.apresentation.erros import registrar_tratadores_de_erro
-from backend.apresentation.routes.dre_routes import dre_bp
-from backend.apresentation.routes.escola_routes import escola_bp
-from backend.apresentation.routes.diretor_routes import diretor_bp
-from backend.apresentation.routes.cemep_routes import cemep_bp
-from backend.apresentation.routes.chromebook_routes import chromebook_bp
-from backend.apresentation.routes.starlink_routes import starlink_bp
-from backend.apresentation.routes.responsavel_routes import responsavel_bp
-from backend.apresentation.routes.turma_cemep_routes import turma_cemep_bp
+from infrastructure.container.container import Container
+from apresentation.documentacao import documentacao_bp
+from apresentation.erros import registrar_tratadores_de_erro
+from apresentation.routes.dre_routes import dre_bp
+from apresentation.routes.escola_routes import escola_bp
+from apresentation.routes.diretor_routes import diretor_bp
+from apresentation.routes.cemep_routes import cemep_bp
+from apresentation.routes.chromebook_routes import chromebook_bp
+from apresentation.routes.starlink_routes import starlink_bp
+from apresentation.routes.responsavel_routes import responsavel_bp
+from apresentation.routes.turma_cemep_routes import turma_cemep_bp
 
 
 def criar_app(caminho_banco: str = "escolas.db") -> Flask:
     app = Flask(__name__)
+    CORS(
+        app,
+        origins=["http://localhost:5173"],
+    )
     # app.json é tipado como a base abstrata JSONProvider (extensível
     # por design), mas em tempo de execução é sempre DefaultJSONProvider
     # a menos que alguém troque explicitamente — o cast só informa isso

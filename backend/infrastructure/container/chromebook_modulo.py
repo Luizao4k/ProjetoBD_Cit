@@ -2,7 +2,7 @@
 Composição das dependências relacionadas à entidade Chromebook.
 """
 
-from backend.application.use_cases.chromebook import (
+from application.use_cases.chromebook import (
     AtualizarChromebookUseCase,
     BuscarChromebookPorEscolaUseCase,
     BuscarChromebookPorIdUseCase,
@@ -11,7 +11,7 @@ from backend.application.use_cases.chromebook import (
     RemoverChromebookUseCase,
 )
 
-from backend.infrastructure.database.sqlite.repositories import SqliteChromebookRepository
+from infrastructure.database.sqlite.repositories import SqliteChromebookRepository
 
 from .base_modulo import BaseModulo
 

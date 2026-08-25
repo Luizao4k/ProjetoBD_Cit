@@ -4,9 +4,9 @@ Contrato de persistência da entidade Escola.
 
 from abc import ABC, abstractmethod
 
-from backend.domain.entities import Escola
-from backend.domain.value_objects import Inep, Nome
-from backend.shared.types import DreId, EscolaId
+from domain.entities import Escola
+from domain.value_objects import Inep, Nome
+from shared.types import DreId, EscolaId
 
 
 class EscolaRepository(ABC):

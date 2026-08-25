@@ -12,3 +12,4 @@ openpyxl>=3.1
 # .yaml cru, sem depender de um parser Python (ver interface/
 # documentacao.py).
 pyyaml>=6.0
+pip freeze > requirements.txt

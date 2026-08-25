@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from backend.shared.types import EscolaId, CemepId
-from backend.domain.value_objects import Comentario
+from shared.types import EscolaId, CemepId
+from domain.value_objects import Comentario
 from .base import AuditoriaEntidade
 
 

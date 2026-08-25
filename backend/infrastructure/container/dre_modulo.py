@@ -2,7 +2,7 @@
 Composição das dependências relacionadas à entidade DRE.
 """
 
-from backend.application.use_cases.dre import (
+from application.use_cases.dre import (
     AtualizarDreUseCase,
     BuscarDrePorIdUseCase,
     CriarDreUseCase,
@@ -10,7 +10,7 @@ from backend.application.use_cases.dre import (
     RemoverDreUseCase,
 )
 
-from backend.infrastructure.database.sqlite.repositories import SqliteDreRepository
+from infrastructure.database.sqlite.repositories import SqliteDreRepository
 
 from .base_modulo import BaseModulo
 

@@ -2,7 +2,7 @@
 Composição das dependências relacionadas à entidade CEMEP.
 """
 
-from backend.application.use_cases.cemep import (
+from application.use_cases.cemep import (
     AtualizarCemepUseCase,
     BuscarCemepPorEscolaUseCase,
     BuscarCemepPorIdUseCase,
@@ -11,7 +11,7 @@ from backend.application.use_cases.cemep import (
     RemoverCemepUseCase,
 )
 
-from backend.infrastructure.database.sqlite.repositories import SqliteCemepRepository
+from infrastructure.database.sqlite.repositories import SqliteCemepRepository
 
 from .base_modulo import BaseModulo
 

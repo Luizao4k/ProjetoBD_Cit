@@ -1,7 +1,18 @@
+/**
+ * Estilos da página de gerenciamento de DREs.
+ *
+ * Organiza a estrutura visual da página, incluindo:
+ * - cabeçalho e botão de criação;
+ * - mensagens de carregamento e erro;
+ * - tabela de DREs;
+ * - estados de interação dos elementos.
+ */
+
 .dre-page {
   width: 100%;
 }
 
+/* Cabeçalho da página */
 .dre-page__header {
   display: flex;
   align-items: flex-start;
@@ -23,6 +34,7 @@
   font-size: 14px;
 }
 
+/* Botão para criação de uma nova DRE */
 .dre-page__new-button {
   display: inline-flex;
   align-items: center;
@@ -42,10 +54,12 @@
   background: #3730a3;
 }
 
+/* Área principal do conteúdo */
 .dre-page__content {
   width: 100%;
 }
 
+/* Mensagens de estado da página */
 .dre-page__message {
   padding: 32px;
   text-align: center;
@@ -55,12 +69,14 @@
   color: #6b7280;
 }
 
+/* Estado de erro */
 .dre-page__message--error {
   color: #b91c1c;
   background: #fef2f2;
   border-color: #fecaca;
 }
 
+/* Container responsável pelo comportamento responsivo da tabela */
 .dre-table-wrapper {
   width: 100%;
   overflow-x: auto;
@@ -69,6 +85,7 @@
   border-radius: 10px;
 }
 
+/* Tabela de DREs */
 .dre-table {
   width: 100%;
   border-collapse: collapse;
@@ -82,6 +99,15 @@
   border-bottom: 1px solid #f3f4f6;
 }
 
+.dre-table__row {
+  cursor: pointer;
+}
+
+.dre-table__row:hover {
+  background: #f9fafb;
+}
+
+/* Cabeçalho da tabela */
 .dre-table th {
   background: #f9fafb;
   color: #4b5563;
@@ -91,14 +117,17 @@
   letter-spacing: 0.04em;
 }
 
+/* Células da tabela */
 .dre-table td {
   color: #374151;
 }
 
+/* Remove a borda da última linha */
 .dre-table tbody tr:last-child td {
   border-bottom: none;
 }
 
+/* Destaque visual ao passar o mouse sobre uma linha */
 .dre-table tbody tr:hover {
   background: #f9fafb;
 }

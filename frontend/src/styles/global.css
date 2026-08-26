@@ -1,24 +1,35 @@
+/**
+ * Estilos globais da aplicação.
+ *
+ * Define as variáveis de design, reset de estilos, tipografia,
+ * comportamento padrão dos elementos HTML e regras básicas
+ * de acessibilidade.
+ */
+
+/* =========================================================
+   VARIÁVEIS DE DESIGN
+   ========================================================= */
+
 :root {
   --color-primary: #4338ca;
-
   --color-background: #f5f6f8;
   --color-surface: #ffffff;
-
   --color-text: #1f2937;
   --color-text-secondary: #4b5563;
   --color-text-muted: #9ca3af;
-
   --color-border: #e5e7eb;
-
   --color-hover: #f3f4f6;
   --color-primary-light: #eef2ff;
 }
 
-
-/* ================================
+/* =========================================================
    RESET
-   ================================ */
+   ========================================================= */
 
+/**
+ * Garante que o tamanho dos elementos inclua
+ * suas bordas e preenchimentos.
+ */
 *,
 *::before,
 *::after {
@@ -32,11 +43,14 @@ body,
   min-height: 100%;
 }
 
-
-/* ================================
+/* =========================================================
    BASE
-   ================================ */
+   ========================================================= */
 
+/**
+ * Define os estilos base da aplicação, incluindo
+ * tipografia, cores, fundo e espaçamento entre linhas.
+ */
 body {
   font-family:
     Inter,
@@ -48,17 +62,18 @@ body {
 
   background: var(--color-background);
   color: var(--color-text);
-
   line-height: 1.5;
-
   -webkit-font-smoothing: antialiased;
 }
 
-
-/* ================================
+/* =========================================================
    ELEMENTOS
-   ================================ */
+   ========================================================= */
 
+/**
+ * Mantém os elementos de formulário utilizando
+ * a mesma configuração tipográfica da aplicação.
+ */
 button,
 input,
 textarea,
@@ -75,10 +90,9 @@ a {
   text-decoration: none;
 }
 
-
-/* ================================
+/* =========================================================
    TIPOGRAFIA
-   ================================ */
+   ========================================================= */
 
 h1,
 h2,
@@ -89,42 +103,29 @@ h6,
 p {
   margin: 0;
 }
-/* =========================================================
-   ELEMENTOS
-   ========================================================= */
-
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
 
 /* =========================================================
-   IMAGENS
+   IMAGENS E ÍCONES
    ========================================================= */
 
+/**
+ * Evita que imagens e ícones ultrapassem os limites
+ * de seus elementos pai.
+ */
 img,
 svg {
   display: block;
   max-width: 100%;
 }
 
-
 /* =========================================================
    ACESSIBILIDADE
    ========================================================= */
 
+/**
+ * Define um indicador visual consistente para elementos
+ * que recebem foco através da navegação por teclado.
+ */
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,

@@ -1,11 +1,33 @@
 import { NavLink } from "react-router-dom";
+
+import logo from "../../images/seduc-pa.webp";
+
 import { navigation } from "../../config/navigation";
 
+/**
+ * Propriedades utilizadas pelo componente Sidebar.
+ */
 interface SidebarProps {
+  /** Define se a barra lateral está aberta. */
   isOpen: boolean;
+
+  /** Função executada para fechar a barra lateral. */
   onClose: () => void;
 }
 
+/**
+ * Barra lateral de navegação da aplicação.
+ *
+ * Renderiza os grupos e itens de navegação definidos na configuração
+ * centralizada de rotas, utilizando o NavLink para identificar
+ * automaticamente a página atualmente ativa.
+ *
+ * A barra lateral pode ser aberta ou fechada através da propriedade
+ * isOpen e é fechada após a seleção de um item de navegação.
+ *
+ * @param props - Propriedades utilizadas para controlar a barra lateral.
+ * @returns A barra lateral contendo os itens de navegação da aplicação.
+ */
 export function Sidebar({
   isOpen,
   onClose,
@@ -17,7 +39,11 @@ export function Sidebar({
       }`}
     >
       <div className="sidebar__brand">
-        <strong>CIT - SEDUC</strong>
+        <img
+          src={logo}
+          alt="SEDUC Pará"
+          className="sidebar__logo"
+        />
       </div>
 
       <nav className="sidebar__nav">
@@ -51,7 +77,6 @@ export function Sidebar({
                     }
                   >
                     <Icon size={18} />
-
                     <span>{item.label}</span>
                   </NavLink>
                 );

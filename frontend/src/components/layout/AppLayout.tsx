@@ -1,16 +1,33 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { useState } from 'react';
 
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 
+/**
+ * Layout principal da aplicação.
+ *
+ * Responsável por estruturar a interface principal, integrando
+ * o cabeçalho, a barra lateral e o conteúdo das rotas.
+ *
+ * Também controla a abertura e o fechamento da barra lateral
+ * e disponibiliza o conteúdo das páginas através do Outlet.
+ *
+ * @returns O layout principal da aplicação.
+ */
 export function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
+  /**
+   * Alterna o estado de abertura da barra lateral.
+   */
   function toggleSidebar() {
     setSidebarOpen((current: boolean) => !current);
   }
 
+  /**
+   * Fecha a barra lateral.
+   */
   function closeSidebar() {
     setSidebarOpen(false);
   }

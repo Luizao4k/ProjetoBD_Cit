@@ -1,39 +1,71 @@
-"""
-Regras de negócio para município.
-"""
-
+import unicodedata
 from dataclasses import dataclass
 
 from shared.exceptions import MunicipioInvalidoError
+
 from .. import MUNICIPIOS_VALIDOS
 
-# Mapa "chave em minúsculo" -> grafia oficial, construído uma única vez
-# no import do módulo (não a cada instanciação de Municipio).
-_MUNICIPIOS_POR_CHAVE = {municipio.lower(): municipio for municipio in MUNICIPIOS_VALIDOS}
+
+def _normalizar_chave(valor: str) -> str:
+    """
+    Normaliza o município para comparação.
+
+    Remove diferenças de:
+    - maiúsculas/minúsculas;
+    - acentuação;
+    - espaços nas extremidades.
+    """
+    valor = valor.strip().upper()
+
+    valor = unicodedata.normalize("NFD", valor)
+
+    return "".join(
+        caractere
+        for caractere in valor
+        if unicodedata.category(caractere) != "Mn"
+    )
+
+
+# Mapa "chave normalizada" -> grafia oficial.
+_MUNICIPIOS_POR_CHAVE = {
+    _normalizar_chave(municipio): municipio
+    for municipio in MUNICIPIOS_VALIDOS
+}
 
 
 @dataclass(frozen=True)
 class Municipio:
     """
-    Regras:
-    - Deve corresponder a um dos 144 municípios do Pará (MUNICIPIOS_VALIDOS).
-    - A comparação é case-insensitive; o valor final é sempre normalizado
-      para a grafia oficial da lista, então "marabá", "MARABÁ" e "Marabá"
-      resultam todos no mesmo Municipio(valor="Marabá").
+    Representa um município válido do Pará.
+
+    A comparação é feita de forma case-insensitive e
+    independente de acentuação.
+
+    O valor armazenado permanece na grafia oficial
+    definida em MUNICIPIOS_VALIDOS.
     """
+
     valor: str
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         valor = self.valor.strip()
 
         if not valor:
-            raise MunicipioInvalidoError("Município não pode ser vazio.")
+            raise MunicipioInvalidoError(
+                "Município não pode ser vazio."
+            )
 
-        canonico = _MUNICIPIOS_POR_CHAVE.get(valor.lower())
+        chave = _normalizar_chave(valor)
+
+        canonico = _MUNICIPIOS_POR_CHAVE.get(chave)
 
         if canonico is None:
             raise MunicipioInvalidoError(
                 f"'{valor}' não é um município válido do Pará."
             )
 
-        object.__setattr__(self, "valor", canonico)
+        object.__setattr__(
+            self,
+            "valor",
+            canonico,
+        )

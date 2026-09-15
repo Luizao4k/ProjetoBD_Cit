@@ -1,4 +1,4 @@
-import { requisicao } from "./http";
+import { requisicao } from "../../../services/http";
 
 /**
  * Representa um diretor retornado pela API.
@@ -59,4 +59,21 @@ export function buscarDiretor(
   id: number,
 ): Promise<Diretor> {
   return requisicao<Diretor>(`/diretores/${id}`);
+}
+
+/**
+ * Atualiza os dados editáveis de um diretor.
+ */
+export function atualizarDiretor(
+  id: number,
+  dados: {
+    nome?: string;
+    telefone?: string;
+    email?: string;
+  },
+): Promise<Diretor> {
+  return requisicao<Diretor>(`/diretores/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(dados),
+  });
 }

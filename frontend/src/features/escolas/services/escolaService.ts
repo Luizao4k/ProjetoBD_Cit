@@ -1,4 +1,4 @@
-import { requisicao } from "./http";
+import { requisicao } from "../../../services/http";
 
 /**
  * Representa uma escola retornada pela API.

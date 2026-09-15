@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import {
   Activity,
   Building2,
-  GlobeCheck,
+  BookAlert,
   Network,
 } from "lucide-react";
 
 import { StatCard } from "../../components/dashboard/StatCard";
 import { DashboardSection } from "../../components/dashboard/DashboardSection";
-import { listarDres, type Dre } from "../../services/dreService";
-import { listarEscolas, type Escola } from "../../services/escolaService";
+import { listarDres, type Dre } from "../../features/dre/services/dreService";
+import { listarEscolas, type Escola } from "../../features/escolas/services/escolaService";
 
 /**
  * Página inicial do sistema.
@@ -109,26 +109,26 @@ export function InicioPage() {
         <StatCard
           title="DRE"
           value={totalDres}
-          description="Total de DRE cadastradas"
+          description="Total de DRE's cadastradas"
           icon={Building2}
         />
 
         <StatCard
-          title="Escolas"
+          title="Ativas"
           value={totalEscolas}
-          description="Total Escolas"
+          description="Total de Escolas em funcionamento"
           icon={Network}
         />
 
         <StatCard
-          title="Medições"
+          title="Paralizadas"
           value="—"
-          description="Escolas com prodepa"
-          icon={GlobeCheck}
+          description="Escolas paralizadas"
+          icon={BookAlert}
         />
 
         <StatCard
-          title="Status"
+          title="Starlink"
           value="—"
           description="Situação geral da rede"
           icon={Activity}

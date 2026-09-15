@@ -1,4 +1,4 @@
-import { requisicao } from "./http";
+import { requisicao } from "../../../services/http";
 
 /**
  * Representa uma DRE retornada pela API.
@@ -21,9 +21,18 @@ export interface Dre {
 }
 
 /**
- * Retorna todas as DREs cadastradas.
+ * Dados permitidos para atualização de uma DRE.
  *
- * @returns Lista de DREs.
+ * Todos os campos são opcionais porque a API permite
+ * atualização parcial do registro.
+ */
+export interface AtualizarDreDados {
+  nome?: string;
+  telefone?: string;
+}
+
+/**
+ * Retorna todas as DREs cadastradas.
  */
 export function listarDres(): Promise<Dre[]> {
   return requisicao<Dre[]>("/dres");
@@ -31,9 +40,6 @@ export function listarDres(): Promise<Dre[]> {
 
 /**
  * Busca uma DRE pelo seu identificador.
- *
- * @param id Identificador da DRE.
- * @returns DRE encontrada.
  */
 export function buscarDre(id: number): Promise<Dre> {
   return requisicao<Dre>(`/dres/${id}`);
@@ -41,9 +47,6 @@ export function buscarDre(id: number): Promise<Dre> {
 
 /**
  * Cria uma nova DRE.
- *
- * @param dados Dados necessários para criação da DRE.
- * @returns DRE criada.
  */
 export function criarDre(dados: {
   nome: string;
@@ -58,16 +61,12 @@ export function criarDre(dados: {
 /**
  * Atualiza uma DRE existente.
  *
- * @param id Identificador da DRE.
- * @param dados Campos que serão atualizados.
- * @returns DRE atualizada.
+ * A atualização é parcial. Somente os campos informados
+ * serão enviados para a API.
  */
 export function atualizarDre(
   id: number,
-  dados: {
-    nome?: string;
-    telefone?: string;
-  },
+  dados: AtualizarDreDados,
 ): Promise<Dre> {
   return requisicao<Dre>(`/dres/${id}`, {
     method: "PUT",
@@ -77,8 +76,6 @@ export function atualizarDre(
 
 /**
  * Remove uma DRE.
- *
- * @param id Identificador da DRE.
  */
 export async function excluirDre(id: number): Promise<void> {
   await requisicao<void>(`/dres/${id}`, {

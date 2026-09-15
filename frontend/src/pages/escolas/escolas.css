@@ -70,6 +70,7 @@
   font-size: 13px;
   color: #374151;
   background: #ffffff;
+  box-sizing: border-box;
 }
 
 .escolas-page__search input::placeholder {
@@ -128,6 +129,7 @@
 
 .escola-list-item__meta {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   color: #6b7280;
   font-size: 12px;
@@ -159,6 +161,11 @@
    ========================================================= */
 
 .escola-details__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+
   padding-bottom: 24px;
   margin-bottom: 24px;
   border-bottom: 1px solid #e5e7eb;
@@ -182,6 +189,50 @@
 .escola-details__meta span {
   display: flex;
   align-items: center;
+}
+
+/* =========================================================
+   BOTÃO EDITAR
+   ========================================================= */
+
+.escola-details__edit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  flex-shrink: 0;
+
+  height: 38px;
+  padding: 0 14px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: #374151;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.escola-details__edit-button:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
+.escola-details__edit-button:focus-visible {
+  outline: none;
+  border-color: #4338ca;
+  box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
 }
 
 /* =========================================================
@@ -213,7 +264,49 @@
   margin: 0;
   color: #6b7280;
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.4;
+}
+
+.escola-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  margin-bottom: 12px;
+}
+
+.escola-card__header h3 {
+  margin: 0;
+}
+
+.escola-card__edit-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 5px 8px;
+
+  border: none;
+  border-radius: 6px;
+
+  background: transparent;
+  color: #6b7280;
+
+  font-size: 12px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.escola-card__edit-button:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  color: #111827;
 }
 
 /* =========================================================
@@ -258,6 +351,242 @@
 }
 
 /* =========================================================
+   MODAL DE EDIÇÃO
+   ========================================================= */
+
+.escola-modal__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background: rgba(17, 24, 39, 0.45);
+}
+
+.escola-modal {
+  width: 100%;
+  max-width: 520px;
+
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.escola-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+
+  padding: 20px 24px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.escola-modal__header h2 {
+  margin: 0 0 6px;
+
+  color: #111827;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.escola-modal__header p {
+  margin: 0;
+
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.escola-modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 34px;
+  height: 34px;
+
+  border: none;
+  border-radius: 7px;
+
+  background: transparent;
+  color: #6b7280;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.escola-modal__close:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.escola-modal__close:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   FORMULÁRIO DO MODAL
+   ========================================================= */
+
+.escola-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  padding: 24px;
+}
+
+.escola-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.escola-modal__field label {
+  color: #374151;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.escola-modal__field input {
+  width: 100%;
+  height: 40px;
+
+  padding: 0 12px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+
+  outline: none;
+
+  background: #ffffff;
+  color: #374151;
+
+  font-size: 13px;
+
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.escola-modal__field input:focus {
+  border-color: #4338ca;
+  box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
+}
+
+.escola-modal__field input:disabled {
+  background: #f9fafb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.escola-modal__field input::placeholder {
+  color: #9ca3af;
+}
+
+/* =========================================================
+   ERRO DO MODAL
+   ========================================================= */
+
+.escola-modal__error {
+  padding: 10px 12px;
+
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+
+  background: #fef2f2;
+  color: #b91c1c;
+
+  font-size: 13px;
+}
+
+/* =========================================================
+   RODAPÉ DO MODAL
+   ========================================================= */
+
+.escola-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  padding-top: 6px;
+}
+
+.escola-modal__cancel,
+.escola-modal__save {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  height: 38px;
+  padding: 0 14px;
+
+  border-radius: 8px;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.escola-modal__cancel {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #374151;
+}
+
+.escola-modal__cancel:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.escola-modal__save {
+  border: 1px solid #4338ca;
+  background: #4338ca;
+  color: #ffffff;
+}
+
+.escola-modal__save:hover {
+  background: #3730a3;
+  border-color: #3730a3;
+}
+
+.escola-modal__cancel:disabled,
+.escola-modal__save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================================================
    TABLET
    ========================================================= */
 
@@ -279,20 +608,33 @@
   .escolas-page {
     display: flex;
     flex-direction: column;
+
     height: auto;
     overflow: visible;
   }
 
   .escolas-page__list {
     height: 400px;
+
     border-right: none;
     border-bottom: 1px solid #e5e7eb;
   }
 
   .escolas-page__details {
     min-height: 100vh;
+
     overflow: visible;
+
     padding: 20px 16px;
+  }
+
+  .escola-details__header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .escola-details__edit-button {
+    width: 100%;
   }
 
   .escola-details__grid {
@@ -301,5 +643,34 @@
 
   .escola-details__header h2 {
     font-size: 22px;
+  }
+
+  .escola-modal__overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .escola-modal {
+    max-width: none;
+    max-height: calc(100vh - 20px);
+
+    border-radius: 12px 12px 0 0;
+  }
+
+  .escola-modal__header {
+    padding: 18px 20px;
+  }
+
+  .escola-modal__form {
+    padding: 20px;
+  }
+
+  .escola-modal__footer {
+    width: 100%;
+  }
+
+  .escola-modal__cancel,
+  .escola-modal__save {
+    flex: 1;
   }
 }

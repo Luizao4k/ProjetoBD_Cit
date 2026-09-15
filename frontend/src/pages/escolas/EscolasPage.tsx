@@ -4,12 +4,22 @@ import {
   useState,
 } from "react";
 
+import { Pencil } from "lucide-react";
+
 import { useSearchParams } from "react-router-dom";
 
 import {
   listarEscolas,
   type Escola,
-} from "../../services/escolaService";
+} from "../../features/escolas/services/escolaService";
+
+import {
+  listarDiretores,
+  type Diretor,
+} from"../../features/diretor/services/diretorService"
+
+import { EditarEscolaModal } from "../../features/escolas/components/EditarEscolaModal";
+import { EditarDiretorModal } from "../../features/diretor/components/EditarDiretorModal";
 
 import "./escolas.css";
 
@@ -22,41 +32,59 @@ export function EscolasPage() {
     ? Number(dreIdParam)
     : null;
 
-  const [escolas, setEscolas] = useState<Escola[]>([]);
+  const [escolas, setEscolas] = useState<Escola[]>(
+    [],
+  );
+
+  const [diretores, setDiretores] = useState<Diretor[]>([]);
 
   const [escolaSelecionada, setEscolaSelecionada] =
     useState<Escola | null>(null);
 
+  const [escolaEmEdicao, setEscolaEmEdicao] =
+    useState<Escola | null>(null);
+
   const [busca, setBusca] = useState("");
 
-  const [carregando, setCarregando] = useState(true);
+  const [carregando, setCarregando] =
+    useState(true);
 
-  const [erro, setErro] = useState<string | null>(null);
+  const [erro, setErro] = useState<string | null>(
+    null,
+  );
+
+  const [diretorEmEdicao, setDiretorEmEdicao] =
+  useState<Diretor | null>(null);
 
   useEffect(() => {
-    async function carregarEscolas() {
+    async function carregarDados() {
       try {
         setCarregando(true);
         setErro(null);
 
-        const dados = await listarEscolas();
+        const [escolasDados, diretoresDados] =
+          await Promise.all([
+            listarEscolas(),
+            listarDiretores(),
+          ]);
 
-        setEscolas(dados);
+        setEscolas(escolasDados);
+        setDiretores(diretoresDados);
       } catch (error) {
         console.error(
-          "Erro ao carregar escolas:",
+          "Erro ao carregar dados:",
           error,
         );
 
         setErro(
-          "Não foi possível carregar as escolas.",
+          "Não foi possível carregar os dados.",
         );
       } finally {
         setCarregando(false);
       }
     }
 
-    carregarEscolas();
+    carregarDados();
   }, []);
 
   const escolasFiltradas = useMemo(() => {
@@ -69,13 +97,28 @@ export function EscolasPage() {
 
       const correspondeABusca =
         !termo ||
-        escola.nome.toLowerCase().includes(termo) ||
+        escola.nome
+          .toLowerCase()
+          .includes(termo) ||
         escola.inep.includes(termo) ||
-        escola.municipio.toLowerCase().includes(termo);
+        escola.municipio
+          .toLowerCase()
+          .includes(termo);
 
-      return pertenceADre && correspondeABusca;
+      return (
+        pertenceADre &&
+        correspondeABusca
+      );
     });
   }, [busca, escolas, dreId]);
+
+  const diretorDaEscola = escolaSelecionada
+    ? diretores.find(
+        (diretor) =>
+          diretor.escola_id ===
+          escolaSelecionada.id,
+      )
+    : undefined;
 
   useEffect(() => {
     if (escolasFiltradas.length === 0) {
@@ -99,6 +142,39 @@ export function EscolasPage() {
     escolasFiltradas,
     escolaSelecionada,
   ]);
+
+  /**
+   * Atualiza a escola modificada dentro da lista
+   * e também atualiza a escola atualmente selecionada.
+   */
+  function handleEscolaAtualizada(
+    escolaAtualizada: Escola,
+  ) {
+    setEscolas((escolasAtuais) =>
+      escolasAtuais.map((escola) =>
+        escola.id === escolaAtualizada.id
+          ? escolaAtualizada
+          : escola,
+      ),
+    );
+
+    setEscolaSelecionada(escolaAtualizada);
+
+    setEscolaEmEdicao(null);
+  }
+  function handleDiretorAtualizado(
+    diretorAtualizado: Diretor,
+  ) {
+    setDiretores((diretoresAtuais) =>
+      diretoresAtuais.map((diretor) =>
+        diretor.id === diretorAtualizado.id
+          ? diretorAtualizado
+          : diretor,
+      ),
+    );
+
+    setDiretorEmEdicao(null);
+  }
 
   return (
     <div className="escolas-page">
@@ -152,41 +228,39 @@ export function EscolasPage() {
           !erro &&
           escolasFiltradas.length > 0 && (
             <div className="escolas-list">
-              {escolasFiltradas.map(
-                (escola) => (
-                  <button
-                    key={escola.id}
-                    type="button"
-                    className={`escola-list-item ${
-                      escolaSelecionada?.id ===
-                      escola.id
-                        ? "escola-list-item--active"
-                        : ""
-                    }`}
-                    onClick={() =>
-                      setEscolaSelecionada(escola)
-                    }
-                  >
-                    <strong>
-                      {escola.nome}
-                    </strong>
+              {escolasFiltradas.map((escola) => (
+                <button
+                  key={escola.id}
+                  type="button"
+                  className={`escola-list-item ${
+                    escolaSelecionada?.id ===
+                    escola.id
+                      ? "escola-list-item--active"
+                      : ""
+                  }`}
+                  onClick={() =>
+                    setEscolaSelecionada(escola)
+                  }
+                >
+                  <strong>
+                    {escola.nome}
+                  </strong>
 
-                    <div className="escola-list-item__meta">
-                      <span>
-                        {escola.inep}
-                      </span>
-
-                      <span>
-                        {escola.municipio}
-                      </span>
-                    </div>
-
-                    <span className="escola-list-item__type">
-                      {escola.tipo}
+                  <div className="escola-list-item__meta">
+                    <span>
+                      {escola.inep}
                     </span>
-                  </button>
-                ),
-              )}
+
+                    <span>
+                      {escola.municipio}
+                    </span>
+                  </div>
+
+                  <span className="escola-list-item__type">
+                    {escola.tipo}
+                  </span>
+                </button>
+              ))}
             </div>
           )}
       </aside>
@@ -203,33 +277,86 @@ export function EscolasPage() {
         {escolaSelecionada && (
           <>
             <header className="escola-details__header">
-              <h2>
-                {escolaSelecionada.nome}
-              </h2>
+              <div>
+                <h2>
+                  {escolaSelecionada.nome}
+                </h2>
 
-              <div className="escola-details__meta">
-                <span>
-                  INEP {escolaSelecionada.inep}
-                </span>
+                <div className="escola-details__meta">
+                  <span>
+                    INEP{" "}
+                    {escolaSelecionada.inep}
+                  </span>
 
-                <span>
-                  {escolaSelecionada.municipio}
-                </span>
+                  <span>
+                    {escolaSelecionada.municipio}
+                  </span>
 
-                <span>
-                  {escolaSelecionada.tipo}
-                </span>
+                  <span>
+                    {escolaSelecionada.tipo}
+                  </span>
+                </div>
               </div>
+
+              <button
+                type="button"
+                className="escola-details__edit-button"
+                onClick={() =>
+                  setEscolaEmEdicao(
+                    escolaSelecionada,
+                  )
+                }
+              >
+                <Pencil size={16} />
+                Editar
+              </button>
             </header>
 
             <section className="escola-details__grid">
               <article className="escola-card">
-                <h3>Direção</h3>
+                 <div className="escola-card__header">
+                    <h3>Direção</h3>
 
-                <p>
-                  Informações do diretor serão
-                  carregadas aqui.
-                </p>
+                    {diretorDaEscola && (
+                      <button
+                        type="button"
+                        className="escola-card__edit-button"
+                        onClick={() =>
+                          setDiretorEmEdicao(diretorDaEscola)
+                        }
+                        aria-label="Editar diretor"
+                      >
+                        <Pencil size={16} />
+                        Editar
+                      </button>
+                    )}
+                  </div>
+
+                {diretorDaEscola ? (
+                  <>
+                    <p>
+                      <strong>
+                        {diretorDaEscola.nome}
+                      </strong>
+                    </p>
+
+                    {diretorDaEscola.telefone && (
+                      <p>
+                        Telefone:{" "}
+                        {diretorDaEscola.telefone}
+                      </p>
+                    )}
+
+                    {diretorDaEscola.email && (
+                      <p>
+                        E-mail:{" "}
+                        {diretorDaEscola.email}
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <p>Sem informações</p>
+                )}
               </article>
 
               <article className="escola-card">
@@ -261,7 +388,9 @@ export function EscolasPage() {
             </section>
 
             <section className="escola-details__cadastro">
-              <h3>Localização Endereço</h3>
+              <h3>
+                Localização / Endereço
+              </h3>
 
               <p>
                 {escolaSelecionada.endereco ??
@@ -271,6 +400,28 @@ export function EscolasPage() {
           </>
         )}
       </main>
+
+      {escolaEmEdicao && (
+        <EditarEscolaModal
+          escola={escolaEmEdicao}
+          onClose={() =>
+            setEscolaEmEdicao(null)
+          }
+          onSuccess={
+            handleEscolaAtualizada
+          }
+        />
+      )}
+      
+      {diretorEmEdicao && (
+        <EditarDiretorModal
+          diretor={diretorEmEdicao}
+          onClose={() =>
+            setDiretorEmEdicao(null)
+          }
+          onSuccess={handleDiretorAtualizado}
+        />
+      )}
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { InicioPage } from "../pages/inicio/InicioPage";
 import { DrePage } from "../pages/dre/DrePage";
 
 import { EscolasPage } from "../pages/escolas/EscolasPage";
+import { ImportacaoPage } from "../pages/importacao/ImportacaoPage";
 
 /**
  * Configuração principal de rotas da aplicação.
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
       {
         path: "escolas",
         element: <EscolasPage />,
+      },
+      {
+        path: "importacao",
+        element: <ImportacaoPage />,
       },
     ],
   },

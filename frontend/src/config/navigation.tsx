@@ -1,6 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 
-import { Home, Building2, School } from "lucide-react";
+import { Home, Building2, School, FileUp } from "lucide-react";
 
 /**
  * Define a configuração de um item de navegação.
@@ -60,6 +60,11 @@ export const navigation: NavigationGroup[] = [
         label: "Escolas",
         path: "/escolas",
         icon: School,
+      },
+      {
+        label: "Importação",
+        path: "/importacao",
+        icon: FileUp,
       },
     ],
   },

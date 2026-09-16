@@ -313,7 +313,27 @@ export function EscolasPage() {
             </header>
 
             <section className="escola-details__grid">
+
               <article className="escola-card">
+                <h3>Chromebooks</h3>
+
+                <p>
+                  Informações dos dispositivos
+                  serão carregadas aqui.
+                </p>
+              </article>
+
+              <article className="escola-card">
+                <h3>Starlink</h3>
+
+                <p>
+                  Informações da conectividade
+                  serão carregadas aqui.
+                </p>
+              </article>
+            </section>
+            
+            <section className="escola-details__cadastro">
                  <div className="escola-card__header">
                     <h3>Direção</h3>
 
@@ -357,36 +377,8 @@ export function EscolasPage() {
                 ) : (
                   <p>Sem informações</p>
                 )}
-              </article>
-
-              <article className="escola-card">
-                <h3>CEMEP</h3>
-
-                <p>
-                  Informações do CEMEP serão
-                  carregadas aqui.
-                </p>
-              </article>
-
-              <article className="escola-card">
-                <h3>Chromebooks</h3>
-
-                <p>
-                  Informações dos dispositivos
-                  serão carregadas aqui.
-                </p>
-              </article>
-
-              <article className="escola-card">
-                <h3>Starlink</h3>
-
-                <p>
-                  Informações da conectividade
-                  serão carregadas aqui.
-                </p>
-              </article>
             </section>
-
+              
             <section className="escola-details__cadastro">
               <h3>
                 Localização / Endereço

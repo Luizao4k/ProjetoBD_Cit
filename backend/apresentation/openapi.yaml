@@ -26,6 +26,7 @@ tags:
   - name: Starlink
   - name: Responsável
   - name: Turma CEMEP
+  - name: Importação
 
 paths:
   # ---------------------------------------------------------------
@@ -735,6 +736,75 @@ paths:
         "404":
           $ref: "#/components/responses/NaoEncontrado"
 
+  # ---------------------------------------------------------------
+  # Importação
+  # ---------------------------------------------------------------
+  /importacao:
+    post:
+      tags: [Importação]
+      summary: Importa dados em lote a partir de um arquivo CSV ou Excel
+      description: >-
+        Ponte HTTP para os scripts de importação de
+        scripts/importar_*.py (ver
+        infrastructure/importacao/pipeline.py): salva o arquivo
+        enviado, delega para o importador do "tipo" escolhido e
+        devolve um relatório. Uma linha inválida no arquivo nunca
+        derruba o lote inteiro — vira uma entrada em "falhas" na
+        resposta (200), não um erro HTTP. Só um arquivo
+        estruturalmente inválido (coluna obrigatória ausente no
+        cabeçalho, por exemplo) impede a importação inteira e
+        retorna 400.
+
+
+        Respeita a mesma ordem de dependência entre entidades dos
+        scripts de CLI: DRE -> Escola -> {Diretor, CEMEP,
+        Chromebook, Starlink} -> Responsável -> Turma CEMEP —
+        importar uma Escola antes de sua DRE, por exemplo, faz
+        aquela linha falhar por relação não encontrada.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [tipo, arquivo]
+              properties:
+                tipo:
+                  type: string
+                  description: Qual das 8 entidades este arquivo contém
+                  enum:
+                    [
+                      dre,
+                      escolas,
+                      diretores,
+                      cemeps,
+                      chromebooks,
+                      starlinks,
+                      responsaveis,
+                      turmas_cemep,
+                    ]
+                arquivo:
+                  type: string
+                  format: binary
+                  description: Arquivo .csv, .xlsx ou .xlsm com os dados a importar
+      responses:
+        "200":
+          description: Arquivo processado (mesmo quando há falhas linha a linha)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResultadoImportacao"
+        "400":
+          description: >-
+            Tipo de importação inválido, campo obrigatório ausente,
+            formato de arquivo não suportado, ou arquivo
+            estruturalmente inválido (coluna obrigatória ausente no
+            cabeçalho)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
 components:
   parameters:
     Id:
@@ -854,6 +924,8 @@ components:
               type: string
             dre_id:
               type: integer
+            dre:
+              $ref: "#/components/schemas/DreOutput"
             endereco:
               type: string
               nullable: true
@@ -1041,6 +1113,87 @@ components:
               type: integer
             nome_turma:
               type: string
+
+    # --- Importação ---
+    FalhaImportacao:
+      type: object
+      description: >-
+        Uma linha do arquivo que não pôde ser importada (ver
+        infrastructure/importacao/erro.py)
+      properties:
+        numero_linha:
+          type: integer
+          description: Posição da linha no arquivo de origem (1-based, exclui cabeçalho)
+        tipo_erro:
+          type: string
+          description: Nome da classe da exceção que causou a falha
+          example: NomeInvalidoError
+        mensagem:
+          type: string
+          description: Explicação legível do que deu errado nessa linha
+        campo:
+          type: string
+          nullable: true
+          description: Coluna que originou o problema, quando identificável
+        dados_originais:
+          type: object
+          description: >-
+            A linha crua exatamente como veio do arquivo — o
+            suficiente para corrigir e reimportar só essa linha
+          additionalProperties:
+            type: string
+        ocorrido_em:
+          type: string
+          format: date-time
+      required: [numero_linha, tipo_erro, mensagem, dados_originais]
+
+    ResultadoImportacao:
+      type: object
+      description: >-
+        Relatório agregado de uma importação em lote (ver
+        infrastructure/importacao/resultado.py)
+      properties:
+        tipo:
+          type: string
+          enum:
+            [
+              dre,
+              escolas,
+              diretores,
+              cemeps,
+              chromebooks,
+              starlinks,
+              responsaveis,
+              turmas_cemep,
+            ]
+        arquivo:
+          type: string
+          description: Nome original do arquivo enviado
+        total_processado:
+          type: integer
+          description: sucessos + erros
+        sucessos:
+          type: integer
+          description: Quantidade de linhas importadas com sucesso
+        erros:
+          type: integer
+          description: Quantidade de linhas que falharam
+        taxa_sucesso:
+          type: number
+          format: float
+          description: Fração entre 0 e 1 (não percentual) — sucessos / total_processado
+        resumo:
+          type: string
+          description: Frase pronta para exibição
+          example: >-
+            8 registro(s) importado(s) com sucesso, 1 falha(s) (88.9%
+            de sucesso, 9 linha(s) processada(s) no total).
+        falhas:
+          type: array
+          items:
+            $ref: "#/components/schemas/FalhaImportacao"
+      required:
+        [tipo, arquivo, total_processado, sucessos, erros, taxa_sucesso, resumo, falhas]
 
     # --- compartilhado ---
     _Auditoria:

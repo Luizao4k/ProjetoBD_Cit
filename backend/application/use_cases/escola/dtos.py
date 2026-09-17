@@ -7,6 +7,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 
+from ..dre.dtos import DreOutput
 
 @dataclass(frozen=True, slots=True)
 class CriarEscolaInput:
@@ -50,5 +51,6 @@ class EscolaOutput:
     municipio: str
     dre_id: int
     endereco: str | None
+    dre: DreOutput | None
     criado_em: datetime
     atualizado_em: datetime

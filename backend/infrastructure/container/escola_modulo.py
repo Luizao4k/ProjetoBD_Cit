@@ -12,6 +12,7 @@ from application.use_cases.escola import (
 )
 
 from infrastructure.database.sqlite.repositories import SqliteEscolaRepository
+from infrastructure.database.sqlite.repositories import SqliteDreRepository
 from .base_modulo import BaseModulo
 
 
@@ -30,6 +31,12 @@ class EscolaModulo(BaseModulo):
         """
         return SqliteEscolaRepository(self._conexao)
 
+    def dre_repo(self) -> SqliteDreRepository:
+        """
+        Retorna uma instância configurada do repositório SQLite de DRE.
+        """
+        return SqliteDreRepository(self._conexao)
+
     def criar_escola(self) -> CriarEscolaUseCase:
         """
         Monta o caso de uso responsável por criar uma Escola.
@@ -41,7 +48,9 @@ class EscolaModulo(BaseModulo):
         Monta o caso de uso responsável por buscar uma Escola pelo
         identificador.
         """
-        return BuscarEscolaPorIdUseCase(self.escola_repo())
+        return BuscarEscolaPorIdUseCase(
+            repositorio=self.escola_repo(), dre_repositorio=self.dre_repo()
+            )
 
     def buscar_escolas_por_dre(self) -> BuscarEscolasPorDreUseCase:
         """
@@ -53,7 +62,10 @@ class EscolaModulo(BaseModulo):
         """
         Monta o caso de uso responsável por listar todas as Escolas.
         """
-        return ListarEscolasUseCase(self.escola_repo())
+        return ListarEscolasUseCase(
+            repositorio=self.escola_repo(),
+            dre_repositorio=self.dre_repo()
+            )
 
     def atualizar_escola(self) -> AtualizarEscolaUseCase:
         """

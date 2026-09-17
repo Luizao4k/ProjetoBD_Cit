@@ -32,6 +32,7 @@ from apresentation.routes.chromebook_routes import chromebook_bp
 from apresentation.routes.starlink_routes import starlink_bp
 from apresentation.routes.responsavel_routes import responsavel_bp
 from apresentation.routes.turma_cemep_routes import turma_cemep_bp
+from apresentation.routes.importacao_routes import importacao_bp
 
 
 def criar_app(caminho_banco: str = "escolas.db") -> Flask:
@@ -45,6 +46,15 @@ def criar_app(caminho_banco: str = "escolas.db") -> Flask:
     # a menos que alguém troque explicitamente — o cast só informa isso
     # ao mypy, não muda nada em runtime.
     cast(DefaultJSONProvider, app.json).ensure_ascii = False  # nomes/municípios em português, sem \uXXXX
+
+    # Os scripts de importação (scripts/importar_*.py, Fase 4) abrem
+    # sua PRÓPRIA conexão via criar_conexao(caminho_banco) — não usam
+    # g.container (ver Container.finalizar). O controller de
+    # importação precisa do mesmo caminho_banco recebido aqui pra
+    # gravar no mesmo arquivo SQLite que o resto da API usa; guardado
+    # em app.config (lido via current_app dentro do controller) em vez
+    # de virar parâmetro de view function, que o Flask não permite.
+    app.config["CAMINHO_BANCO"] = caminho_banco
 
     @app.before_request
     def _abrir_container() -> None:
@@ -78,5 +88,6 @@ def criar_app(caminho_banco: str = "escolas.db") -> Flask:
     app.register_blueprint(starlink_bp)
     app.register_blueprint(responsavel_bp)
     app.register_blueprint(turma_cemep_bp)
+    app.register_blueprint(importacao_bp)
 
     return app

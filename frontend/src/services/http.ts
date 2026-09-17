@@ -31,3 +31,37 @@ export async function requisicao<T>(
 
   return response.json() as Promise<T>;
 }
+
+/**
+ * Realiza uma requisição HTTP de envio de arquivo (multipart/form-data).
+ *
+ * Não pode reutilizar `requisicao`: aquela função sempre define
+ * `Content-Type: application/json`, e um upload multipart precisa
+ * que o navegador gere esse cabeçalho sozinho (com o boundary do
+ * multipart) — o que só acontece se nenhum Content-Type for
+ * definido manualmente na requisição.
+ *
+ * @param endpoint Caminho do recurso na API.
+ * @param dados Dados do formulário, incluindo o arquivo.
+ * @returns Dados retornados pela API.
+ */
+export async function requisicaoArquivo<T>(
+  endpoint: string,
+  dados: FormData,
+): Promise<T> {
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    method: "POST",
+    body: dados,
+  });
+
+  if (!response.ok) {
+    const corpo = await response.json().catch(() => null);
+
+    throw new Error(
+      corpo?.mensagem ??
+        `Erro na API: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  return response.json() as Promise<T>;
+}

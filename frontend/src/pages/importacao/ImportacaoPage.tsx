@@ -1,8 +1,15 @@
 import { useState } from "react";
+import { AlertCircle, RotateCcw } from "lucide-react";
 
 import {
   type TipoImportacao,
 } from "../../features/importacao/types/importacao";
+
+import {
+  importarArquivo,
+  type ResultadoImportacaoApi,
+} from "../../features/importacao/services/importacaoService";
+import { baixarFalhasCsv } from "../../features/importacao/utils/falhasCsv";
 
 import { SeletorTipoImportacao } from "../../features/importacao/components/SeletorTipoImportacao";
 import { UploadArquivo } from "../../features/importacao/components/UploadArquivo";
@@ -13,14 +20,8 @@ import "./importacao.css";
 type EstadoImportacao =
   | "nova"
   | "processando"
-  | "resultado";
-
-interface Resultado {
-  sucessos: number;
-  erros: number;
-  taxaSucesso: number;
-  resumo: string;
-}
+  | "resultado"
+  | "erro";
 
 /**
  * Página responsável pela importação de dados.
@@ -36,35 +37,53 @@ export function ImportacaoPage() {
     useState<EstadoImportacao>("nova");
 
   const [resultado, setResultado] =
-    useState<Resultado | null>(null);
+    useState<ResultadoImportacaoApi | null>(null);
 
-  function handleImportar() {
+  const [mensagemErro, setMensagemErro] =
+    useState<string | null>(null);
+
+  async function handleImportar() {
     if (!arquivo) {
       return;
     }
 
-    /*
-     * Por enquanto, apenas mudamos o estado da interface.
-     *
-     * A chamada real para a API será adicionada posteriormente.
-     */
     setEstado("processando");
 
-    console.log("Tipo:", tipoImportacao);
-    console.log("Arquivo:", arquivo);
+    try {
+      const resposta = await importarArquivo(tipoImportacao, arquivo);
 
-    /*
-     * Temporariamente deixamos o estado de processamento
-     * aqui para visualizar a interface.
-     *
-     * NÃO estamos simulando um resultado.
-     */
+      setResultado(resposta);
+      setEstado("resultado");
+    } catch (error) {
+      console.error("Erro ao importar arquivo:", error);
+
+      setMensagemErro(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível concluir a importação.",
+      );
+      setEstado("erro");
+    }
   }
 
   function handleNovaImportacao() {
     setArquivo(null);
     setResultado(null);
+    setMensagemErro(null);
     setEstado("nova");
+  }
+
+  function handleTentarNovamente() {
+    setMensagemErro(null);
+    setEstado("nova");
+  }
+
+  function handleBaixarFalhas() {
+    if (!resultado) {
+      return;
+    }
+
+    baixarFalhasCsv(resultado);
   }
 
   function renderNovaImportacao() {
@@ -125,6 +144,33 @@ export function ImportacaoPage() {
     );
   }
 
+  function renderErro() {
+    return (
+      <div className="importacao-card importacao-erro">
+        <div className="importacao-erro__content">
+          <div className="importacao-erro__icon">
+            <AlertCircle size={26} />
+          </div>
+
+          <h2>Não foi possível importar</h2>
+
+          <p>
+            {mensagemErro ?? "Ocorreu um erro inesperado durante a importação."}
+          </p>
+
+          <button
+            type="button"
+            className="importacao-erro__retry"
+            onClick={handleTentarNovamente}
+          >
+            <RotateCcw size={17} />
+            Tentar novamente
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   function renderResultado() {
     if (!resultado) {
       return null;
@@ -134,8 +180,9 @@ export function ImportacaoPage() {
       <ResultadoImportacao
         sucessos={resultado.sucessos}
         erros={resultado.erros}
-        taxaSucesso={resultado.taxaSucesso}
+        taxaSucesso={resultado.taxa_sucesso * 100}
         resumo={resultado.resumo}
+        onBaixarFalhas={handleBaixarFalhas}
         onNovaImportacao={handleNovaImportacao}
       />
     );
@@ -157,6 +204,8 @@ export function ImportacaoPage() {
         {estado === "nova" && renderNovaImportacao()}
 
         {estado === "processando" && renderProcessando()}
+
+        {estado === "erro" && renderErro()}
 
         {estado === "resultado" && renderResultado()}
       </section>

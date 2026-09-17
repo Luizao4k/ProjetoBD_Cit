@@ -303,7 +303,7 @@ Estas melhorias podem ser implementadas conforme a necessidade do projeto.
 - [ ] Pesquisa avançada
 - [ ] Paginação
 - [ ] Exportação para Excel
-- [ ] Importação via interface Web
+- [x] Importação via interface Web
 - [ ] Logs de auditoria
 
 ---

@@ -21,6 +21,8 @@ import {
 import { EditarEscolaModal } from "../../features/escolas/components/EditarEscolaModal";
 import { EditarDiretorModal } from "../../features/diretor/components/EditarDiretorModal";
 
+import { formatarTelefone } from "../../utils/formatar"
+
 import "./escolas.css";
 
 export function EscolasPage() {
@@ -284,6 +286,11 @@ export function EscolasPage() {
 
                 <div className="escola-details__meta">
                   <span>
+                    {" "}
+                    {escolaSelecionada.dre?.nome}
+                  </span>
+
+                  <span>
                     INEP{" "}
                     {escolaSelecionada.inep}
                   </span>
@@ -362,8 +369,8 @@ export function EscolasPage() {
 
                     {diretorDaEscola.telefone && (
                       <p>
-                        Telefone:{" "}
-                        {diretorDaEscola.telefone}
+                        Tel:{" "}
+                        {formatarTelefone(diretorDaEscola.telefone)}
                       </p>
                     )}
 

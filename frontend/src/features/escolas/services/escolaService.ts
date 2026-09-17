@@ -1,4 +1,5 @@
 import { requisicao } from "../../../services/http";
+import type { Dre } from "../../dre/services/dreService";
 
 /**
  * Representa uma escola retornada pela API.
@@ -21,6 +22,8 @@ export interface Escola {
 
   /** Identificador da DRE responsável pela escola. */
   dre_id: number;
+  /** Informações da DRE responsável pela escola */
+  dre?: Dre | null;   
 
   /** Endereço da escola, quando informado. */
   endereco: string | null;

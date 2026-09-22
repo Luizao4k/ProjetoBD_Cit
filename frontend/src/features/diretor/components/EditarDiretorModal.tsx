@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { Save, X } from "lucide-react";
 
-import {
-  atualizarDiretor,
-  type Diretor,
-} from "../services/diretorService";
+import { atualizarDiretor } from "../services/diretorService";
+import type { Diretor } from "../types/diretor";
 
 interface EditarDiretorModalProps {
   diretor: Diretor;

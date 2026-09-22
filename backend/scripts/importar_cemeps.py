@@ -36,7 +36,7 @@ from infrastructure.database.sqlite.repositories import (
 )
 from application.use_cases.cemep import CriarCemepUseCase
 
-from infrastructure.importacao import ArquivoInvalidoError, ImportadorPipeline, ResultadoImportacao
+from infrastructure.importacao import EntradaImportacaoInvalidaError, ImportadorPipeline, ResultadoImportacao
 from infrastructure.importacao.readers import criar_reader
 from infrastructure.importacao.mappers import CemepMapper
 
@@ -79,6 +79,6 @@ if __name__ == "__main__":
 
     try:
         importar_cemeps(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else "escolas.db")
-    except ArquivoInvalidoError as erro:
+    except EntradaImportacaoInvalidaError as erro:
         print(f"Arquivo inválido: {erro}", file=sys.stderr)
         sys.exit(1)

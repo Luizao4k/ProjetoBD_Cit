@@ -11,7 +11,7 @@ Ver scripts/importar_*.py para a composição concreta de cada
 entidade.
 """
 
-from infrastructure.importacao.pipeline import ArquivoInvalidoError, ImportadorPipeline
+from infrastructure.importacao.pipeline import EntradaImportacaoInvalidaError, ImportadorPipeline
 from infrastructure.importacao.resultado import ResultadoImportacao
 from infrastructure.importacao.erro import ErroImportacao
 from infrastructure.importacao.protocolos import GerenciadorDeTransacao
@@ -24,7 +24,7 @@ from infrastructure.importacao.log_alteracao import LogAlteracao, MudancaCampo, 
 
 __all__ = [
     "ImportadorPipeline",
-    "ArquivoInvalidoError",
+    "EntradaImportacaoInvalidaError",
     "ResultadoImportacao",
     "ErroImportacao",
     "GerenciadorDeTransacao",

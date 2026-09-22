@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { X, Save } from "lucide-react";
 
-import {
-  atualizarDre,
-  type Dre,
-} from "../services/dreService";
+import { atualizarDre } from "../services/dreService";
+import type { Dre } from "../types/dre";
 
 interface EditarDreModalProps {
   dre: Dre;

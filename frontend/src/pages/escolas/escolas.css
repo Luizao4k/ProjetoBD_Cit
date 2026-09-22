@@ -309,6 +309,33 @@
   color: #111827;
 }
 
+.escola-card__delete-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #dc2626;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.escola-card__delete-button:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.escola-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 /* =========================================================
    DADOS CADASTRAIS
    ========================================================= */

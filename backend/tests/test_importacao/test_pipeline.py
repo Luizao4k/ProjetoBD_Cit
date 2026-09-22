@@ -9,7 +9,7 @@ composição concreta.
 import pytest
 
 from infrastructure.importacao import (
-    ArquivoInvalidoError,
+    EntradaImportacaoInvalidaError,
     ImportadorPipeline,
     ProgressTrackerSilencioso,
 )
@@ -118,7 +118,7 @@ def test_pipeline_levanta_arquivo_invalido_antes_de_processar_qualquer_linha():
         problemas_validacao=["coluna 'valor' ausente no cabeçalho"],
     )
 
-    with pytest.raises(ArquivoInvalidoError) as exc_info:
+    with pytest.raises(EntradaImportacaoInvalidaError) as exc_info:
         pipeline.executar()
 
     assert "coluna 'valor' ausente" in str(exc_info.value)
@@ -187,3 +187,17 @@ def test_sem_gerenciador_transacao_pipeline_funciona_normalmente():
 
     assert len(resultado.sucessos) == 1
     assert len(resultado.erros) == 1
+
+def test_formulario_reader_produz_uma_linha():
+    from infrastructure.importacao.readers import FormularioReader
+
+    dados = {
+        "escola_id": "1",
+        "designacao": "TESTE-STARLINK-001",
+    }
+
+    reader = FormularioReader(dados)
+
+    assert reader.total_estimado() == 1
+    assert reader.validar() == []
+    assert list(reader.ler()) == [dados]

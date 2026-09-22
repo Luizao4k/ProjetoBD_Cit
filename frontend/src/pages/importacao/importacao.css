@@ -6,11 +6,8 @@
   min-height: calc(100vh - 64px);
   padding: 32px;
   background: var(--color-background);
+  box-sizing: border-box;
 }
-
-/* ============================================================
-   CABEÇALHO
-   ============================================================ */
 
 .importacao-page__header {
   margin-bottom: 28px;
@@ -18,25 +15,22 @@
 
 .importacao-page__header h1 {
   margin: 0;
+  color: #111827;
   font-size: 28px;
   font-weight: 700;
-  color: #111827;
 }
 
 .importacao-page__header p {
   margin: 6px 0 0;
-  font-size: 14px;
   color: #6b7280;
+  font-size: 14px;
 }
-
-/* ============================================================
-   CONTEÚDO
-   ============================================================ */
 
 .importacao-page__content {
   width: 100%;
   max-width: 900px;
 }
+
 
 /* ============================================================
    CARD PRINCIPAL
@@ -44,10 +38,12 @@
 
 .importacao-card {
   overflow: hidden;
+  width: 100%;
   background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgb(0 0 0 / 4%);
+  box-sizing: border-box;
 }
 
 .importacao-card__header {
@@ -57,15 +53,15 @@
 
 .importacao-card__header h2 {
   margin: 0;
+  color: #111827;
   font-size: 18px;
   font-weight: 600;
-  color: #111827;
 }
 
 .importacao-card__header p {
   margin: 6px 0 0;
-  font-size: 13px;
   color: #6b7280;
+  font-size: 13px;
 }
 
 .importacao-card__body {
@@ -75,27 +71,239 @@
   padding: 24px;
 }
 
-/* ============================================================
-   CAMPOS
-   ============================================================ */
+.importacao-card__footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  border-top: 1px solid #e5e7eb;
+}
 
-.importacao-field {
+
+
+/* CAMPOS GERAIS */
+.importacao-field,
+.importacao-formulario__campo {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.importacao-field > label {
+.importacao-field > label,
+.importacao-formulario__campo > label {
+  color: #374151;
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+}
+
+/* SELECTS */
+.importacao-field > select {
+  box-sizing: border-box;
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+
+  outline: none;
+  background: #ffffff;
+  color: #111827;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.importacao-field > select:hover {
+  border-color: #9ca3af;
+}
+
+.importacao-field > select:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgb(99 102 241 / 10%);
+}
+
+.importacao-field > select:disabled {
+  background: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
 }
 
 /* ============================================================
-   SELECT
+   CONTROLES DE IMPORTAÇÃO
    ============================================================ */
 
-.importacao-field select {
+/*
+   Utilizado para:
+   - Tipo de importação
+   - Forma de entrada
+*/
+
+.importacao-seletor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.importacao-seletor__label {
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.importacao-seletor__opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.importacao-seletor__opcao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.importacao-seletor__opcao:hover {
+  border-color: #9ca3af;
+  background: #f9fafb;
+}
+
+.importacao-seletor__opcao--ativo {
+  border-color: #6366f1;
+  background: #eef2ff;
+  color: #4338ca;
+  font-weight: 600;
+  box-shadow: 0 0 0 1px #6366f1;
+}
+
+.importacao-seletor__opcao--ativo:hover {
+  border-color: #4f46e5;
+  background: #e0e7ff;
+}
+
+
+/* FORMA DE ENTRADA */
+.importacao-modo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.importacao-modo h3 {
+  margin: 0;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.importacao-modo__opcoes {
+  display: flex;
+  gap: 8px;
+}
+
+.importacao-modo__opcoes button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 120px;
+  height: 40px;
+  padding: 0 16px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: #374151;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.importacao-modo__opcoes button:hover {
+  border-color: #9ca3af;
+  background: #f9fafb;
+}
+
+.importacao-modo__opcoes button.ativo {
+  border-color: #6366f1;
+  background: #eef2ff;
+  color: #4338ca;
+  font-weight: 600;
+  box-shadow: 0 0 0 1px #6366f1;
+}
+
+.importacao-modo__opcoes button.ativo:hover {
+  border-color: #4f46e5;
+  background: #e0e7ff;
+}
+
+/* ============================================================
+   FORMULÁRIO
+   ============================================================ */
+
+.importacao-formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.importacao-formulario__header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.importacao-formulario__header h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.importacao-formulario__header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+/* ============================================================
+   INPUTS
+   ============================================================ */
+
+.importacao-formulario__campo > input {
+  box-sizing: border-box;
   width: 100%;
   height: 42px;
   padding: 0 12px;
@@ -105,23 +313,199 @@
   background: #ffffff;
   color: #111827;
   font-size: 14px;
-  cursor: pointer;
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease;
 }
 
-.importacao-field select:hover {
+.importacao-formulario__campo > input:hover {
   border-color: #9ca3af;
 }
 
-.importacao-field select:focus {
+.importacao-formulario__campo > input:focus {
   border-color: #6366f1;
   box-shadow: 0 0 0 3px rgb(99 102 241 / 10%);
 }
 
+.importacao-formulario__campo > input:disabled {
+  background: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+
 /* ============================================================
-   ÁREA DE UPLOAD
+   BUSCA DE ESCOLA
+   ============================================================ */
+
+.importacao-escolas__resultados {
+  display: flex;
+  flex-direction: column;
+  max-height: 260px;
+  margin-top: 2px;
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.importacao-escola__resultado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  padding: 11px 12px;
+  border: none;
+  border-bottom: 1px solid #f3f4f6;
+  background: #ffffff;
+  color: #111827;
+  text-align: left;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 0.15s ease;
+}
+
+.importacao-escola__resultado:last-child {
+  border-bottom: none;
+}
+
+.importacao-escola__resultado:hover {
+  background: #f9fafb;
+}
+
+.importacao-escola__resultado strong {
+  overflow: hidden;
+  width: 100%;
+  color: #111827;
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.importacao-escola__resultado span {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+
+/* ============================================================
+   ESCOLA SELECIONADA
+   ============================================================ */
+
+.importacao-escola__selecionada {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 1px solid #c7d2fe;
+  border-radius: 8px;
+  background: #f5f7ff;
+  box-sizing: border-box;
+}
+
+.importacao-escola__selecionada > div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 4px;
+}
+
+.importacao-escola__selecionada strong {
+  overflow: hidden;
+  color: #111827;
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.importacao-escola__selecionada span {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.importacao-escola__selecionada button {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.importacao-escola__selecionada button:hover {
+  border-color: #9ca3af;
+  background: #f9fafb;
+}
+
+
+/* ============================================================
+   AJUDA E ERROS
+   ============================================================ */
+
+.importacao-formulario__ajuda {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.importacao-formulario__erro {
+  margin: -8px 0 0;
+  color: #dc2626;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+
+/* ============================================================
+   CONFIRMAÇÃO
+   ============================================================ */
+
+.importacao-confirmacao {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.importacao-confirmacao__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f9fafb;
+}
+
+.importacao-confirmacao__campo span {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.importacao-confirmacao__campo strong {
+  color: #111827;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.importacao-confirmacao__campo small {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+
+/* ============================================================
+   UPLOAD
    ============================================================ */
 
 .importacao-upload {
@@ -137,6 +521,7 @@
   color: #6b7280;
   text-align: center;
   cursor: pointer;
+  box-sizing: border-box;
   transition:
     border-color 0.15s ease,
     background-color 0.15s ease,
@@ -157,14 +542,15 @@
 
 .importacao-upload__description {
   margin-top: 4px;
-  font-size: 12px;
   color: #9ca3af;
+  font-size: 12px;
 }
 
 .importacao-upload--disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
 
 /* ============================================================
    ARQUIVO SELECIONADO
@@ -180,6 +566,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   background: #f9fafb;
+  box-sizing: border-box;
 }
 
 .importacao-arquivo__info {
@@ -208,8 +595,8 @@
 }
 
 .importacao-arquivo__info span {
-  font-size: 12px;
   color: #6b7280;
+  font-size: 12px;
 }
 
 .importacao-arquivo__remove {
@@ -240,19 +627,9 @@
   cursor: not-allowed;
 }
 
-/* ============================================================
-   RODAPÉ DO CARD
-   ============================================================ */
-
-.importacao-card__footer {
-  display: flex;
-  justify-content: flex-end;
-  padding: 16px 24px;
-  border-top: 1px solid #e5e7eb;
-}
 
 /* ============================================================
-   BOTÃO IMPORTAR
+   BOTÕES
    ============================================================ */
 
 .importacao-button {
@@ -269,6 +646,7 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  box-sizing: border-box;
   transition:
     background-color 0.15s ease,
     opacity 0.15s ease;
@@ -283,67 +661,157 @@
   cursor: not-allowed;
 }
 
+.importacao-button--secundario {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #374151;
+}
+
+.importacao-button--secundario:hover:not(:disabled) {
+  border-color: #9ca3af;
+  background: #f9fafb;
+}
+
+.importacao-formulario__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+
 /* ============================================================
-   RESPONSIVIDADE
+   PROCESSAMENTO
    ============================================================ */
 
-@media (max-width: 768px) {
-  .importacao-page {
-    padding: 24px 20px;
-  }
+.importacao-processando {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
 
-  .importacao-page__header h1 {
-    font-size: 24px;
-  }
+.importacao-processando__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 600px;
+  padding: 40px 24px;
+  text-align: center;
+}
 
-  .importacao-page__content {
-    max-width: none;
-  }
+.importacao-processando__spinner {
+  width: 38px;
+  height: 38px;
+  margin-bottom: 20px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #4f46e5;
+  border-radius: 50%;
+  animation: importacao-spin 0.8s linear infinite;
+}
 
-  .importacao-card__header,
-  .importacao-card__body {
-    padding: 20px;
-  }
+.importacao-processando__content h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 18px;
+  font-weight: 600;
+}
 
-  .importacao-card__footer {
-    padding: 16px 20px;
+.importacao-processando__content p {
+  margin: 6px 0 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.importacao-processando__content span {
+  max-width: 500px;
+  margin-top: 12px;
+  overflow: hidden;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@keyframes importacao-spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
-@media (max-width: 480px) {
-  .importacao-page {
-    padding: 20px 16px;
-  }
 
-  .importacao-page__header {
-    margin-bottom: 20px;
-  }
+/* ============================================================
+   ERRO
+   ============================================================ */
 
-  .importacao-page__header h1 {
-    font-size: 22px;
-  }
-
-  .importacao-page__header p {
-    font-size: 13px;
-  }
-
-  .importacao-card__header,
-  .importacao-card__body {
-    padding: 16px;
-  }
-
-  .importacao-card__footer {
-    padding: 14px 16px;
-  }
-
-  .importacao-button {
-    width: 100%;
-  }
-
-  .importacao-arquivo__info strong {
-    max-width: 220px;
-  }
+.importacao-erro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
 }
+
+.importacao-erro__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 440px;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.importacao-erro__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.importacao-erro__content h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.importacao-erro__content p {
+  margin: 8px 0 0;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.importacao-erro__retry {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 40px;
+  margin-top: 20px;
+  padding: 0 18px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.importacao-erro__retry:hover {
+  border-color: #fca5a5;
+  background: #fee2e2;
+}
+
 
 /* ============================================================
    RESULTADO DA IMPORTAÇÃO
@@ -357,11 +825,8 @@
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgb(0 0 0 / 4%);
+  box-sizing: border-box;
 }
-
-/* ============================================================
-   CABEÇALHO
-   ============================================================ */
 
 .resultado-importacao__header {
   display: flex;
@@ -396,8 +861,9 @@
   font-size: 13px;
 }
 
+
 /* ============================================================
-   ESTATÍSTICAS
+   ESTATÍSTICAS DO RESULTADO
    ============================================================ */
 
 .resultado-importacao__stats {
@@ -455,6 +921,7 @@
   font-weight: 700;
 }
 
+
 /* ============================================================
    RESUMO
    ============================================================ */
@@ -480,6 +947,7 @@
   font-size: 13px;
   line-height: 1.5;
 }
+
 
 /* ============================================================
    FALHAS
@@ -537,8 +1005,9 @@
   background: #ffedd5;
 }
 
+
 /* ============================================================
-   RODAPÉ
+   RODAPÉ DO RESULTADO
    ============================================================ */
 
 .resultado-importacao__footer {
@@ -572,11 +1041,37 @@
   background: #f9fafb;
 }
 
+
 /* ============================================================
    RESPONSIVIDADE
    ============================================================ */
 
+/* ------------------------------------------------------------
+   TABLET
+   ------------------------------------------------------------ */
+
 @media (max-width: 768px) {
+  .importacao-page {
+    padding: 24px 20px;
+  }
+
+  .importacao-page__header h1 {
+    font-size: 24px;
+  }
+
+  .importacao-page__content {
+    max-width: none;
+  }
+
+  .importacao-card__header,
+  .importacao-card__body {
+    padding: 20px;
+  }
+
+  .importacao-card__footer {
+    padding: 16px 20px;
+  }
+
   .resultado-importacao__stats {
     grid-template-columns: 1fr;
   }
@@ -591,7 +1086,86 @@
   }
 }
 
+
+/* ------------------------------------------------------------
+   MOBILE
+   ------------------------------------------------------------ */
+
 @media (max-width: 480px) {
+  .importacao-page {
+    padding: 20px 16px;
+  }
+
+  .importacao-page__header {
+    margin-bottom: 20px;
+  }
+
+  .importacao-page__header h1 {
+    font-size: 22px;
+  }
+
+  .importacao-page__header p {
+    font-size: 13px;
+  }
+
+  .importacao-card__header,
+  .importacao-card__body {
+    padding: 16px;
+  }
+
+  .importacao-card__footer {
+    padding: 14px 16px;
+  }
+
+  /* Seletores */
+
+  .importacao-seletor__opcoes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .importacao-seletor__opcao {
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  /* Formulário */
+
+  .importacao-formulario__footer {
+    flex-direction: column-reverse;
+  }
+
+  .importacao-formulario__footer .importacao-button {
+    width: 100%;
+  }
+
+  /* Escola */
+
+  .importacao-escola__selecionada {
+    align-items: flex-start;
+  }
+
+  .importacao-escola__selecionada > div {
+    min-width: 0;
+  }
+
+  .importacao-escola__selecionada button {
+    flex-shrink: 0;
+  }
+
+  /* Upload */
+
+  .importacao-upload {
+    min-height: 160px;
+    padding: 20px 16px;
+  }
+
+  .importacao-arquivo__info strong {
+    max-width: 220px;
+  }
+
+  /* Resultado */
+
   .resultado-importacao__header {
     padding: 20px;
   }
@@ -614,138 +1188,47 @@
     width: 100%;
   }
 }
-/* ============================================================
-   PROCESSAMENTO
-   ============================================================ */
 
-.importacao-processando {
-  min-height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.importacao-processando__content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 40px 24px;
-}
+/* ------------------------------------------------------------
+   MOBILE PEQUENO
+   ------------------------------------------------------------ */
 
-.importacao-processando__spinner {
-  width: 38px;
-  height: 38px;
-  margin-bottom: 20px;
-  border: 3px solid #e5e7eb;
-  border-top-color: #4f46e5;
-  border-radius: 50%;
-  animation: importacao-spin 0.8s linear infinite;
-}
-
-.importacao-processando__content h2 {
-  margin: 0;
-  color: #111827;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.importacao-processando__content p {
-  margin: 6px 0 0;
-  color: #6b7280;
-  font-size: 13px;
-}
-
-.importacao-processando__content span {
-  max-width: 500px;
-  margin-top: 12px;
-  overflow: hidden;
-  color: #374151;
-  font-size: 13px;
-  font-weight: 500;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-@keyframes importacao-spin {
-  to {
-    transform: rotate(360deg);
+@media (max-width: 360px) {
+  .importacao-page {
+    padding: 16px 12px;
   }
-}
 
-/* ============================================================
-   ERRO
-   ============================================================ */
+  .importacao-card__header,
+  .importacao-card__body {
+    padding: 14px;
+  }
 
-.importacao-erro {
-  min-height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+  .importacao-card__footer {
+    padding: 12px 14px;
+  }
 
-.importacao-erro__content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 440px;
-  text-align: center;
-  padding: 40px 24px;
-}
+  .importacao-seletor__opcoes {
+    grid-template-columns: 1fr;
+  }
 
-.importacao-erro__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 52px;
-  height: 52px;
-  margin-bottom: 16px;
-  border-radius: 12px;
-  background: #fef2f2;
-  color: #b91c1c;
-}
+  .importacao-escola__selecionada {
+    flex-direction: column;
+  }
 
-.importacao-erro__content h2 {
-  margin: 0;
-  color: #111827;
-  font-size: 18px;
-  font-weight: 600;
-}
+  .importacao-escola__selecionada button {
+    width: 100%;
+  }
 
-.importacao-erro__content p {
-  margin: 8px 0 0;
-  color: #6b7280;
-  font-size: 13px;
-  line-height: 1.5;
-}
+  .importacao-arquivo {
+    align-items: flex-start;
+  }
 
-.importacao-erro__retry {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  height: 40px;
-  padding: 0 18px;
-  margin-top: 20px;
-  border: 1px solid #fecaca;
-  border-radius: 8px;
-  background: #fef2f2;
-  color: #b91c1c;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease;
-}
+  .importacao-arquivo__info strong {
+    max-width: 180px;
+  }
 
-.importacao-erro__retry:hover {
-  border-color: #fca5a5;
-  background: #fee2e2;
-}
-
-@media (max-width: 480px) {
-  .importacao-erro__content {
-    padding: 32px 20px;
+  .resultado-importacao__header {
+    align-items: flex-start;
   }
 }

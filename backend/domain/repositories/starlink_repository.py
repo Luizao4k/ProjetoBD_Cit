@@ -37,6 +37,14 @@ class StarlinkRepository(ABC):
         """
 
     @abstractmethod
+    def buscar_por_designacao(self, designacao: str,) -> Starlink | None:
+        """
+        Retorna a Starlink pela designação ou None caso
+        não exista uma designação igual.
+        """
+
+
+    @abstractmethod
     def listar_todas(self) -> list[Starlink]:
         """
         Retorna todas as designações de Starlink cadastradas.

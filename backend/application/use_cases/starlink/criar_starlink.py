@@ -7,7 +7,7 @@ from __future__ import annotations
 from domain.entities import Starlink
 from domain.repositories import StarlinkRepository
 from domain.value_objects import Nome
-from shared.exceptions import PersistenciaInconsistenteError
+from shared.exceptions import PersistenciaInconsistenteError, DesignacaoStarlinkDuplicadaError
 from shared.types import EscolaId
 
 from .dtos import CriarStarlinkInput, StarlinkOutput
@@ -39,7 +39,17 @@ class CriarStarlinkUseCase:
                 Caso o repositório retorne uma entidade persistida
                 em estado inconsistente.
         """
+        designacao_existente = (
+                self._repositorio.buscar_por_designacao(
+                    dados.designacao
+                )
+            )
 
+        if designacao_existente is not None:
+            raise DesignacaoStarlinkDuplicadaError(
+                f"A designação '{dados.designacao}' já está cadastrada."
+            )
+        
         starlink = Starlink(
             id=None,
             escola_id=EscolaId(dados.escola_id),

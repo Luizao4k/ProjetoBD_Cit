@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { Save, X } from "lucide-react";
 
-import {
-  atualizarEscola,
-  type Escola,
-} from "../services/escolaService";
+import { atualizarEscola } from "../services/escolaService";
+import type { Escola } from "../types/escola";
 
 interface EditarEscolaModalProps {
   escola: Escola;

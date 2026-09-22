@@ -93,6 +93,26 @@ class SqliteStarlinkRepository(StarlinkRepository):
 
 #-----------------------------------------------------------------#
 
+    def buscar_por_designacao(self, designacao: str) -> Starlink | None:
+        try:
+            linha = self._conexao.execute(
+                """
+                SELECT *
+                FROM starlinks
+                WHERE designacao = ?
+                """,
+                (designacao,),
+            ).fetchone()
+
+            return self._para_entidade(linha) if linha else None
+
+        except sqlite3.DatabaseError as exc:
+            raise PersistenciaError(
+                "Falha ao buscar Starlink pela designação."
+            ) from exc
+
+#-----------------------------------------------------------------#
+
     def listar_todas(self) -> list[Starlink]:
         try:
             linhas = self._conexao.execute(

@@ -1,25 +1,5 @@
 import { requisicao } from "../../../services/http";
-
-/**
- * Representa uma DRE retornada pela API.
- */
-export interface Dre {
-  /** Identificador único da DRE. */
-  id: number;
-
-  /** Nome da DRE. */
-  nome: string;
-
-  /** Telefone de contato, quando informado. */
-  telefone: string | null;
-
-  /** Data e hora de criação do registro. */
-  criado_em: string;
-
-  /** Data e hora da última atualização do registro. */
-  atualizado_em: string;
-}
-
+import type { Dre } from "../types/dre";
 /**
  * Dados permitidos para atualização de uma DRE.
  *

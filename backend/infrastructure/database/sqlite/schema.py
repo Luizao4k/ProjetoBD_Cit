@@ -69,11 +69,11 @@ CREATE TABLE IF NOT EXISTS chromebooks (
 );
 
 CREATE TABLE IF NOT EXISTS responsaveis (
-    id            INTEGER PRIMARY KEY AUTOINCREMENT,
-    cemep_id      INTEGER NOT NULL REFERENCES cemeps(id),
-    nome          TEXT NOT NULL,
-    criado_em     TEXT NOT NULL,
-    atualizado_em TEXT NOT NULL
+    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+    cemep_id       INTEGER NOT NULL REFERENCES cemeps(id),
+    nome           TEXT NOT NULL,
+    criado_em      TEXT NOT NULL,
+    atualizado_em  TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS turmas_cemep (
@@ -92,10 +92,20 @@ CREATE TABLE IF NOT EXISTS starlinks (
     atualizado_em TEXT NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS ix_escolas_dre_id ON escolas(dre_id);
-CREATE INDEX IF NOT EXISTS ix_responsaveis_cemep_id ON responsaveis(cemep_id);
-CREATE INDEX IF NOT EXISTS ix_turmas_cemep_responsavel_id ON turmas_cemep(responsavel_id);
-CREATE INDEX IF NOT EXISTS ix_starlinks_escola_id ON starlinks(escola_id);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_starlinks_designacao
+ON starlinks(designacao);
+
+CREATE INDEX IF NOT EXISTS ix_escolas_dre_id
+ON escolas(dre_id);
+
+CREATE INDEX IF NOT EXISTS ix_responsaveis_cemep_id
+ON responsaveis(cemep_id);
+
+CREATE INDEX IF NOT EXISTS ix_turmas_cemep_responsavel_id
+ON turmas_cemep(responsavel_id);
+
+CREATE INDEX IF NOT EXISTS ix_starlinks_escola_id
+ON starlinks(escola_id);
 """
 
 def criar_schema(conexao: sqlite3.Connection) -> None:

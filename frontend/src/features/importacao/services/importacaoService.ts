@@ -1,4 +1,5 @@
-import { requisicaoArquivo } from "../../../services/http";
+import { requisicao, requisicaoArquivo } from "../../../services/http";
+
 import type { TipoImportacao } from "../types/importacao";
 
 /**
@@ -19,14 +20,11 @@ export interface FalhaImportacao {
 /**
  * Relatório de uma importação retornado pela API.
  *
- * Espelha ResultadoImportacao no backend
- * (infrastructure/importacao/resultado.py). `taxa_sucesso` vem como
- * fração entre 0 e 1 — quem exibe é responsável por converter para
- * percentual.
+ * Espelha ResultadoImportacao no backend.
  */
 export interface ResultadoImportacaoApi {
   tipo: TipoImportacao;
-  arquivo: string;
+  arquivo: string | null;
   total_processado: number;
   sucessos: number;
   erros: number;
@@ -36,21 +34,43 @@ export interface ResultadoImportacaoApi {
 }
 
 /**
- * Envia um arquivo (CSV ou Excel) para importação em lote de um dos
- * tipos de dado suportados pelo sistema.
- *
- * Cada linha inválida do arquivo não interrompe a importação — ela
- * aparece em `falhas`, dentro de um resultado 200. A Promise só
- * rejeita quando a requisição em si falha (tipo inválido, arquivo
- * ausente, arquivo estruturalmente inválido, erro de rede).
+ * Envia um arquivo CSV ou Excel para importação em lote.
  */
 export function importarArquivo(
   tipo: TipoImportacao,
   arquivo: File,
 ): Promise<ResultadoImportacaoApi> {
   const dados = new FormData();
+
   dados.append("tipo", tipo);
   dados.append("arquivo", arquivo);
 
-  return requisicaoArquivo<ResultadoImportacaoApi>("/importacao", dados);
+  return requisicaoArquivo<ResultadoImportacaoApi>(
+    "/importacao",
+    dados,
+  );
+}
+
+/**
+ * Dados fornecidos diretamente por um formulário.
+ *
+ * Os campos são enviados como valores simples para a API.
+ */
+export type DadosFormularioImportacao = Record<string, string>;
+
+/**
+ * Envia dados preenchidos em formulário para o mesmo fluxo
+ * de importação utilizado pelos arquivos.
+ */
+export function importarFormulario(
+  tipo: TipoImportacao,
+  dados: DadosFormularioImportacao,
+): Promise<ResultadoImportacaoApi> {
+  return requisicao<ResultadoImportacaoApi>("/importacao/formulario", {
+    method: "POST",
+    body: JSON.stringify({
+      tipo,
+      dados,
+    }),
+  });
 }

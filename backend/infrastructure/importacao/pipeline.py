@@ -46,7 +46,7 @@ TEntrada = TypeVar("TEntrada")
 TSaida = TypeVar("TSaida")
 
 
-class ArquivoInvalidoError(Exception):
+class EntradaImportacaoInvalidaError(Exception):
     """Levantada quando reader.validar() aponta problemas estruturais
     (arquivo ausente, coluna obrigatória faltando etc.) — decisão
     deliberada de interromper ANTES da primeira linha: não faz sentido
@@ -103,7 +103,7 @@ class ImportadorPipeline(Generic[TEntrada, TSaida]):
     def executar(self) -> ResultadoImportacao[TSaida]:
         problemas = self._reader.validar()
         if problemas:
-            raise ArquivoInvalidoError(problemas)
+            raise EntradaImportacaoInvalidaError(problemas)
 
         resultado: ResultadoImportacao[TSaida] = ResultadoImportacao()
         total = self._reader.total_estimado()

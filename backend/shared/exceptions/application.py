@@ -73,6 +73,9 @@ class EscolaJaPossuiChromebookError(RegistroDuplicadoError):
 class InepJaCadastradoError(RegistroDuplicadoError):
     """Já existe uma Escola cadastrada com esse código INEP."""
 
+class DesignacaoStarlinkDuplicadaError(RegistroDuplicadoError):
+    """Indica que a designação de uma Starlink já está cadastrada."""
+
 #------------------------------------------------------#
 #------------------------------------------------------#
 

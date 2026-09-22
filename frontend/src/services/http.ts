@@ -29,7 +29,13 @@ export async function requisicao<T>(
     );
   }
 
-  return response.json() as Promise<T>;
+  const texto = await response.text();
+
+  if (!texto) {
+    return undefined as T;
+  }
+
+  return JSON.parse(texto) as T;
 }
 
 /**
@@ -61,6 +67,10 @@ export async function requisicaoArquivo<T>(
       corpo?.mensagem ??
         `Erro na API: ${response.status} ${response.statusText}`,
     );
+  }
+
+  if (response.status === 204) {
+    return undefined as T;
   }
 
   return response.json() as Promise<T>;

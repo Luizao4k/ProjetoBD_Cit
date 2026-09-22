@@ -43,7 +43,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
-from infrastructure.importacao import ArquivoInvalidoError, ResultadoImportacao
+from infrastructure.importacao import EntradaImportacaoInvalidaError, ResultadoImportacao
 from scripts.importar_dres import importar_dres
 from scripts.importar_escolas import importar_escolas
 from scripts.importar_diretores import importar_diretores
@@ -119,7 +119,7 @@ def importar_tudo(
             relatorios.append(
                 _ResultadoEntidade(entrada.nome_entidade, arquivo, resultado)
             )
-        except ArquivoInvalidoError as erro:
+        except EntradaImportacaoInvalidaError as erro:
             print(f"[{entrada.nome_entidade}] arquivo inválido: {erro}")
             relatorios.append(
                 _ResultadoEntidade(

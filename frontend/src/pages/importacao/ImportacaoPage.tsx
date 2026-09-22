@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import { AlertCircle, RotateCcw } from "lucide-react";
 
 import {
@@ -7,13 +8,19 @@ import {
 
 import {
   importarArquivo,
+  importarFormulario,
   type ResultadoImportacaoApi,
 } from "../../features/importacao/services/importacaoService";
+
 import { baixarFalhasCsv } from "../../features/importacao/utils/falhasCsv";
 
 import { SeletorTipoImportacao } from "../../features/importacao/components/SeletorTipoImportacao";
+
 import { UploadArquivo } from "../../features/importacao/components/UploadArquivo";
+
 import { ResultadoImportacao } from "../../features/importacao/components/ResultadoImportacao";
+
+import { FormularioImportacao } from "../../features/importacao/components/FormularioImportacao";
 
 import "./importacao.css";
 
@@ -23,12 +30,19 @@ type EstadoImportacao =
   | "resultado"
   | "erro";
 
+type ModoImportacao =
+  | "arquivo"
+  | "formulario";
+
 /**
  * Página responsável pela importação de dados.
  */
 export function ImportacaoPage() {
   const [tipoImportacao, setTipoImportacao] =
     useState<TipoImportacao>("dre");
+
+  const [modoImportacao, setModoImportacao] =
+    useState<ModoImportacao>("arquivo");
 
   const [arquivo, setArquivo] =
     useState<File | null>(null);
@@ -42,7 +56,10 @@ export function ImportacaoPage() {
   const [mensagemErro, setMensagemErro] =
     useState<string | null>(null);
 
-  async function handleImportar() {
+  /**
+   * Realiza uma importação através de arquivo.
+   */
+  async function handleImportarArquivo() {
     if (!arquivo) {
       return;
     }
@@ -50,34 +67,83 @@ export function ImportacaoPage() {
     setEstado("processando");
 
     try {
-      const resposta = await importarArquivo(tipoImportacao, arquivo);
+      const resposta = await importarArquivo(
+        tipoImportacao,
+        arquivo,
+      );
 
       setResultado(resposta);
       setEstado("resultado");
     } catch (error) {
-      console.error("Erro ao importar arquivo:", error);
+      console.error(
+        "Erro ao importar arquivo:",
+        error,
+      );
 
       setMensagemErro(
         error instanceof Error
           ? error.message
           : "Não foi possível concluir a importação.",
       );
+
       setEstado("erro");
     }
   }
 
+  /**
+   * Realiza uma importação através de formulário.
+   */
+  async function handleImportarFormulario(
+    dados: Record<string, string>,
+  ) {
+    setEstado("processando");
+
+    try {
+      const resposta = await importarFormulario(
+        tipoImportacao,
+        dados,
+      );
+
+      setResultado(resposta);
+      setEstado("resultado");
+    } catch (error) {
+      console.error(
+        "Erro ao importar formulário:",
+        error,
+      );
+
+      setMensagemErro(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível concluir a importação.",
+      );
+
+      setEstado("erro");
+    }
+  }
+
+  /**
+   * Reinicia a página para uma nova importação.
+   */
   function handleNovaImportacao() {
     setArquivo(null);
     setResultado(null);
     setMensagemErro(null);
+    setModoImportacao("arquivo");
     setEstado("nova");
   }
 
+  /**
+   * Retorna para o estado inicial após um erro.
+   */
   function handleTentarNovamente() {
     setMensagemErro(null);
     setEstado("nova");
   }
 
+  /**
+   * Baixa o relatório das linhas que apresentaram erro.
+   */
   function handleBaixarFalhas() {
     if (!resultado) {
       return;
@@ -86,6 +152,9 @@ export function ImportacaoPage() {
     baixarFalhasCsv(resultado);
   }
 
+  /**
+   * Renderiza a tela inicial de importação.
+   */
   function renderNovaImportacao() {
     return (
       <div className="importacao-card">
@@ -93,8 +162,8 @@ export function ImportacaoPage() {
           <h2>Nova importação</h2>
 
           <p>
-            Selecione o tipo de dado e o arquivo que deseja
-            importar.
+            Selecione o tipo de dado e a forma de
+            entrada.
           </p>
         </div>
 
@@ -104,46 +173,105 @@ export function ImportacaoPage() {
             onChange={setTipoImportacao}
           />
 
-          <UploadArquivo
-            arquivo={arquivo}
-            onChange={setArquivo}
-          />
+          <div className="importacao-modo">
+            <h3>Forma de entrada</h3>
+
+            <div className="importacao-modo__opcoes">
+              
+              <button
+                type="button"
+                className={
+                  modoImportacao === "formulario"
+                    ? "ativo"
+                    : ""
+                }
+                onClick={() =>
+                  setModoImportacao("formulario")
+                }
+              >
+                Formulário
+              </button>
+
+              <button
+                type="button"
+                className={
+                  modoImportacao === "arquivo"
+                    ? "ativo"
+                    : ""
+                }
+                onClick={() =>
+                  setModoImportacao("arquivo")
+                }
+              >
+                Arquivo
+              </button>
+
+            </div>
+          </div>
+
+          {modoImportacao === "arquivo" && (
+            <UploadArquivo
+              arquivo={arquivo}
+              onChange={setArquivo}
+            />
+          )}
+
+          {modoImportacao === "formulario" && (
+            <FormularioImportacao
+              tipo={tipoImportacao}
+              onImportar={handleImportarFormulario}
+            />
+          )}
+          
         </div>
 
-        <footer className="importacao-card__footer">
-          <button
-            type="button"
-            className="importacao-button"
-            onClick={handleImportar}
-            disabled={!arquivo}
-          >
-            Importar arquivo
-          </button>
-        </footer>
+        {modoImportacao === "arquivo" && (
+          <footer className="importacao-card__footer">
+            <button
+              type="button"
+              className="importacao-button"
+              onClick={handleImportarArquivo}
+              disabled={!arquivo}
+            >
+              Importar arquivo
+            </button>
+          </footer>
+        )}
       </div>
     );
   }
 
+  /**
+   * Renderiza o estado de processamento.
+   */
   function renderProcessando() {
     return (
       <div className="importacao-card importacao-processando">
         <div className="importacao-processando__content">
           <div className="importacao-processando__spinner" />
 
-          <h2>Processando importação</h2>
+          <h2>
+            Processando importação
+          </h2>
 
           <p>
-            O arquivo está sendo processado.
+            Os dados estão sendo processados.
           </p>
 
-          <span>
-            {arquivo?.name}
-          </span>
+          {modoImportacao === "arquivo" &&
+            arquivo && (
+              <span>
+                {arquivo.name}
+              </span>
+            )}
         </div>
       </div>
     );
   }
 
+  /**
+   * Renderiza o estado de erro.
+   */
   function renderErro() {
     return (
       <div className="importacao-card importacao-erro">
@@ -152,10 +280,13 @@ export function ImportacaoPage() {
             <AlertCircle size={26} />
           </div>
 
-          <h2>Não foi possível importar</h2>
+          <h2>
+            Não foi possível importar
+          </h2>
 
           <p>
-            {mensagemErro ?? "Ocorreu um erro inesperado durante a importação."}
+            {mensagemErro ??
+              "Ocorreu um erro inesperado durante a importação."}
           </p>
 
           <button
@@ -171,6 +302,9 @@ export function ImportacaoPage() {
     );
   }
 
+  /**
+   * Renderiza o resultado da importação.
+   */
   function renderResultado() {
     if (!resultado) {
       return null;
@@ -180,10 +314,16 @@ export function ImportacaoPage() {
       <ResultadoImportacao
         sucessos={resultado.sucessos}
         erros={resultado.erros}
-        taxaSucesso={resultado.taxa_sucesso * 100}
+        taxaSucesso={
+          resultado.taxa_sucesso * 100
+        }
         resumo={resultado.resumo}
-        onBaixarFalhas={handleBaixarFalhas}
-        onNovaImportacao={handleNovaImportacao}
+        onBaixarFalhas={
+          handleBaixarFalhas
+        }
+        onNovaImportacao={
+          handleNovaImportacao
+        }
       />
     );
   }
@@ -195,19 +335,24 @@ export function ImportacaoPage() {
           <h1>Importação</h1>
 
           <p>
-            Importe dados do sistema através de arquivos CSV.
+            Adicione dados ao sistema através de
+            arquivos ou formulários.
           </p>
         </div>
       </header>
 
       <section className="importacao-page__content">
-        {estado === "nova" && renderNovaImportacao()}
+        {estado === "nova" &&
+          renderNovaImportacao()}
 
-        {estado === "processando" && renderProcessando()}
+        {estado === "processando" &&
+          renderProcessando()}
 
-        {estado === "erro" && renderErro()}
+        {estado === "erro" &&
+          renderErro()}
 
-        {estado === "resultado" && renderResultado()}
+        {estado === "resultado" &&
+          renderResultado()}
       </section>
     </main>
   );

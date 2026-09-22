@@ -6,10 +6,13 @@ from __future__ import annotations
 
 from domain.repositories import StarlinkRepository
 from domain.value_objects import Nome
+
 from shared.exceptions import (
     PersistenciaInconsistenteError,
     StarlinkNaoEncontradoError,
+    DesignacaoStarlinkDuplicadaError,
 )
+
 from shared.types import StarlinkId
 
 from .dtos import AtualizarStarlinkInput, StarlinkOutput
@@ -19,27 +22,22 @@ class AtualizarStarlinkUseCase:
     """
     Atualiza uma designação de Starlink existente.
 
-    A atualização é parcial: campos com valor ``None`` não são
+    A atualização é parcial: campos com valor `None` não são
     modificados.
     """
 
-    def __init__(self, repositorio: StarlinkRepository) -> None:
+    def __init__(
+        self,
+        repositorio: StarlinkRepository,
+    ) -> None:
         self._repositorio = repositorio
 
-    def executar(self, dados: AtualizarStarlinkInput) -> StarlinkOutput:
+    def executar(
+        self,
+        dados: AtualizarStarlinkInput,
+    ) -> StarlinkOutput:
         """
         Atualiza uma designação de Starlink existente.
-
-        Args:
-            dados:
-                Dados necessários para a atualização.
-
-        Returns:
-            StarlinkOutput contendo o estado atualizado.
-
-        Raises:
-            StarlinkNaoEncontradoError:
-                Caso não exista uma designação com o id informado.
         """
 
         starlink_id = StarlinkId(dados.id)
@@ -50,9 +48,28 @@ class AtualizarStarlinkUseCase:
             raise StarlinkNaoEncontradoError(starlink_id)
 
         if dados.designacao is not None:
-            starlink.alterar_designacao(Nome(dados.designacao))
+            designacao_existente = (
+                self._repositorio.buscar_por_designacao(
+                    dados.designacao
+                )
+            )
 
-        starlink_atualizado = self._repositorio.atualizar(starlink)
+            if (
+                designacao_existente is not None
+                and designacao_existente.id != starlink.id
+            ):
+                raise DesignacaoStarlinkDuplicadaError(
+                    f"A designação '{dados.designacao}' "
+                    "já está cadastrada."
+                )
+
+            starlink.alterar_designacao(
+                Nome(dados.designacao)
+            )
+
+        starlink_atualizado = self._repositorio.atualizar(
+            starlink
+        )
 
         if starlink_atualizado.id is None:
             raise PersistenciaInconsistenteError(

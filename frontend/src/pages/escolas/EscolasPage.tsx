@@ -1,125 +1,108 @@
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-
-import { Pencil, Trash } from "lucide-react";
-
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { listarEscolas } from "../../features/escolas/services/escolaService";
-import { listarDiretores } from"../../features/diretor/services/diretorService"
-import { listarStarlinks, excluirStarlink } from "../../features/starlink/services/starlinkService";
-
-import type { Escola } from "../../features/escolas/types/escola";
-import type { Diretor } from "../../features/diretor/types/diretor";
-import type { Starlink } from "../../features/starlink/types/starlink";
+import { useDadosEscolas } from "../../features/escolas/hooks/useDadosEscolas";
+import { useBuscarEscolas } from "../../features/escolas/hooks/useBuscarEscolas";
 
 import { EditarEscolaModal } from "../../features/escolas/components/EditarEscolaModal";
 import { EditarDiretorModal } from "../../features/diretor/components/EditarDiretorModal";
 import { EditarStarlinkModal } from "../../features/starlink/components/EditarStarlinkModal";
 
-import { formatarTelefone } from "../../utils/formatar"
+import { ListaEscolas } from "../../features/escolas/components/ListaEscolas"
+import { DetalhesEscola } from "../../features/escolas/components/DetalhesEscola";
+
+
+import type { Escola } from "../../features/escolas/types/escola";
+import type { Diretor } from "../../features/diretor/types/diretor";
+import type { Starlink } from "../../features/starlink/types/starlink";
+
+import { excluirStarlink } from "../../features/starlink/services/starlinkService";
 
 import "./escolas.css";
 
+/**
+ * Página responsável pela consulta e gerenciamento das escolas.
+ *
+ * Funcionalidades:
+ * - Carregamento de escolas, diretores e Starlinks.
+ * - Busca e filtro por texto e DRE.
+ * - Seleção da escola atual.
+ * - Exibição dos detalhes da escola.
+ * - Abertura dos modais de edição.
+ * - Exclusão de registros de Starlink.
+ *
+ * Atua como componente orquestrador da tela,
+ * delegando a renderização para componentes menores.
+ */
 export function EscolasPage() {
+
+  /**
+   * Obtém o identificador da DRE pela URL.
+   *
+   * Exemplo:
+   * /escolas?dre_id=3
+   */
   const [searchParams] = useSearchParams();
-
   const dreIdParam = searchParams.get("dre_id");
+  const dreId = dreIdParam ? Number(dreIdParam) : null;
 
-  const dreId = dreIdParam
-    ? Number(dreIdParam)
-    : null;
+  /**
+   * Carrega e gerencia os dados necessários da página.
+   *
+   * Disponibiliza:
+   * - listas de entidades
+   * - estados de carregamento
+   * - mensagens de erro
+   * - funções de atualização local
+   */
+  const {
+    escolas,
+    diretores,
+    starlinks,
+    setEscolas,
+    setDiretores,
+    setStarlinks,
+    carregando,
+    erro,
+    setErro,
+  } = useDadosEscolas();
 
-  const [escolas, setEscolas] = useState<Escola[]>(
-    [],
-  );
+  /**
+   * Gerencia a busca textual e o filtro por DRE.
+   */
+  const {
+    busca,
+    setBusca,
+    escolasFiltradas,
+  } = useBuscarEscolas(escolas, dreId);
 
-  const [starlinks, setStarlinks] = useState<Starlink[]>([]);
-
-  const [diretores, setDiretores] = useState<Diretor[]>([]);
-
+  /**
+   * Escola atualmente selecionada na lista.
+   */
   const [escolaSelecionada, setEscolaSelecionada] =
     useState<Escola | null>(null);
 
+  /**
+   * Escola em edição.
+   */
   const [escolaEmEdicao, setEscolaEmEdicao] =
     useState<Escola | null>(null);
 
-  const [busca, setBusca] = useState("");
-
-  const [carregando, setCarregando] =
-    useState(true);
-
-  const [erro, setErro] = useState<string | null>(
-    null,
-  );
-
+  /**
+   * Diretor em edição.
+   */
   const [diretorEmEdicao, setDiretorEmEdicao] =
-  useState<Diretor | null>(null);
+    useState<Diretor | null>(null);
 
+  /**
+   * Starlink em edição.
+   */
   const [starlinkEmEdicao, setStarlinkEmEdicao] =
-  useState<Starlink | null>(null);
+    useState<Starlink | null>(null);
 
-  useEffect(() => {
-    async function carregarDados() {
-      try {
-        setCarregando(true);
-        setErro(null);
-
-        const [escolasDados, diretoresDados, starlinksDados] =
-          await Promise.all([
-            listarEscolas(),
-            listarDiretores(),
-            listarStarlinks(),
-          ]);
-
-        setEscolas(escolasDados);
-        setDiretores(diretoresDados);
-        setStarlinks(starlinksDados)
-      } catch (error) {
-        console.error(
-          "Erro ao carregar dados:",
-          error,
-        );
-
-        setErro(
-          "Não foi possível carregar os dados.",
-        );
-      } finally {
-        setCarregando(false);
-      }
-    }
-
-    carregarDados();
-  }, []);
-
-  const escolasFiltradas = useMemo(() => {
-    const termo = busca.toLowerCase().trim();
-
-    return escolas.filter((escola) => {
-      const pertenceADre =
-        dreId === null ||
-        escola.dre_id === dreId;
-
-      const correspondeABusca =
-        !termo ||
-        escola.nome
-          .toLowerCase()
-          .includes(termo) ||
-        escola.inep.includes(termo) ||
-        escola.municipio
-          .toLowerCase()
-          .includes(termo);
-
-      return (
-        pertenceADre &&
-        correspondeABusca
-      );
-    });
-  }, [busca, escolas, dreId]);
-
+  /**
+   * Diretor vinculado à escola selecionada.
+   */ 
   const diretorDaEscola = escolaSelecionada
     ? diretores.find(
         (diretor) =>
@@ -127,12 +110,24 @@ export function EscolasPage() {
           escolaSelecionada.id,
       )
     : undefined;
-  
+      
+  /**
+   * Lista de Starlinks vinculadas à escola selecionada.
+   */
   const starlinksDaEscola = escolaSelecionada
     ? starlinks.filter(
-      (starlink) => starlink.escola_id == escolaSelecionada?.id,
+      (starlink) => starlink.escola_id === escolaSelecionada?.id,
       )
     : [];
+
+  /**
+   * Mantém uma escola válida selecionada.
+   *
+   * Regras:
+   * - Se não houver escolas, remove a seleção.
+   * - Se a escola atual desaparecer do filtro,
+   *   seleciona automaticamente a primeira escola.
+  */
   useEffect(() => {
     if (escolasFiltradas.length === 0) {
       setEscolaSelecionada(null);
@@ -157,8 +152,10 @@ export function EscolasPage() {
   ]);
 
   /**
-   * Atualiza a escola modificada dentro da lista
-   * e também atualiza a escola atualmente selecionada.
+   * Atualiza a escola modificada dentro da lista,
+   * atualiza a seleção atual e fecha o modal.
+   *
+   * @param escolaAtualizada Escola retornada após a edição.
    */
   function handleEscolaAtualizada(
     escolaAtualizada: Escola,
@@ -175,6 +172,13 @@ export function EscolasPage() {
 
     setEscolaEmEdicao(null);
   }
+
+  /**
+   * Atualiza o diretor modificado na lista
+   * e fecha o modal de edição.
+   *
+   * @param diretorAtualizado Diretor atualizado.
+   */
   function handleDiretorAtualizado(
     diretorAtualizado: Diretor,
   ) {
@@ -185,10 +189,15 @@ export function EscolasPage() {
           : diretor,
       ),
     );
-
     setDiretorEmEdicao(null);
   }
 
+  /**
+   * Atualiza a Starlink modificada na lista
+   * e fecha o modal de edição.
+   *
+   * @param starlinkAtualizado Starlink atualizada.
+   */
   function handleStarlinkAtualizado(
     starlinkAtualizado: Starlink,
   ) {
@@ -203,6 +212,19 @@ export function EscolasPage() {
     setStarlinkEmEdicao(null);
   }
 
+  /**
+   * Solicita confirmação ao usuário e exclui
+   * uma Starlink.
+   *
+   * Em caso de sucesso:
+   * - remove a Starlink da lista local.
+   *
+   * Em caso de erro:
+   * - registra o erro no console;
+   * - apresenta mensagem ao usuário.
+   *
+   * @param starlink Starlink que será removida.
+   */
   async function handleExcluirStarlink(
     starlink: Starlink,
   ) {
@@ -229,258 +251,35 @@ export function EscolasPage() {
     }
   }
 
+  /**
+   * Estrutura da página:
+   *
+   * - Lista lateral de escolas.
+   * - Painel de detalhes da escola.
+   * - Modais de edição.
+   */
   return (
     <div className="escolas-page">
-      <aside className="escolas-page__list">
-        <div className="escolas-page__list-header">
-          <div>
-            <h1>Escolas</h1>
+      <ListaEscolas
+        escolas={escolasFiltradas}
+        escolaSelecionada={escolaSelecionada}
+        busca={busca}
+        carregando={carregando}
+        erro={erro}
+        onBuscaChange={setBusca}
+        onSelecionarEscola={setEscolaSelecionada}
+      />
 
-            <p>
-              Base cadastral da rede de ensino
-            </p>
-          </div>
+      <DetalhesEscola
+        escola={escolaSelecionada}
+        diretor={diretorDaEscola}
+        starlinks={starlinksDaEscola}
+        onEditarEscola={setEscolaEmEdicao}
+        onEditarDiretor={setDiretorEmEdicao}
+        onEditarStarlink={setStarlinkEmEdicao}
+        onExcluirStarlink={handleExcluirStarlink}
+      />
 
-          <span className="escolas-page__count">
-            {escolasFiltradas.length} registros
-          </span>
-        </div>
-
-        <div className="escolas-page__search">
-          <input
-            type="text"
-            placeholder="Buscar escola, INEP ou município..."
-            value={busca}
-            onChange={(event) =>
-              setBusca(event.target.value)
-            }
-          />
-        </div>
-
-        {carregando && (
-          <div className="escolas-page__message">
-            Carregando escolas...
-          </div>
-        )}
-
-        {erro && (
-          <div className="escolas-page__message escolas-page__message--error">
-            {erro}
-          </div>
-        )}
-
-        {!carregando &&
-          !erro &&
-          escolasFiltradas.length === 0 && (
-            <div className="escolas-page__message">
-              Nenhuma escola encontrada.
-            </div>
-          )}
-
-        {!carregando &&
-          !erro &&
-          escolasFiltradas.length > 0 && (
-            <div className="escolas-list">
-              {escolasFiltradas.map((escola) => (
-                <button
-                  key={escola.id}
-                  type="button"
-                  className={`escola-list-item ${
-                    escolaSelecionada?.id ===
-                    escola.id
-                      ? "escola-list-item--active"
-                      : ""
-                  }`}
-                  onClick={() =>
-                    setEscolaSelecionada(escola)
-                  }
-                >
-                  <strong>
-                    {escola.nome}
-                  </strong>
-
-                  <div className="escola-list-item__meta">
-                    <span>
-                      {escola.inep}
-                    </span>
-
-                    <span>
-                      {escola.municipio}
-                    </span>
-                  </div>
-
-                  <span className="escola-list-item__type">
-                    {escola.tipo}
-                  </span>
-                </button>
-              ))}
-            </div>
-          )}
-      </aside>
-
-      <main className="escolas-page__details">
-        {!escolaSelecionada &&
-          !carregando && (
-            <div className="escolas-page__empty">
-              Selecione uma escola para
-              visualizar os detalhes.
-            </div>
-          )}
-
-        {escolaSelecionada && (
-          <>
-            <header className="escola-details__header">
-              <div>
-                <h2>
-                  {escolaSelecionada.nome}
-                </h2>
-
-                <div className="escola-details__meta">
-                  <span>
-                    {" "}
-                    {escolaSelecionada.dre?.nome}
-                  </span>
-
-                  <span>
-                    INEP{" "}
-                    {escolaSelecionada.inep}
-                  </span>
-
-                  <span>
-                    {escolaSelecionada.municipio}
-                  </span>
-
-                  <span>
-                    {escolaSelecionada.tipo}
-                  </span>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                className="escola-details__edit-button"
-                onClick={() =>
-                  setEscolaEmEdicao(
-                    escolaSelecionada,
-                  )
-                }
-              >
-                <Pencil size={16} />
-                Editar
-              </button>
-            </header>
-
-            <section className="escola-details__grid">
-
-              <article className="escola-card">
-                <h3>Chromebooks</h3>
-
-                <p>
-                  Informações dos dispositivos
-                  serão carregadas aqui.
-                </p>
-              </article>
-
-              <article className="escola-card">
-                <div className="escola-card__header">
-                  <h3>Starlink</h3>
-                </div>
-
-                {starlinksDaEscola.length > 0 ? (
-                  <div className="escola-card__actions">
-                    {starlinksDaEscola.map((starlink) => (
-                      <div key={starlink.id}>
-                        <div className="escola-card__header">
-                          <strong>{starlink.designacao}</strong>
-
-                          <button
-                            type="button"
-                            className="escola-card__edit-button"
-                            onClick={() =>
-                              setStarlinkEmEdicao(starlink)
-                            }
-                            aria-label="Editar Starlink"
-                          >
-                            <Pencil size={16} />
-                          </button>
-                          <button
-                            type="button"
-                            className="escola-card__delete-button"
-                            onClick={() => handleExcluirStarlink(starlink)}
-                            aria-label={`Excluir Starlink ${starlink.designacao}`}
-                            title="Excluir Starlink"
-                          >
-                            <Trash size={16} />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p>Sem informações</p>
-                )}
-              </article>
-            </section>
-            
-            <section className="escola-details__cadastro">
-                 <div className="escola-card__header">
-                    <h3>Direção</h3>
-
-                    {diretorDaEscola && (
-                      <button
-                        type="button"
-                        className="escola-card__edit-button"
-                        onClick={() =>
-                          setDiretorEmEdicao(diretorDaEscola)
-                        }
-                        aria-label="Editar diretor"
-                      >
-                        <Pencil size={16} />
-                        Editar
-                      </button>
-                    )}
-                  </div>
-
-                {diretorDaEscola ? (
-                  <>
-                    <p>
-                      <strong>
-                        {diretorDaEscola.nome}
-                      </strong>
-                    </p>
-
-                    {diretorDaEscola.telefone && (
-                      <p>
-                        Tel:{" "}
-                        {formatarTelefone(diretorDaEscola.telefone)}
-                      </p>
-                    )}
-
-                    {diretorDaEscola.email && (
-                      <p>
-                        E-mail:{" "}
-                        {diretorDaEscola.email}
-                      </p>
-                    )}
-                  </>
-                ) : (
-                  <p>Sem informações</p>
-                )}
-            </section>
-              
-            <section className="escola-details__cadastro">
-              <h3>
-                Localização / Endereço
-              </h3>
-
-              <p>
-                {escolaSelecionada.endereco ??
-                  "Endereço não informado"}
-              </p>
-            </section>
-          </>
-        )}
-      </main>
 
       {escolaEmEdicao && (
         <EditarEscolaModal

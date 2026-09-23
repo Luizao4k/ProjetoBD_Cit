@@ -1,7 +1,5 @@
 import { useState } from "react";
 
-import { AlertCircle, RotateCcw } from "lucide-react";
-
 import {
   type TipoImportacao,
 } from "../../features/importacao/types/importacao";
@@ -14,13 +12,10 @@ import {
 
 import { baixarFalhasCsv } from "../../features/importacao/utils/falhasCsv";
 
-import { SeletorTipoImportacao } from "../../features/importacao/components/SeletorTipoImportacao";
-
-import { UploadArquivo } from "../../features/importacao/components/UploadArquivo";
-
-import { ResultadoImportacao } from "../../features/importacao/components/ResultadoImportacao";
-
-import { FormularioImportacao } from "../../features/importacao/components/FormularioImportacao";
+import { TelaNovaImportacao } from "../../features/importacao/components/TelaNovaImportacao";
+import { TelaProcessando } from "../../features/importacao/components/TelaProcessando";
+import { TelaErro } from "../../features/importacao/components/TelaErro";
+import { TelaResultado } from "../../features/importacao/components/TelaResultado";
 
 import "./importacao.css";
 
@@ -157,87 +152,16 @@ export function ImportacaoPage() {
    */
   function renderNovaImportacao() {
     return (
-      <div className="importacao-card">
-        <div className="importacao-card__header">
-          <h2>Nova importação</h2>
-
-          <p>
-            Selecione o tipo de dado e a forma de
-            entrada.
-          </p>
-        </div>
-
-        <div className="importacao-card__body">
-          <SeletorTipoImportacao
-            valor={tipoImportacao}
-            onChange={setTipoImportacao}
-          />
-
-          <div className="importacao-modo">
-            <h3>Forma de entrada</h3>
-
-            <div className="importacao-modo__opcoes">
-              
-              <button
-                type="button"
-                className={
-                  modoImportacao === "formulario"
-                    ? "ativo"
-                    : ""
-                }
-                onClick={() =>
-                  setModoImportacao("formulario")
-                }
-              >
-                Formulário
-              </button>
-
-              <button
-                type="button"
-                className={
-                  modoImportacao === "arquivo"
-                    ? "ativo"
-                    : ""
-                }
-                onClick={() =>
-                  setModoImportacao("arquivo")
-                }
-              >
-                Arquivo
-              </button>
-
-            </div>
-          </div>
-
-          {modoImportacao === "arquivo" && (
-            <UploadArquivo
-              arquivo={arquivo}
-              onChange={setArquivo}
-            />
-          )}
-
-          {modoImportacao === "formulario" && (
-            <FormularioImportacao
-              tipo={tipoImportacao}
-              onImportar={handleImportarFormulario}
-            />
-          )}
-          
-        </div>
-
-        {modoImportacao === "arquivo" && (
-          <footer className="importacao-card__footer">
-            <button
-              type="button"
-              className="importacao-button"
-              onClick={handleImportarArquivo}
-              disabled={!arquivo}
-            >
-              Importar arquivo
-            </button>
-          </footer>
-        )}
-      </div>
+      <TelaNovaImportacao
+        tipoImportacao={tipoImportacao}
+        modoImportacao={modoImportacao}
+        arquivo={arquivo}
+        onTipoImportacaoChange={setTipoImportacao}
+        onModoImportacaoChange={setModoImportacao}
+        onArquivoChange={setArquivo}
+        onImportarFormulario={handleImportarFormulario}
+        onImportarArquivo={handleImportarArquivo}
+      />
     );
   }
 
@@ -245,65 +169,26 @@ export function ImportacaoPage() {
    * Renderiza o estado de processamento.
    */
   function renderProcessando() {
-    return (
-      <div className="importacao-card importacao-processando">
-        <div className="importacao-processando__content">
-          <div className="importacao-processando__spinner" />
-
-          <h2>
-            Processando importação
-          </h2>
-
-          <p>
-            Os dados estão sendo processados.
-          </p>
-
-          {modoImportacao === "arquivo" &&
-            arquivo && (
-              <span>
-                {arquivo.name}
-              </span>
-            )}
-        </div>
-      </div>
-    );
+    return <TelaProcessando />;
   }
 
   /**
-   * Renderiza o estado de erro.
+   * Renderiza a tela apresentada quando ocorre um erro.
    */
   function renderErro() {
     return (
-      <div className="importacao-card importacao-erro">
-        <div className="importacao-erro__content">
-          <div className="importacao-erro__icon">
-            <AlertCircle size={26} />
-          </div>
-
-          <h2>
-            Não foi possível importar
-          </h2>
-
-          <p>
-            {mensagemErro ??
-              "Ocorreu um erro inesperado durante a importação."}
-          </p>
-
-          <button
-            type="button"
-            className="importacao-erro__retry"
-            onClick={handleTentarNovamente}
-          >
-            <RotateCcw size={17} />
-            Tentar novamente
-          </button>
-        </div>
-      </div>
+      <TelaErro
+        mensagem={
+          mensagemErro ??
+          "Não foi possível concluir a importação."
+        }
+        onTentarNovamente={handleTentarNovamente}
+      />
     );
   }
 
   /**
-   * Renderiza o resultado da importação.
+   * Renderiza a tela com o resultado da importação.
    */
   function renderResultado() {
     if (!resultado) {
@@ -311,49 +196,22 @@ export function ImportacaoPage() {
     }
 
     return (
-      <ResultadoImportacao
-        sucessos={resultado.sucessos}
-        erros={resultado.erros}
-        taxaSucesso={
-          resultado.taxa_sucesso * 100
-        }
-        resumo={resultado.resumo}
-        onBaixarFalhas={
-          handleBaixarFalhas
-        }
-        onNovaImportacao={
-          handleNovaImportacao
-        }
+      <TelaResultado
+        resultado={resultado}
+        onBaixarFalhas={handleBaixarFalhas}
       />
     );
   }
 
   return (
-    <main className="importacao-page">
-      <header className="importacao-page__header">
-        <div>
-          <h1>Importação</h1>
+    <div className="importacao-page">
+      {estado === "nova" && renderNovaImportacao()}
 
-          <p>
-            Adicione dados ao sistema através de
-            arquivos ou formulários.
-          </p>
-        </div>
-      </header>
+      {estado === "processando" && renderProcessando()}
 
-      <section className="importacao-page__content">
-        {estado === "nova" &&
-          renderNovaImportacao()}
+      {estado === "resultado" && renderResultado()}
 
-        {estado === "processando" &&
-          renderProcessando()}
-
-        {estado === "erro" &&
-          renderErro()}
-
-        {estado === "resultado" &&
-          renderResultado()}
-      </section>
-    </main>
+      {estado === "erro" && renderErro()}
+    </div>
   );
 }
